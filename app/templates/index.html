@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hydra Gestão</title>
+<style>
+  :root {
+    --primary: #ffffff;
+    --pool: #00AEEF;
+    --pool-dark: #0077B6;
+    --pool-deeper: #023E8A;
+    --pool-light: #CAF0F8;
+    --pool-mid: #90E0EF;
+    --accent: #0077B6;
+    --text-dark: #0d1b2a;
+    --text-mid: #334155;
+    --text-light: #64748b;
+    --bg-body: #f0f7ff;
+    --bg-card: #ffffff;
+    --border: #e2edf7;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --sidebar-w: 240px;
+    --radius: 12px;
+    --shadow: 0 2px 12px rgba(0,119,182,0.10);
+    --shadow-md: 0 4px 24px rgba(0,119,182,0.14);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background:var(--bg-body); color:var(--text-dark); min-height:100vh; display:flex; }
+
+  /* ===== LOGIN ===== */
+  #loginScreen {
+    position:fixed; inset:0; z-index:999;
+    background: linear-gradient(135deg, var(--pool-deeper) 0%, #0077B6 50%, #00AEEF 100%);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .login-bg-waves {
+    position:absolute; inset:0; opacity:0.08;
+    background-image: repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%);
+    background-size: 30px 30px;
+  }
+  .login-box {
+    position:relative; z-index:2;
+    background:#fff; border-radius:20px;
+    padding:44px 40px; width:100%; max-width:400px;
+    box-shadow: 0 24px 64px rgba(2,62,138,0.35);
+    margin:20px;
+  }
+  .login-logo { text-align:center; margin-bottom:32px; }
+  .login-logo-mark {
+    width:72px; height:72px; border-radius:18px;
+    background: linear-gradient(135deg,var(--pool),var(--pool-deeper));
+    display:inline-flex; align-items:center; justify-content:center;
+    font-size:36px; margin-bottom:12px;
+    box-shadow: 0 8px 24px rgba(0,119,182,0.35);
+  }
+  .login-logo h1 { font-size:28px; font-weight:800; color:var(--pool-deeper); letter-spacing:1px; }
+  .login-logo p { font-size:12px; color:var(--text-light); letter-spacing:2px; text-transform:uppercase; margin-top:2px; }
+  .login-form .form-group { margin-bottom:18px; }
+  .login-form label { display:block; font-size:13px; font-weight:600; color:var(--text-mid); margin-bottom:6px; }
+  .login-form input {
+    width:100%; padding:12px 16px; border:1.5px solid var(--border); border-radius:10px;
+    font-size:14px; outline:none; transition:border 0.15s; background:#f8fbff;
+  }
+  .login-form input:focus { border-color:var(--pool); background:#fff; }
+  .login-btn {
+    width:100%; padding:13px; border:none; border-radius:10px;
+    background:linear-gradient(135deg,var(--pool),var(--pool-deeper));
+    color:#fff; font-size:15px; font-weight:700; cursor:pointer;
+    transition:all 0.2s; margin-top:4px;
+    box-shadow: 0 4px 16px rgba(0,119,182,0.3);
+  }
+  .login-btn:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(0,119,182,0.38); }
+  .login-error { background:#fee2e2; color:#991b1b; border-radius:8px; padding:10px 14px; font-size:13px; margin-bottom:14px; display:none; }
+  .login-footer { text-align:center; margin-top:20px; font-size:11px; color:var(--text-light); }
+
+  /* ===== APP (hidden until login) ===== */
+  #app { display:none; width:100%; }
+
+  /* ===== SIDEBAR ===== */
+  #sidebar {
+    width: var(--sidebar-w);
+    background: var(--pool-deeper);
+    min-height:100vh;
+    position:fixed; top:0; left:0; bottom:0;
+    display:flex; flex-direction:column;
+    z-index:100;
+    box-shadow: 4px 0 20px rgba(2,62,138,0.18);
+    transition: transform 0.3s;
+    overflow-y:auto;
+  }
+  .sidebar-logo {
+    padding: 22px 20px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    flex-shrink:0;
+  }
+  .logo-mark {
+    width:54px; height:54px;
+    background: linear-gradient(135deg, var(--pool) 0%, #00d4ff 100%);
+    border-radius:14px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:26px;
+    box-shadow: 0 4px 16px rgba(0,174,239,0.35);
+  }
+  .logo-text { color:#fff; font-size:18px; font-weight:700; letter-spacing:0.5px; }
+  .logo-sub { color: var(--pool-mid); font-size:10px; letter-spacing:1.5px; text-transform:uppercase; }
+  .nav-section { padding: 10px 0 4px; }
+  .nav-label { color: rgba(255,255,255,0.35); font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; padding:8px 20px 4px; }
+  .nav-item {
+    display:flex; align-items:center; gap:12px;
+    padding:11px 20px;
+    color: rgba(255,255,255,0.75);
+    font-size:14px; font-weight:500;
+    cursor:pointer;
+    transition: all 0.18s;
+    border-left: 3px solid transparent;
+    text-decoration:none;
+  }
+  .nav-item:hover { background:rgba(255,255,255,0.08); color:#fff; }
+  .nav-item.active { background: rgba(0,174,239,0.18); color:#fff; border-left-color: var(--pool); }
+  .nav-icon { font-size:17px; width:22px; text-align:center; flex-shrink:0; }
+  .sidebar-footer {
+    margin-top:auto; padding:14px 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    color:rgba(255,255,255,0.4); font-size:11px; flex-shrink:0;
+  }
+  .sidebar-user {
+    display:flex; align-items:center; gap:10px; margin-bottom:8px;
+  }
+  .sidebar-user-av {
+    width:30px; height:30px; border-radius:50%;
+    background:rgba(0,174,239,0.3);
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:700; color:#fff; flex-shrink:0;
+  }
+  .sidebar-user-name { font-size:12px; color:rgba(255,255,255,0.7); font-weight:500; }
+  .sidebar-user-role { font-size:10px; color:rgba(255,255,255,0.4); }
+
+  /* ===== MAIN ===== */
+  #main { margin-left: var(--sidebar-w); flex:1; min-height:100vh; display:flex; flex-direction:column; }
+
+  /* ===== HEADER ===== */
+  #header {
+    background:#fff; border-bottom:1px solid var(--border);
+    padding:0 28px; height:60px;
+    display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:50;
+    box-shadow: 0 1px 8px rgba(0,119,182,0.07);
+  }
+  .header-title { font-size:17px; font-weight:600; color:var(--text-dark); }
+  .header-title span { color:var(--pool-dark); }
+  .header-right { display:flex; align-items:center; gap:14px; }
+  .header-greeting { font-size:13px; color:var(--text-mid); }
+  .header-greeting strong { color:var(--pool-dark); }
+  .header-role-badge {
+    font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; text-transform:uppercase; letter-spacing:0.5px;
+  }
+  .role-admin { background:#dbeafe; color:#1e40af; }
+  .role-user { background:#d1fae5; color:#065f46; }
+  .avatar {
+    width:36px; height:36px; border-radius:50%;
+    background: linear-gradient(135deg,var(--pool),var(--pool-deeper));
+    color:#fff; display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:14px; cursor:pointer; position:relative;
+  }
+  .avatar-menu {
+    position:absolute; top:44px; right:0; background:#fff; border-radius:10px;
+    box-shadow:var(--shadow-md); border:1px solid var(--border);
+    min-width:180px; z-index:200; display:none; overflow:hidden;
+  }
+  .avatar-menu.open { display:block; }
+  .avatar-menu-item {
+    padding:10px 16px; font-size:13px; cursor:pointer; color:var(--text-mid);
+    display:flex; align-items:center; gap:8px; transition:background 0.15s;
+  }
+  .avatar-menu-item:hover { background:#f8fbff; color:var(--text-dark); }
+  .avatar-menu-divider { height:1px; background:var(--border); }
+  .btn-menu { display:none; background:none; border:none; font-size:22px; cursor:pointer; color:var(--text-mid); }
+
+  /* ===== CONTENT ===== */
+  #content { flex:1; padding:28px; overflow-x:hidden; }
+  .page { display:none; }
+  .page.active { display:block; }
+
+  /* ===== COMPONENTS ===== */
+  .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
+  .page-title { font-size:22px; font-weight:700; color:var(--text-dark); }
+  .page-title small { display:block; font-size:13px; font-weight:400; color:var(--text-light); margin-top:2px; }
+
+  .cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:16px; margin-bottom:24px; }
+  .stat-card {
+    background:var(--bg-card); border-radius:var(--radius); padding:20px;
+    box-shadow:var(--shadow); border:1px solid var(--border);
+    position:relative; overflow:hidden; transition: transform 0.18s, box-shadow 0.18s;
+  }
+  .stat-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-md); }
+  .stat-card::after { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+  .stat-card.blue::after { background:linear-gradient(90deg,var(--pool),var(--pool-dark)); }
+  .stat-card.green::after { background:linear-gradient(90deg,var(--success),#34d399); }
+  .stat-card.red::after { background:linear-gradient(90deg,var(--danger),#f87171); }
+  .stat-card.amber::after { background:linear-gradient(90deg,var(--warning),#fbbf24); }
+  .stat-card.indigo::after { background:linear-gradient(90deg,#6366f1,#8b5cf6); }
+  .stat-card.teal::after { background:linear-gradient(90deg,#14b8a6,#2dd4bf); }
+  .stat-label { font-size:12px; font-weight:500; color:var(--text-light); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px; }
+  .stat-value { font-size:26px; font-weight:700; color:var(--text-dark); line-height:1; }
+  .stat-value.sm { font-size:20px; }
+  .stat-icon { position:absolute; right:16px; top:18px; font-size:26px; opacity:0.15; }
+  .stat-trend { font-size:12px; margin-top:8px; }
+  .trend-up { color:var(--success); } .trend-dn { color:var(--danger); }
+
+  .table-wrap { background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid var(--border); overflow:hidden; }
+  .table-head { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+  .table-head-title { font-size:15px; font-weight:600; color:var(--text-dark); }
+  table { width:100%; border-collapse:collapse; }
+  thead th { background:#f8fbff; font-size:12px; font-weight:600; color:var(--text-light); text-transform:uppercase; letter-spacing:0.5px; padding:10px 16px; text-align:left; border-bottom:1px solid var(--border); }
+  tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
+  tbody tr:hover { background:#f8fbff; }
+  tbody tr:last-child { border-bottom:none; }
+  td { padding:13px 16px; font-size:14px; color:var(--text-mid); vertical-align:middle; }
+  td strong { color:var(--text-dark); }
+
+  .badge { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; padding:3px 10px; border-radius:20px; }
+  .badge-open { background:#dbeafe; color:#1d4ed8; }
+  .badge-paid { background:#d1fae5; color:#065f46; }
+  .badge-late { background:#fee2e2; color:#991b1b; }
+  .badge-cancel { background:#f3f4f6; color:#6b7280; }
+  .badge-active { background:#d1fae5; color:#065f46; }
+  .badge-inactive { background:#f3f4f6; color:#6b7280; }
+
+  .btn { display:inline-flex; align-items:center; gap:6px; padding:9px 18px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; border:none; transition:all 0.18s; text-decoration:none; }
+  .btn-primary { background:linear-gradient(135deg,var(--pool),var(--pool-dark)); color:#fff; }
+  .btn-primary:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(0,119,182,0.3); }
+  .btn-outline { background:#fff; color:var(--pool-dark); border:1.5px solid var(--pool-dark); }
+  .btn-outline:hover { background:var(--pool-light); }
+  .btn-ghost { background:transparent; color:var(--text-mid); border:1px solid var(--border); }
+  .btn-ghost:hover { background:#f8fbff; }
+  .btn-sm { padding:5px 12px; font-size:12px; border-radius:6px; }
+  .btn-danger { background:#fee2e2; color:var(--danger); border:none; }
+  .btn-danger:hover { background:#fecaca; }
+  .btn-success { background:#d1fae5; color:var(--success); border:none; }
+  .btn-success:hover { background:#a7f3d0; }
+  .btn-warning { background:#fef3c7; color:#92400e; border:none; }
+  .btn-whatsapp { background:#25d366; color:#fff; border:none; }
+  .btn-whatsapp:hover { background:#1fba57; }
+  .btn-ai { background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff; border:none; }
+  .btn-ai:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(124,58,237,0.35); }
+  .btn-icon { background:#f0f7ff; color:var(--pool-dark); border:1px solid var(--pool-light); }
+  .btn-icon:hover { background:var(--pool-light); }
+
+  .action-group { display:flex; gap:5px; flex-wrap:wrap; }
+  .filter-bar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+  .filter-btn { padding:7px 16px; border-radius:20px; font-size:13px; font-weight:500; cursor:pointer; border:1.5px solid var(--border); background:#fff; color:var(--text-mid); transition:all 0.15s; }
+  .filter-btn.active { background:var(--pool-dark); color:#fff; border-color:var(--pool-dark); }
+  .search-box { position:relative; flex:1; min-width:180px; max-width:320px; }
+  .search-box input { width:100%; padding:8px 14px 8px 36px; border:1.5px solid var(--border); border-radius:8px; font-size:14px; outline:none; transition:border 0.15s; background:#fff; }
+  .search-box input:focus { border-color:var(--pool); }
+  .search-box .s-icon { position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--text-light); font-size:15px; }
+  .section-title { font-size:15px; font-weight:700; color:var(--text-dark); margin:28px 0 14px; display:flex; align-items:center; gap:8px; }
+  .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  .chart-box { background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid var(--border); padding:20px; position:relative; overflow:hidden; }
+  .chart-title { font-size:15px; font-weight:600; color:var(--text-dark); margin-bottom:18px; }
+  .chart-bars { display:flex; align-items:flex-end; gap:10px; height:140px; padding:0 4px; }
+  .bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .bar { width:100%; border-radius:6px 6px 0 0; transition:opacity 0.2s; background:linear-gradient(180deg,var(--pool) 0%,var(--pool-dark) 100%); }
+  .bar:hover { opacity:0.8; }
+  .bar-label { font-size:10px; color:var(--text-light); font-weight:500; }
+
+  .donut-wrap { display:flex; align-items:center; gap:20px; }
+  .donut-legend { display:flex; flex-direction:column; gap:8px; }
+  .legend-item { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-mid); }
+  .legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .three-col { display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; }
+  @media(max-width:900px) { .two-col,.three-col { grid-template-columns:1fr; } }
+
+  .pool-cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
+  .pool-card {
+    background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid var(--border);
+    padding:20px; display:flex; flex-direction:column; align-items:center; text-align:center;
+    transition:transform 0.18s, box-shadow 0.18s;
+  }
+  .pool-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-md); }
+  .pool-avatar {
+    width:64px; height:64px; border-radius:50%;
+    background: linear-gradient(135deg,var(--pool-light),var(--pool));
+    display:flex; align-items:center; justify-content:center;
+    font-size:26px; margin-bottom:12px; border:3px solid var(--pool-light);
+  }
+  .pool-name { font-size:15px; font-weight:700; color:var(--text-dark); margin-bottom:4px; }
+  .pool-info { font-size:12px; color:var(--text-light); margin-bottom:3px; }
+  .pool-actions { display:flex; gap:6px; margin-top:12px; flex-wrap:wrap; justify-content:center; }
+
+  .profile-header-card {
+    background:linear-gradient(135deg,var(--pool-deeper) 0%,var(--pool-dark) 100%);
+    border-radius:var(--radius); padding:28px; margin-bottom:20px; color:#fff;
+    display:flex; align-items:center; gap:24px; flex-wrap:wrap;
+    box-shadow:var(--shadow-md);
+  }
+  .profile-avatar-lg {
+    width:80px; height:80px; border-radius:50%;
+    background:rgba(255,255,255,0.2);
+    display:flex; align-items:center; justify-content:center;
+    font-size:36px; border:3px solid rgba(255,255,255,0.3); flex-shrink:0;
+  }
+  .profile-info h2 { font-size:22px; font-weight:700; margin-bottom:4px; }
+  .profile-info p { font-size:13px; opacity:0.8; margin-bottom:2px; }
+  .profile-actions { margin-left:auto; display:flex; gap:8px; flex-wrap:wrap; }
+
+  .form-card { background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid var(--border); padding:24px; }
+  .form-group { margin-bottom:18px; }
+  .form-group label { display:block; font-size:13px; font-weight:600; color:var(--text-mid); margin-bottom:6px; }
+  .form-group input, .form-group select, .form-group textarea {
+    width:100%; padding:10px 14px; border:1.5px solid var(--border); border-radius:8px;
+    font-size:14px; outline:none; transition:border 0.15s; font-family:inherit; background:#fff; color:var(--text-dark);
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--pool); }
+  .form-group textarea { resize:vertical; min-height:90px; }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .form-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+  @media(max-width:600px) { .form-row,.form-row-3 { grid-template-columns:1fr; } }
+
+  .upload-area {
+    border:2px dashed var(--pool); border-radius:var(--radius); padding:32px;
+    text-align:center; color:var(--text-light); cursor:pointer;
+    background:#f8fbff; transition:all 0.18s;
+  }
+  .upload-area:hover { border-color:var(--pool-dark); background:var(--pool-light); }
+  .upload-icon { font-size:36px; margin-bottom:8px; }
+
+  .agenda-section { margin-bottom:24px; }
+  .agenda-tag { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; padding:4px 14px; border-radius:20px; }
+  .tag-today { background:#dbeafe; color:#1e40af; }
+  .tag-soon { background:#fef3c7; color:#92400e; }
+  .tag-late { background:#fee2e2; color:#991b1b; }
+  .agenda-row {
+    background:#fff; border-radius:var(--radius); padding:14px 18px;
+    display:flex; align-items:center; gap:14px; margin-bottom:8px;
+    box-shadow:var(--shadow); border:1px solid var(--border); transition:transform 0.15s;
+  }
+  .agenda-row:hover { transform:translateX(3px); }
+  .agenda-row-info { flex:1; }
+  .agenda-client { font-size:14px; font-weight:600; color:var(--text-dark); }
+  .agenda-meta { font-size:12px; color:var(--text-light); margin-top:2px; }
+  .agenda-value { font-size:16px; font-weight:700; color:var(--pool-dark); margin-left:auto; white-space:nowrap; }
+  .agenda-actions { display:flex; gap:6px; }
+
+  .orcamento-landing {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    min-height:400px; text-align:center;
+  }
+  .orcamento-icon { font-size:72px; margin-bottom:20px; filter:drop-shadow(0 4px 12px rgba(0,174,239,0.25)); }
+  .btn-orcamento {
+    padding:14px 36px; font-size:16px; font-weight:700;
+    background:linear-gradient(135deg,var(--pool),var(--pool-dark));
+    color:#fff; border:none; border-radius:12px; cursor:pointer;
+    box-shadow:0 4px 20px rgba(0,119,182,0.3);
+    transition:all 0.2s; text-decoration:none; display:inline-flex; align-items:center; gap:10px;
+  }
+  .btn-orcamento:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(0,119,182,0.38); }
+
+  .products-table-wrap { border:1.5px solid var(--border); border-radius:8px; overflow:hidden; }
+  .products-table-wrap td input { border:none; padding:6px; background:transparent; width:100%; outline:none; font-size:13px; }
+
+  .fin-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); font-size:14px; }
+  .fin-row:last-child { border-bottom:none; }
+  .fin-label { color:var(--text-mid); }
+  .fin-val { font-weight:600; color:var(--text-dark); }
+  .fin-val.green { color:var(--success); }
+  .fin-val.red { color:var(--danger); }
+  .fin-val.blue { color:var(--pool-dark); }
+
+  .tab-row { display:flex; gap:2px; border-bottom:2px solid var(--border); margin-bottom:20px; overflow-x:auto; }
+  .tab-btn { padding:10px 18px; font-size:14px; font-weight:500; color:var(--text-light); background:none; border:none; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.15s; white-space:nowrap; }
+  .tab-btn.active { color:var(--pool-dark); border-bottom-color:var(--pool-dark); font-weight:600; }
+
+  /* Foto viewer */
+  .foto-viewer {
+    position:relative; background:#f8fbff; border-radius:var(--radius);
+    border:1.5px solid var(--border); overflow:hidden;
+  }
+  .foto-viewer img { width:100%; display:block; }
+  .foto-viewer-toolbar {
+    display:flex; gap:6px; padding:10px; background:#fff; border-top:1px solid var(--border); flex-wrap:wrap;
+  }
+
+  /* History log */
+  .history-log { display:flex; flex-direction:column; gap:8px; }
+  .history-item {
+    display:flex; align-items:flex-start; gap:12px;
+    background:#fff; border-radius:10px; padding:12px 16px;
+    box-shadow:var(--shadow); border:1px solid var(--border);
+  }
+  .history-dot {
+    width:32px; height:32px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:14px;
+    margin-top:2px;
+  }
+  .history-dot.create { background:#d1fae5; }
+  .history-dot.edit { background:#dbeafe; }
+  .history-dot.pay { background:#fef3c7; }
+  .history-dot.delete { background:#fee2e2; }
+  .history-text { font-size:13px; color:var(--text-mid); line-height:1.5; }
+  .history-text strong { color:var(--text-dark); }
+  .history-time { font-size:11px; color:var(--text-light); margin-top:2px; }
+
+  /* Config sections */
+  .config-section { background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid var(--border); margin-bottom:20px; overflow:hidden; }
+  .config-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+  .config-header-title { font-size:15px; font-weight:600; }
+  .config-body { padding:20px; }
+
+  /* User cards */
+  .user-card {
+    display:flex; align-items:center; gap:14px; padding:14px 16px;
+    border:1px solid var(--border); border-radius:10px; background:#f8fbff;
+    margin-bottom:10px;
+  }
+  .user-card-av {
+    width:44px; height:44px; border-radius:50%;
+    background:linear-gradient(135deg,var(--pool),var(--pool-deeper));
+    color:#fff; display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:16px; flex-shrink:0;
+  }
+  .user-card-info { flex:1; }
+  .user-card-name { font-size:14px; font-weight:600; color:var(--text-dark); }
+  .user-card-meta { font-size:12px; color:var(--text-light); margin-top:2px; }
+
+  /* Modal */
+  .modal { display:none; position:fixed; inset:0; z-index:200; align-items:center; justify-content:center; padding:20px; }
+  .modal.open { display:flex; }
+  .modal-bg { position:absolute; inset:0; background:rgba(0,0,0,0.5); }
+  .modal-box { position:relative; background:#fff; border-radius:var(--radius); width:100%; max-width:560px; max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-md); }
+  .modal-box-lg { max-width:800px; }
+  .modal-header { padding:20px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; background:#fff; z-index:2; }
+  .modal-title { font-size:17px; font-weight:700; }
+  .modal-close { background:none; border:none; font-size:22px; cursor:pointer; color:var(--text-light); line-height:1; }
+  .modal-body { padding:24px; }
+  .modal-footer { padding:16px 24px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px; }
+
+  /* Overlay */
+  #overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:99; }
+  #overlay.show { display:block; }
+
+  /* Toast */
+  #toast {
+    position:fixed; bottom:24px; right:24px; z-index:9999;
+    background:var(--pool-deeper); color:#fff; padding:12px 20px; border-radius:10px;
+    font-size:14px; font-weight:500; box-shadow:var(--shadow-md);
+    display:none; align-items:center; gap:8px;
+    animation: slideIn 0.3s ease;
+  }
+  #toast.show { display:flex; }
+  @keyframes slideIn { from { transform:translateY(20px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+
+  /* Responsive */
+  @media(max-width:768px) {
+    #sidebar { transform:translateX(-100%); }
+    #sidebar.open { transform:translateX(0); }
+    #main { margin-left:0; }
+    .btn-menu { display:block; }
+    .cards-grid { grid-template-columns:repeat(2,1fr); }
+    .header-greeting { display:none; }
+  }
+  @media(max-width:480px) {
+    .cards-grid { grid-template-columns:1fr; }
+    #content { padding:16px; }
+  }
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-track { background:#f0f7ff; }
+  ::-webkit-scrollbar-thumb { background:var(--pool-mid); border-radius:3px; }
+</style>
+</head>
+<body>
+
+<!-- ========== TELA DE LOGIN ========== -->
+<div id="loginScreen">
+  <div class="login-bg-waves"></div>
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-mark">🌊</div>
+      <h1>HYDRA</h1>
+      <p>Sistema de Gestão</p>
+    </div>
+    <div id="loginError" class="login-error">❌ Usuário ou senha incorretos.</div>
+    <div class="login-form">
+      <div class="form-group">
+        <label>👤 Usuário</label>
+        <input type="text" id="loginUser" placeholder="seu.usuario" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label>🔒 Senha</label>
+        <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="login-btn" onclick="doLogin()">🚀 Entrar</button>
+    </div>
+    <div class="login-footer">Hydra Piscinas · Sistema Interno · v2.0</div>
+  </div>
+</div>
+
+<!-- ========== APP ========== -->
+<div id="app">
+  <div id="overlay" onclick="closeSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">🌊</div>
+      <div class="logo-text">HYDRA</div>
+      <div class="logo-sub">Gestão</div>
+    </div>
+    <nav class="nav-section">
+      <div class="nav-label">Principal</div>
+      <a class="nav-item active" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span> Dashboard</a>
+      <a class="nav-item" onclick="navigate('notinhas')"><span class="nav-icon">📄</span> Notinhas em Aberto</a>
+      <a class="nav-item" onclick="navigate('piscineiros')"><span class="nav-icon">🏊</span> Piscineiros & Clientes</a>
+      <div class="nav-label" style="margin-top:6px;">Operacional</div>
+      <a class="nav-item" onclick="navigate('orcamentos')"><span class="nav-icon">📋</span> Gerador de Orçamentos</a>
+      <a class="nav-item" onclick="navigate('nova-notinha')"><span class="nav-icon">➕</span> Nova Notinha</a>
+      <div class="nav-label" style="margin-top:6px;">Análise</div>
+      <a class="nav-item" onclick="navigate('inteligencia')"><span class="nav-icon">📊</span> Inteligência de Vendas</a>
+      <a class="nav-item" onclick="navigate('agenda')"><span class="nav-icon">📅</span> Agenda de Cobranças</a>
+      <div class="nav-label" style="margin-top:6px;">Registros</div>
+      <a class="nav-item" onclick="navigate('historico')"><span class="nav-icon">📚</span> Histórico</a>
+      <a class="nav-item" onclick="navigate('configuracoes')"><span class="nav-icon">⚙️</span> Configurações</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-user-av" id="sidebarAv">HP</div>
+        <div>
+          <div class="sidebar-user-name" id="sidebarName">—</div>
+          <div class="sidebar-user-role" id="sidebarRole">—</div>
+        </div>
+      </div>
+      © 2025 Hydra Gestão
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div id="main">
+    <header id="header">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <button class="btn-menu" onclick="toggleSidebar()">☰</button>
+        <div class="header-title" id="headerTitle">🏠 <span>Dashboard</span></div>
+      </div>
+      <div class="header-right">
+        <div class="header-greeting">Olá, <strong id="headerName">—</strong></div>
+        <span class="header-role-badge role-admin" id="headerRole">Admin</span>
+        <div class="avatar" id="avatarBtn" onclick="toggleAvatarMenu()">
+          <span id="avatarInitial">HP</span>
+          <div class="avatar-menu" id="avatarMenu">
+            <div class="avatar-menu-item" onclick="navigate('configuracoes');closeAvatarMenu()">⚙️ Configurações</div>
+            <div class="avatar-menu-divider"></div>
+            <div class="avatar-menu-item" onclick="doLogout()">🚪 Sair</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div id="content">
+
+      <!-- ========== DASHBOARD ========== -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <div class="page-title">Dashboard <small>Visão geral do negócio</small></div>
+          <button class="btn btn-primary btn-sm">📊 Exportar Relatório</button>
+        </div>
+        <div class="cards-grid">
+          <div class="stat-card blue"><div class="stat-label">Total a Receber</div><div class="stat-value">R$ —</div><div class="stat-trend trend-up">↑ Atualizar dados</div><div class="stat-icon">💰</div></div>
+          <div class="stat-card amber"><div class="stat-label">Notinhas em Aberto</div><div class="stat-value sm">—</div><div class="stat-trend">Aguardando cadastro</div><div class="stat-icon">📄</div></div>
+          <div class="stat-card red"><div class="stat-label">Notinhas Vencidas</div><div class="stat-value sm">—</div><div class="stat-trend trend-dn">Verificar cobranças</div><div class="stat-icon">⚠️</div></div>
+          <div class="stat-card teal"><div class="stat-label">Piscineiros Ativos</div><div class="stat-value sm">—</div><div class="stat-trend">Cadastre piscineiros</div><div class="stat-icon">🏊</div></div>
+          <div class="stat-card green"><div class="stat-label">Clientes Ativos</div><div class="stat-value sm">—</div><div class="stat-trend">Vincule clientes</div><div class="stat-icon">👥</div></div>
+          <div class="stat-card indigo"><div class="stat-label">Faturamento do Mês</div><div class="stat-value">R$ —</div><div class="stat-trend">Sem registros ainda</div><div class="stat-icon">📈</div></div>
+        </div>
+
+        <div class="two-col" style="margin-bottom:20px;">
+          <div class="chart-box">
+            <div class="chart-title">📈 Faturamento Mensal</div>
+            <div class="chart-bars" id="chartFat"></div>
+            <p style="font-size:12px;color:var(--text-light);margin-top:10px;text-align:center;">Conecte ao backend para exibir dados reais</p>
+          </div>
+          <div class="chart-box">
+            <div class="chart-title">🥧 Distribuição de Status</div>
+            <div class="donut-wrap">
+              <svg viewBox="0 0 100 100" width="120" height="120">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#e2edf7" stroke-width="18"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#00AEEF" stroke-width="18" stroke-dasharray="100 151" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+              </svg>
+              <div class="donut-legend">
+                <div class="legend-item"><div class="legend-dot" style="background:#00AEEF"></div>Em Aberto (—)</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div>Pagas (—)</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>Vencidas (—)</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#e2edf7"></div>Canceladas (—)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col" style="margin-bottom:20px;">
+          <!-- Últimas Notinhas -->
+          <div class="table-wrap">
+            <div class="table-head">
+              <span class="table-head-title">📄 Últimas Notinhas</span>
+              <button class="btn btn-ghost btn-sm" onclick="navigate('notinhas')">Ver todas</button>
+            </div>
+            <div style="overflow-x:auto;">
+              <table>
+                <thead><tr><th>#</th><th>Cliente</th><th>Piscineiro</th><th>Valor</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-light);">
+                    <div style="font-size:28px;margin-bottom:6px;">📋</div>
+                    Nenhuma notinha cadastrada
+                    <br><button class="btn btn-primary btn-sm" style="margin-top:10px;" onclick="navigate('nova-notinha')">➕ Nova Notinha</button>
+                  </td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Últimas Alterações -->
+          <div class="table-wrap">
+            <div class="table-head">
+              <span class="table-head-title">🕐 Últimas Alterações</span>
+              <button class="btn btn-ghost btn-sm" onclick="navigate('historico')">Ver histórico</button>
+            </div>
+            <div style="overflow-x:auto;">
+              <table>
+                <thead><tr><th>Usuário</th><th>Ação</th><th>Data</th><th>Registro</th></tr></thead>
+                <tbody>
+                  <tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text-light);">
+                    <div style="font-size:28px;margin-bottom:6px;">📋</div>
+                    Nenhuma alteração registrada
+                  </td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-title">💰 Resumo Financeiro</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0;">
+            <div class="fin-row" style="border-right:1px solid var(--border);padding:14px 20px;border-bottom:none;"><span class="fin-label">Total Faturado</span><span class="fin-val blue">R$ —</span></div>
+            <div class="fin-row" style="border-right:1px solid var(--border);padding:14px 20px;border-bottom:none;"><span class="fin-label">Total Recebido</span><span class="fin-val green">R$ —</span></div>
+            <div class="fin-row" style="border-right:1px solid var(--border);padding:14px 20px;border-bottom:none;"><span class="fin-label">Total Pendente</span><span class="fin-val">R$ —</span></div>
+            <div class="fin-row" style="border-right:1px solid var(--border);padding:14px 20px;border-bottom:none;"><span class="fin-label">Total Vencido</span><span class="fin-val red">R$ —</span></div>
+            <div class="fin-row" style="padding:14px 20px;border-bottom:none;"><span class="fin-label">Ticket Médio</span><span class="fin-val">R$ —</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== NOTINHAS ========== -->
+      <div class="page" id="page-notinhas">
+        <div class="page-header">
+          <div class="page-title">Notinhas em Aberto <small>Controle completo de cobranças</small></div>
+          <button class="btn btn-primary" onclick="navigate('nova-notinha')">➕ Nova Notinha</button>
+        </div>
+        <div class="cards-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));">
+          <div class="stat-card blue"><div class="stat-label">Total a Receber</div><div class="stat-value">R$ —</div><div class="stat-icon">💰</div></div>
+          <div class="stat-card red"><div class="stat-label">Total Vencido</div><div class="stat-value">R$ —</div><div class="stat-icon">⚠️</div></div>
+          <div class="stat-card amber"><div class="stat-label">A Vencer</div><div class="stat-value">R$ —</div><div class="stat-icon">⏳</div></div>
+          <div class="stat-card green"><div class="stat-label">Qtd. Notinhas</div><div class="stat-value sm">—</div><div class="stat-icon">📄</div></div>
+        </div>
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="setFilter(this)">Todas</button>
+          <button class="filter-btn" onclick="setFilter(this)">Em Aberto</button>
+          <button class="filter-btn" onclick="setFilter(this)">Vencidas</button>
+          <button class="filter-btn" onclick="setFilter(this)">Pagas</button>
+          <button class="filter-btn" onclick="setFilter(this)">Canceladas</button>
+          <div class="search-box"><span class="s-icon">🔍</span><input type="text" placeholder="Buscar cliente, piscineiro ou nº..."></div>
+        </div>
+        <div class="table-wrap" style="margin-bottom:24px;">
+          <div class="table-head"><span class="table-head-title">📄 Lista de Notinhas</span><button class="btn btn-ghost btn-sm">⬇ Exportar</button></div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>#</th><th>Cliente</th><th>Piscineiro</th><th>Valor</th><th>Data</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr></thead>
+              <tbody>
+                <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-light);">
+                  <div style="font-size:28px;margin-bottom:6px;">📋</div>
+                  Nenhuma notinha cadastrada ainda.
+                  <br><button class="btn btn-primary btn-sm" style="margin-top:10px;" onclick="navigate('nova-notinha')">➕ Cadastrar Notinha</button>
+                </td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="section-title">👤 Resumo por Piscineiro</div>
+        <div class="table-wrap">
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>Piscineiro</th><th>Em Aberto</th><th>Vencidas</th><th>Total</th></tr></thead>
+              <tbody><tr><td colspan="4" style="text-align:center;padding:30px;color:var(--text-light);">Nenhum dado disponível</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== PISCINEIROS & CLIENTES ========== -->
+      <div class="page" id="page-piscineiros">
+        <div class="page-header">
+          <div class="page-title">Piscineiros & Clientes <small>Gestão completa da sua rede</small></div>
+        </div>
+        <div class="cards-grid">
+          <div class="stat-card teal"><div class="stat-label">Total Piscineiros</div><div class="stat-value sm">—</div><div class="stat-icon">🏊</div></div>
+          <div class="stat-card blue"><div class="stat-label">Total Clientes</div><div class="stat-value sm">—</div><div class="stat-icon">👥</div></div>
+          <div class="stat-card green"><div class="stat-label">Total Vendido</div><div class="stat-value">R$ —</div><div class="stat-icon">💰</div></div>
+          <div class="stat-card indigo"><div class="stat-label">Ticket Médio</div><div class="stat-value">R$ —</div><div class="stat-icon">📊</div></div>
+        </div>
+        <div class="two-col" style="margin-bottom:24px;">
+          <div class="chart-box">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+              <div class="chart-title" style="margin-bottom:0;">🏆 Ranking Piscineiros</div>
+              <div style="display:flex;gap:4px;">
+                <button class="filter-btn active" style="padding:4px 10px;font-size:11px;" onclick="setFilter(this)">1M</button>
+                <button class="filter-btn" style="padding:4px 10px;font-size:11px;" onclick="setFilter(this)">3M</button>
+                <button class="filter-btn" style="padding:4px 10px;font-size:11px;" onclick="setFilter(this)">6M</button>
+                <button class="filter-btn" style="padding:4px 10px;font-size:11px;" onclick="setFilter(this)">Total</button>
+              </div>
+            </div>
+            <p style="font-size:13px;color:var(--text-light);text-align:center;padding:20px 0;">Cadastre piscineiros e realize vendas para ver o ranking</p>
+          </div>
+          <div class="chart-box">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+              <div class="chart-title" style="margin-bottom:0;">🥇 Ranking Clientes</div>
+              <div style="display:flex;gap:4px;">
+                <button class="filter-btn active" style="padding:4px 10px;font-size:11px;" onclick="setFilter(this)">1M</button>
+                <button class="filter-btn" style="padding:4px 10px;font-size:11px;" onclick="setFilter(this)">3M</button>
+                <button class="filter-btn" style="padding:4px 10px;font-size:11px;" onclick="setFilter(this)">6M</button>
+                <button class="filter-btn" style="padding:4px 10px;font-size:11px;" onclick="setFilter(this)">Total</button>
+              </div>
+            </div>
+            <p style="font-size:13px;color:var(--text-light);text-align:center;padding:20px 0;">Vincule clientes aos piscineiros para gerar o ranking</p>
+          </div>
+        </div>
+        <div class="section-title">🏊 Lista de Piscineiros</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap;">
+          <div class="search-box"><span class="s-icon">🔍</span><input type="text" placeholder="Buscar piscineiro..."></div>
+          <button class="filter-btn active" onclick="setFilter(this)">Ativos</button>
+          <button class="filter-btn" onclick="setFilter(this)">Inativos</button>
+          <button class="filter-btn" onclick="setFilter(this)">Todos</button>
+          <button class="btn btn-primary" onclick="openModal('modalNovoPiscineiro')">➕ Novo Piscineiro</button>
+        </div>
+        <div class="pool-cards-grid" id="piscineirosGrid">
+          <!-- Hydra (padrão) -->
+          <div class="pool-card" style="border:2px solid var(--pool-light);">
+            <div class="pool-avatar" style="background:linear-gradient(135deg,var(--pool-deeper),var(--pool-dark));">🌊</div>
+            <div class="pool-name">Hydra</div>
+            <div class="pool-info">🏪 Venda direta da loja</div>
+            <div class="pool-info"><span class="badge badge-active">● Ativo</span></div>
+            <div class="pool-actions">
+              <button class="btn btn-ghost btn-sm" onclick="navigate('perfil-piscineiro')">👁 Ver</button>
+            </div>
+          </div>
+          <div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--text-light);">
+            <div style="font-size:36px;margin-bottom:8px;">🏊</div>
+            <div style="font-size:14px;">Nenhum piscineiro cadastrado ainda</div>
+            <div style="font-size:12px;margin-top:4px;">Clique em "Novo Piscineiro" para começar</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== PERFIL PISCINEIRO ========== -->
+      <div class="page" id="page-perfil-piscineiro">
+        <button class="btn btn-ghost btn-sm" onclick="navigate('piscineiros')" style="margin-bottom:16px;">← Voltar</button>
+        <div class="profile-header-card">
+          <div class="profile-avatar-lg">🏊</div>
+          <div class="profile-info">
+            <h2>—</h2>
+            <p>📞 — &nbsp;|&nbsp; 💬 WhatsApp: —</p>
+            <p>📍 —</p>
+            <p style="margin-top:6px;font-size:12px;opacity:0.7;">—</p>
+          </div>
+          <div class="profile-actions">
+            <button class="btn btn-outline btn-sm" style="color:#fff;border-color:rgba(255,255,255,0.5);">✏️ Editar</button>
+            <button class="btn btn-ghost btn-sm" style="background:rgba(255,255,255,0.15);color:#fff;border-color:transparent;">⏸ Inativar</button>
+          </div>
+        </div>
+        <div class="cards-grid">
+          <div class="stat-card blue"><div class="stat-label">Total Comprado</div><div class="stat-value">R$ —</div></div>
+          <div class="stat-card green"><div class="stat-label">Total Pago</div><div class="stat-value">R$ —</div></div>
+          <div class="stat-card amber"><div class="stat-label">Em Aberto</div><div class="stat-value">R$ —</div></div>
+          <div class="stat-card red"><div class="stat-label">Total Vencido</div><div class="stat-value">R$ —</div></div>
+          <div class="stat-card indigo"><div class="stat-label">Ticket Médio</div><div class="stat-value">R$ —</div></div>
+        </div>
+        <div class="tab-row">
+          <button class="tab-btn active" onclick="setTab(this,'ppTabNotinhas')">📄 Em Aberto</button>
+          <button class="tab-btn" onclick="setTab(this,'ppTabVencidas')">⚠️ Vencidas</button>
+          <button class="tab-btn" onclick="setTab(this,'ppTabPagas')">✅ Pagas</button>
+          <button class="tab-btn" onclick="setTab(this,'ppTabClientes')">👥 Clientes Vinculados</button>
+        </div>
+        <div id="ppTabNotinhas">
+          <div class="table-wrap">
+            <div style="overflow-x:auto;"><table>
+              <thead><tr><th>#</th><th>Cliente</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr></thead>
+              <tbody><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-light);">Nenhuma notinha em aberto</td></tr></tbody>
+            </table></div>
+          </div>
+        </div>
+        <div id="ppTabVencidas" style="display:none;">
+          <div class="table-wrap">
+            <div style="overflow-x:auto;"><table>
+              <thead><tr><th>#</th><th>Cliente</th><th>Valor</th><th>Vencimento</th><th>Dias Atraso</th><th>Ações</th></tr></thead>
+              <tbody><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-light);">Nenhuma notinha vencida</td></tr></tbody>
+            </table></div>
+          </div>
+        </div>
+        <div id="ppTabPagas" style="display:none;">
+          <div class="table-wrap">
+            <div style="overflow-x:auto;"><table>
+              <thead><tr><th>#</th><th>Cliente</th><th>Valor</th><th>Data Pagamento</th><th>Pago por</th></tr></thead>
+              <tbody><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-light);">Nenhuma notinha paga</td></tr></tbody>
+            </table></div>
+          </div>
+        </div>
+        <div id="ppTabClientes" style="display:none;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <div class="search-box"><span class="s-icon">🔍</span><input type="text" placeholder="Buscar cliente..."></div>
+            <button class="btn btn-primary btn-sm" onclick="openModal('modalNovoCliente')">➕ Novo Cliente</button>
+          </div>
+          <div class="table-wrap">
+            <div style="overflow-x:auto;"><table>
+              <thead><tr><th>Nome</th><th>Telefone</th><th>Última Compra</th><th>Total Comprado</th><th>Status</th><th>Ações</th></tr></thead>
+              <tbody><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-light);">Nenhum cliente vinculado</td></tr></tbody>
+            </table></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== PERFIL CLIENTE ========== -->
+      <div class="page" id="page-perfil-cliente">
+        <button class="btn btn-ghost btn-sm" onclick="navigate('piscineiros')" style="margin-bottom:16px;">← Voltar</button>
+        <div class="profile-header-card">
+          <div class="profile-avatar-lg">👤</div>
+          <div class="profile-info">
+            <h2>—</h2>
+            <p>📞 — &nbsp;|&nbsp; 💬 WhatsApp: —</p>
+            <p>📍 —</p>
+            <p style="margin-top:6px;font-size:12px;opacity:0.7;">Piscineiro responsável: — &nbsp;|&nbsp; Status: <span class="badge badge-active">Ativo</span></p>
+          </div>
+          <div class="profile-actions">
+            <button class="btn btn-outline btn-sm" style="color:#fff;border-color:rgba(255,255,255,0.5);">✏️ Editar</button>
+            <button class="btn btn-ghost btn-sm" style="background:rgba(255,255,255,0.15);color:#fff;border-color:transparent;">⏸ Inativar</button>
+          </div>
+        </div>
+        <div class="cards-grid">
+          <div class="stat-card blue"><div class="stat-label">Total Comprado</div><div class="stat-value">R$ —</div></div>
+          <div class="stat-card teal"><div class="stat-label">Qtd. Compras</div><div class="stat-value sm">—</div></div>
+          <div class="stat-card green"><div class="stat-label">Ticket Médio</div><div class="stat-value">R$ —</div></div>
+          <div class="stat-card amber"><div class="stat-label">Última Compra</div><div class="stat-value sm" style="font-size:14px;">—</div></div>
+          <div class="stat-card indigo"><div class="stat-label">Notinhas Abertas</div><div class="stat-value sm">—</div></div>
+        </div>
+        <div class="two-col">
+          <div>
+            <div class="section-title">🛒 Histórico de Compras</div>
+            <div class="table-wrap">
+              <div style="overflow-x:auto;"><table>
+                <thead><tr><th>Data</th><th>Nº Notinha</th><th>Valor</th><th>Status</th><th>Ações</th></tr></thead>
+                <tbody><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-light);">Sem histórico</td></tr></tbody>
+              </table></div>
+            </div>
+          </div>
+          <div>
+            <div class="section-title">📦 Produto Mais Comprado</div>
+            <div class="table-wrap">
+              <div style="overflow-x:auto;"><table>
+                <thead><tr><th>Produto</th><th>Qtd.</th><th>Total</th></tr></thead>
+                <tbody><tr><td colspan="3" style="text-align:center;padding:30px;color:var(--text-light);">Sem dados</td></tr></tbody>
+              </table></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== ORÇAMENTOS ========== -->
+      <div class="page" id="page-orcamentos">
+        <div class="page-title" style="margin-bottom:28px;">Gerador de Orçamentos <small style="font-size:13px;font-weight:400;color:var(--text-light);display:block;margin-top:4px;">Integrado com o sistema Hydra Piscinas</small></div>
+        <div class="orcamento-landing">
+          <div class="orcamento-icon">📋</div>
+          <div style="font-size:26px;font-weight:700;margin-bottom:8px;">Gerador de Orçamentos</div>
+          <div style="font-size:15px;color:var(--text-light);max-width:400px;margin-bottom:28px;">Acesse o sistema de orçamentos com cadastro de produtos, cálculo automático, descontos e geração de PDF.</div>
+          <a class="btn-orcamento" href="http://localhost:3000" target="_blank">🚀 Acessar Gerador de Orçamentos</a>
+          <div style="margin-top:16px;font-size:13px;color:var(--text-light);">
+            Rodando em <code style="background:#e2edf7;padding:2px 8px;border-radius:4px;">http://localhost:3000</code>
+          </div>
+          <div style="margin-top:24px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:18px 24px;max-width:380px;width:100%;">
+            <div style="font-size:13px;font-weight:600;margin-bottom:10px;">🔗 Acesso em Rede Local</div>
+            <div style="display:flex;gap:8px;">
+              <input type="text" id="ipInput" value="localhost" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;width:100%;outline:none;">
+              <button class="btn btn-primary btn-sm" onclick="abrirOrcamento()">🔗 Ir</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== NOVA NOTINHA ========== -->
+      <div class="page" id="page-nova-notinha">
+        <div class="page-header">
+          <div class="page-title">Nova Notinha <small>Registre uma cobrança</small></div>
+        </div>
+        <div class="form-card">
+          <div class="form-row">
+            <div class="form-group"><label>👤 Cliente *</label><select><option value="">Selecione o cliente...</option></select></div>
+            <div class="form-group"><label>🏊 Piscineiro *</label><select><option value="">Selecione o piscineiro...</option><option value="hydra">Hydra (venda direta)</option></select></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>📅 Data *</label><input type="date"></div>
+            <div class="form-group"><label>⏳ Prazo de Pagamento *</label><input type="date"></div>
+          </div>
+          <div class="section-title" style="margin-top:8px;">📦 Produtos</div>
+          <div class="products-table-wrap" style="margin-bottom:14px;">
+            <div style="overflow-x:auto;"><table>
+              <thead><tr><th>#</th><th>Produto / Descrição</th><th>Qtd.</th><th>Valor Unit.</th><th>Total</th><th></th></tr></thead>
+              <tbody id="produtosBody">
+                <tr id="prod-1">
+                  <td style="color:var(--text-light);">1</td>
+                  <td><input type="text" placeholder="Nome do produto..."></td>
+                  <td><input type="number" min="1" value="1" style="width:60px;" oninput="calcTotal(1)"></td>
+                  <td><input type="text" placeholder="0,00" style="width:90px;" id="vu-1" oninput="calcTotal(1)"></td>
+                  <td><strong id="total-1" style="color:var(--pool-dark);">R$ 0,00</strong></td>
+                  <td><button class="btn btn-danger btn-sm" onclick="removerProduto('prod-1')">✕</button></td>
+                </tr>
+              </tbody>
+            </table></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+            <button class="btn btn-ghost btn-sm" onclick="addProduto()">➕ Adicionar Produto</button>
+            <div style="font-size:16px;font-weight:700;color:var(--pool-dark);">Total: <span id="totalGeral">R$ 0,00</span></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>💬 Observações</label>
+              <textarea placeholder="Informações adicionais..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>📸 Foto da Notinha</label>
+              <div class="upload-area" onclick="document.getElementById('fotoInput').click()">
+                <div class="upload-icon">📸</div>
+                <div style="font-size:14px;font-weight:600;">Clique para anexar foto</div>
+                <div style="font-size:12px;margin-top:4px;">JPG, PNG ou PDF · Máx 10MB</div>
+                <input type="file" id="fotoInput" accept="image/*,.pdf" style="display:none;" onchange="mostrarFoto(this)">
+              </div>
+              <div id="fotoPreview" style="display:none;margin-top:10px;"></div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:8px;">
+            <button class="btn btn-ai" onclick="lerComIA()">🤖 Ler Notinha com IA</button>
+            <div style="display:flex;gap:10px;">
+              <button class="btn btn-ghost" onclick="navigate('notinhas')">✕ Cancelar</button>
+              <button class="btn btn-primary">💾 Salvar Notinha</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== INTELIGÊNCIA ========== -->
+      <div class="page" id="page-inteligencia">
+        <div class="page-header">
+          <div class="page-title">Inteligência de Vendas <small>Análise e insights do negócio</small></div>
+          <button class="btn btn-primary btn-sm">📊 Exportar</button>
+        </div>
+        <div class="cards-grid">
+          <div class="stat-card blue"><div class="stat-label">Produto Mais Vendido</div><div class="stat-value sm" style="font-size:15px;">—</div><div class="stat-icon">📦</div></div>
+          <div class="stat-card green"><div class="stat-label">Mais Lucrativo</div><div class="stat-value sm" style="font-size:15px;">—</div><div class="stat-icon">💎</div></div>
+          <div class="stat-card teal"><div class="stat-label">Piscineiro Destaque</div><div class="stat-value sm" style="font-size:15px;">—</div><div class="stat-icon">🏆</div></div>
+          <div class="stat-card indigo"><div class="stat-label">Cliente Destaque</div><div class="stat-value sm" style="font-size:15px;">—</div><div class="stat-icon">⭐</div></div>
+        </div>
+        <div class="three-col" style="margin-bottom:24px;">
+          <div class="chart-box">
+            <div class="chart-title">📅 Vendas por Mês</div>
+            <div class="chart-bars" style="height:120px;">
+              <div class="bar-wrap"><div class="bar" style="height:30%;background:#e2edf7;"></div><div class="bar-label">Jan</div></div>
+              <div class="bar-wrap"><div class="bar" style="height:30%;background:#e2edf7;"></div><div class="bar-label">Fev</div></div>
+              <div class="bar-wrap"><div class="bar" style="height:30%;background:#e2edf7;"></div><div class="bar-label">Mar</div></div>
+              <div class="bar-wrap"><div class="bar" style="height:30%;background:#e2edf7;"></div><div class="bar-label">Abr</div></div>
+              <div class="bar-wrap"><div class="bar" style="height:30%;background:#e2edf7;"></div><div class="bar-label">Mai</div></div>
+              <div class="bar-wrap"><div class="bar" style="height:30%;background:#e2edf7;"></div><div class="bar-label">Jun</div></div>
+            </div>
+            <p style="font-size:11px;color:var(--text-light);margin-top:8px;text-align:center;">Aguardando dados</p>
+          </div>
+          <div class="chart-box"><div class="chart-title">📦 Vendas por Produto</div><p style="font-size:13px;color:var(--text-light);padding:40px 0;text-align:center;">Cadastre produtos nas notinhas</p></div>
+          <div class="chart-box"><div class="chart-title">🏊 Vendas por Piscineiro</div><p style="font-size:13px;color:var(--text-light);padding:40px 0;text-align:center;">Cadastre piscineiros e vincule vendas</p></div>
+        </div>
+        <div class="three-col" style="margin-bottom:24px;">
+          <div class="table-wrap">
+            <div class="table-head"><span class="table-head-title">📦 Top 10 Produtos</span></div>
+            <table><thead><tr><th>#</th><th>Produto</th><th>Total</th></tr></thead>
+            <tbody><tr><td colspan="3" style="text-align:center;padding:24px;color:var(--text-light);">Sem dados</td></tr></tbody></table>
+          </div>
+          <div class="table-wrap">
+            <div class="table-head"><span class="table-head-title">🏊 Top 10 Piscineiros</span></div>
+            <table><thead><tr><th>#</th><th>Nome</th><th>Total</th></tr></thead>
+            <tbody><tr><td colspan="3" style="text-align:center;padding:24px;color:var(--text-light);">Sem dados</td></tr></tbody></table>
+          </div>
+          <div class="table-wrap">
+            <div class="table-head"><span class="table-head-title">👥 Top 10 Clientes</span></div>
+            <table><thead><tr><th>#</th><th>Nome</th><th>Total</th></tr></thead>
+            <tbody><tr><td colspan="3" style="text-align:center;padding:24px;color:var(--text-light);">Sem dados</td></tr></tbody></table>
+          </div>
+        </div>
+        <div class="section-title">🔔 Alertas de Inatividade</div>
+        <div class="three-col">
+          <div>
+            <div class="agenda-tag tag-today" style="margin-bottom:10px;">⚠️ Sem compras há 30 dias</div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;color:var(--text-light);font-size:13px;">Nenhum alerta</div>
+          </div>
+          <div>
+            <div class="agenda-tag tag-soon" style="margin-bottom:10px;">🟠 Sem compras há 60 dias</div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;color:var(--text-light);font-size:13px;">Nenhum alerta</div>
+          </div>
+          <div>
+            <div class="agenda-tag tag-late" style="margin-bottom:10px;">🔴 Sem compras há 90 dias</div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;color:var(--text-light);font-size:13px;">Nenhum alerta</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== AGENDA ========== -->
+      <div class="page" id="page-agenda">
+        <div class="page-header">
+          <div class="page-title">Agenda de Cobranças <small>Controle seus recebimentos</small></div>
+          <button class="btn btn-primary btn-sm">📤 Enviar Lembretes</button>
+        </div>
+        <div class="cards-grid">
+          <div class="stat-card blue"><div class="stat-label">Vencem Hoje</div><div class="stat-value sm">—</div><div class="stat-icon">📅</div></div>
+          <div class="stat-card amber"><div class="stat-label">Próximos 7 Dias</div><div class="stat-value sm">—</div><div class="stat-icon">⏳</div></div>
+          <div class="stat-card red"><div class="stat-label">Em Atraso</div><div class="stat-value sm">—</div><div class="stat-icon">🚨</div></div>
+          <div class="stat-card green"><div class="stat-label">Total em Cobrança</div><div class="stat-value">R$ —</div><div class="stat-icon">💰</div></div>
+        </div>
+        <div class="agenda-section">
+          <div class="agenda-tag tag-today">📅 Vencem Hoje</div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px;text-align:center;color:var(--text-light);font-size:14px;">
+            <div style="font-size:28px;margin-bottom:6px;">✅</div>Nenhum vencimento para hoje
+          </div>
+        </div>
+        <div class="agenda-section">
+          <div class="agenda-tag tag-soon">⏳ Próximos 7 Dias</div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px;text-align:center;color:var(--text-light);font-size:14px;">
+            <div style="font-size:28px;margin-bottom:6px;">📋</div>Nenhum vencimento nos próximos 7 dias
+          </div>
+        </div>
+        <div class="agenda-section">
+          <div class="agenda-tag tag-late">🚨 Em Atraso</div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px;text-align:center;color:var(--text-light);font-size:14px;">
+            <div style="font-size:28px;margin-bottom:6px;">🎉</div>Nenhuma cobrança em atraso
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== HISTÓRICO ========== -->
+      <div class="page" id="page-historico">
+        <div class="page-header">
+          <div class="page-title">Histórico <small>Registro completo de atividades</small></div>
+          <button class="btn btn-ghost btn-sm">⬇ Exportar</button>
+        </div>
+
+        <div class="tab-row">
+          <button class="tab-btn active" onclick="setTab(this,'histTabAlteracoes')">🕐 Histórico de Alterações</button>
+          <button class="tab-btn" onclick="setTab(this,'histTabPagas')">✅ Notinhas Pagas</button>
+        </div>
+
+        <!-- Tab Alterações -->
+        <div id="histTabAlteracoes">
+          <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center;">
+            <div class="search-box"><span class="s-icon">🔍</span><input type="text" placeholder="Buscar por usuário, ação..."></div>
+            <select style="padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;background:#fff;">
+              <option>Todos os tipos</option>
+              <option>Criação</option>
+              <option>Edição</option>
+              <option>Exclusão</option>
+              <option>Pagamento</option>
+            </select>
+            <input type="date" style="padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;background:#fff;">
+          </div>
+          <div class="history-log">
+            <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:40px;text-align:center;color:var(--text-light);">
+              <div style="font-size:40px;margin-bottom:10px;">📚</div>
+              <div style="font-size:15px;font-weight:600;">Nenhum registro no histórico</div>
+              <div style="font-size:13px;margin-top:4px;">As ações do sistema serão registradas automaticamente aqui</div>
+              <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px;max-width:420px;margin-left:auto;margin-right:auto;text-align:left;">
+                <div class="history-item">
+                  <div class="history-dot create">➕</div>
+                  <div><div class="history-text"><strong>Paulo</strong> criou a notinha <strong>#152</strong> — Cliente: João Silva · R$ 180,00</div><div class="history-time">Exemplo — aguardando dados reais</div></div>
+                </div>
+                <div class="history-item">
+                  <div class="history-dot edit">✏️</div>
+                  <div><div class="history-text"><strong>Rogerio</strong> editou o cliente <strong>João Silva</strong> — Telefone atualizado</div><div class="history-time">Exemplo — aguardando dados reais</div></div>
+                </div>
+                <div class="history-item">
+                  <div class="history-dot pay">💰</div>
+                  <div><div class="history-text"><strong>Jemima</strong> marcou a notinha <strong>#148</strong> como paga — R$ 350,00</div><div class="history-time">Exemplo — aguardando dados reais</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab Notinhas Pagas -->
+        <div id="histTabPagas" style="display:none;">
+          <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center;">
+            <div class="search-box"><span class="s-icon">🔍</span><input type="text" placeholder="Buscar cliente, piscineiro..."></div>
+            <select style="padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;background:#fff;" id="filtroMes">
+              <option value="">Todos os meses</option>
+              <option>Janeiro</option><option>Fevereiro</option><option>Março</option>
+              <option>Abril</option><option>Maio</option><option>Junho</option>
+              <option>Julho</option><option>Agosto</option><option>Setembro</option>
+              <option>Outubro</option><option>Novembro</option><option>Dezembro</option>
+            </select>
+            <select style="padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;background:#fff;" id="filtroAno">
+              <option>2025</option><option>2024</option><option>2023</option>
+            </select>
+            <input type="date" style="padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;background:#fff;" placeholder="De">
+            <input type="date" style="padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;background:#fff;" placeholder="Até">
+          </div>
+          <div class="table-wrap">
+            <div class="table-head">
+              <span class="table-head-title">✅ Notinhas Pagas</span>
+              <button class="btn btn-ghost btn-sm">⬇ Exportar</button>
+            </div>
+            <div style="overflow-x:auto;"><table>
+              <thead><tr><th>#</th><th>Cliente</th><th>Piscineiro</th><th>Valor</th><th>Data Pagamento</th><th>Pago por</th><th>Ações</th></tr></thead>
+              <tbody><tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-light);">
+                <div style="font-size:32px;margin-bottom:8px;">✅</div>Nenhuma notinha paga registrada
+              </td></tr></tbody>
+            </table></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== CONFIGURAÇÕES ========== -->
+      <div class="page" id="page-configuracoes">
+        <div class="page-header">
+          <div class="page-title">Configurações <small>Administração do sistema</small></div>
+        </div>
+
+        <!-- USUÁRIOS -->
+        <div class="config-section">
+          <div class="config-header">
+            <div class="config-header-title">👥 Usuários do Sistema</div>
+            <button class="btn btn-primary btn-sm" onclick="openModal('modalNovoUsuario')">➕ Novo Usuário</button>
+          </div>
+          <div class="config-body">
+            <!-- Usuário demo: Paulo (Admin) -->
+            <div class="user-card">
+              <div class="user-card-av">P</div>
+              <div class="user-card-info">
+                <div class="user-card-name">Paulo</div>
+                <div class="user-card-meta">👤 paulo &nbsp;·&nbsp; <span class="badge role-admin" style="font-size:10px;padding:2px 8px;">Administrador</span> &nbsp;·&nbsp; <span class="badge badge-active">Ativo</span></div>
+              </div>
+              <div class="action-group">
+                <button class="btn btn-ghost btn-sm" onclick="openModal('modalEditUsuario')">✏️ Editar</button>
+                <button class="btn btn-warning btn-sm">⏸ Inativar</button>
+              </div>
+            </div>
+            <div class="user-card">
+              <div class="user-card-av" style="background:linear-gradient(135deg,var(--success),#059669);">R</div>
+              <div class="user-card-info">
+                <div class="user-card-name">Rogerio</div>
+                <div class="user-card-meta">👤 rogerio &nbsp;·&nbsp; <span class="badge role-user" style="font-size:10px;padding:2px 8px;">Usuário</span> &nbsp;·&nbsp; <span class="badge badge-active">Ativo</span></div>
+              </div>
+              <div class="action-group">
+                <button class="btn btn-ghost btn-sm" onclick="openModal('modalEditUsuario')">✏️ Editar</button>
+                <button class="btn btn-warning btn-sm">⏸ Inativar</button>
+              </div>
+            </div>
+            <div class="user-card">
+              <div class="user-card-av" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);">J</div>
+              <div class="user-card-info">
+                <div class="user-card-name">Jemima</div>
+                <div class="user-card-meta">👤 jemima &nbsp;·&nbsp; <span class="badge role-user" style="font-size:10px;padding:2px 8px;">Usuário</span> &nbsp;·&nbsp; <span class="badge badge-active">Ativo</span></div>
+              </div>
+              <div class="action-group">
+                <button class="btn btn-ghost btn-sm" onclick="openModal('modalEditUsuario')">✏️ Editar</button>
+                <button class="btn btn-warning btn-sm">⏸ Inativar</button>
+              </div>
+            </div>
+            <p style="font-size:12px;color:var(--text-light);margin-top:10px;">⚠️ Usuários inativos não conseguem acessar o sistema. Registros nunca são excluídos.</p>
+          </div>
+        </div>
+
+        <!-- EMPRESA -->
+        <div class="config-section">
+          <div class="config-header">
+            <div class="config-header-title">🏢 Dados da Empresa</div>
+            <button class="btn btn-ghost btn-sm">✏️ Editar</button>
+          </div>
+          <div class="config-body">
+            <div class="form-row">
+              <div class="form-group"><label>Nome da Empresa</label><input type="text" value="Hydra Piscinas" placeholder="Nome da empresa..."></div>
+              <div class="form-group"><label>CNPJ / CPF</label><input type="text" placeholder="00.000.000/0000-00"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Telefone</label><input type="tel" placeholder="(00) 00000-0000"></div>
+              <div class="form-group"><label>WhatsApp Comercial</label><input type="tel" placeholder="(00) 00000-0000"></div>
+            </div>
+            <div class="form-group"><label>Endereço</label><input type="text" placeholder="Rua, número, bairro, cidade..."></div>
+            <div class="form-group">
+              <label>🖼 Logo da Hydra</label>
+              <div class="upload-area" style="padding:20px;" onclick="document.getElementById('logoInput').click()">
+                <div style="font-size:24px;margin-bottom:4px;">🖼</div>
+                <div style="font-size:13px;font-weight:600;">Clique para enviar a logo</div>
+                <div style="font-size:11px;margin-top:2px;color:var(--text-light);">PNG, JPG · Máx 5MB · Recomendado 300x100px</div>
+                <input type="file" id="logoInput" accept="image/*" style="display:none;">
+              </div>
+            </div>
+            <button class="btn btn-primary">💾 Salvar Dados</button>
+          </div>
+        </div>
+
+        <!-- COBRANÇAS -->
+        <div class="config-section">
+          <div class="config-header">
+            <div class="config-header-title">💰 Configurações de Cobranças</div>
+          </div>
+          <div class="config-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label>⏳ Prazo Padrão das Notinhas (dias)</label>
+                <input type="number" value="30" min="1" max="365" placeholder="30">
+                <p style="font-size:12px;color:var(--text-light);margin-top:5px;">Prazo padrão preenchido automaticamente ao criar uma nova notinha.</p>
+              </div>
+              <div class="form-group">
+                <label>🔔 Alertar vencimento com antecedência de (dias)</label>
+                <input type="number" value="3" min="0" max="30">
+              </div>
+            </div>
+            <button class="btn btn-primary">💾 Salvar Configurações</button>
+          </div>
+        </div>
+
+        <!-- BACKUP -->
+        <div class="config-section">
+          <div class="config-header">
+            <div class="config-header-title">💾 Backup e Restauração</div>
+          </div>
+          <div class="config-body">
+            <div class="two-col">
+              <div style="background:#f0f7ff;border-radius:10px;padding:20px;text-align:center;">
+                <div style="font-size:40px;margin-bottom:8px;">📥</div>
+                <div style="font-size:15px;font-weight:600;margin-bottom:4px;">Fazer Backup</div>
+                <div style="font-size:12px;color:var(--text-light);margin-bottom:14px;">Exportar todos os dados do sistema para um arquivo de backup.</div>
+                <button class="btn btn-primary">⬇ Fazer Backup Agora</button>
+              </div>
+              <div style="background:#f0f7ff;border-radius:10px;padding:20px;text-align:center;">
+                <div style="font-size:40px;margin-bottom:8px;">📤</div>
+                <div style="font-size:15px;font-weight:600;margin-bottom:4px;">Restaurar Backup</div>
+                <div style="font-size:12px;color:var(--text-light);margin-bottom:14px;">Importar dados a partir de um arquivo de backup anterior.</div>
+                <button class="btn btn-outline">⬆ Restaurar Backup</button>
+              </div>
+            </div>
+            <div style="background:#fef3c7;border-radius:8px;padding:12px 16px;margin-top:14px;font-size:13px;color:#92400e;">
+              ⚠️ A restauração substitui todos os dados atuais. Faça sempre um backup antes de restaurar. Disponível após integração com Node.js + SQLite.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- TOAST -->
+<div id="toast">✅ <span id="toastMsg"></span></div>
+
+<!-- ====== MODAIS ====== -->
+
+<!-- Modal Novo Piscineiro -->
+<div class="modal" id="modalNovoPiscineiro">
+  <div class="modal-bg" onclick="closeModal('modalNovoPiscineiro')"></div>
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">🏊 Novo Piscineiro</div>
+      <button class="modal-close" onclick="closeModal('modalNovoPiscineiro')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>Nome Completo *</label><input type="text" placeholder="Nome do piscineiro..."></div>
+        <div class="form-group"><label>Telefone *</label><input type="tel" placeholder="(00) 00000-0000"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>WhatsApp</label><input type="tel" placeholder="(00) 00000-0000"></div>
+        <div class="form-group"><label>Cidade</label><input type="text" placeholder="Cidade..."></div>
+      </div>
+      <div class="form-group"><label>Endereço</label><input type="text" placeholder="Rua, número, bairro..."></div>
+      <div class="form-group"><label>Status</label>
+        <select><option value="ativo">✅ Ativo</option><option value="inativo">⏸ Inativo</option></select>
+      </div>
+      <div class="form-group"><label>Observações</label><textarea placeholder="Notas..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modalNovoPiscineiro')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('modalNovoPiscineiro');showToast('Piscineiro salvo com sucesso!')">💾 Salvar Piscineiro</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Novo Cliente -->
+<div class="modal" id="modalNovoCliente">
+  <div class="modal-bg" onclick="closeModal('modalNovoCliente')"></div>
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">👤 Novo Cliente</div>
+      <button class="modal-close" onclick="closeModal('modalNovoCliente')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>Nome Completo *</label><input type="text" placeholder="Nome do cliente..."></div>
+        <div class="form-group"><label>Telefone *</label><input type="tel" placeholder="(00) 00000-0000"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>WhatsApp</label><input type="tel" placeholder="(00) 00000-0000"></div>
+        <div class="form-group"><label>Piscineiro Responsável *</label>
+          <select><option value="hydra">🌊 Hydra (venda direta)</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label>Endereço</label><input type="text" placeholder="Rua, número, bairro..."></div>
+      <div class="form-group"><label>Status</label>
+        <select><option value="ativo">✅ Ativo</option><option value="inativo">⏸ Inativo</option></select>
+      </div>
+      <div class="form-group"><label>Observações</label><textarea placeholder="Notas..."></textarea></div>
+      <div style="background:#f0f7ff;border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text-mid);">
+        ℹ️ Se nenhum piscineiro for selecionado, o cliente será vinculado automaticamente à <strong>Hydra</strong>.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modalNovoCliente')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('modalNovoCliente');showToast('Cliente salvo com sucesso!')">💾 Salvar Cliente</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Novo Usuário -->
+<div class="modal" id="modalNovoUsuario">
+  <div class="modal-bg" onclick="closeModal('modalNovoUsuario')"></div>
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">👤 Novo Usuário</div>
+      <button class="modal-close" onclick="closeModal('modalNovoUsuario')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>Nome *</label><input type="text" placeholder="Nome do usuário..."></div>
+        <div class="form-group"><label>Login (usuário) *</label><input type="text" placeholder="nome.sobrenome"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Senha *</label><input type="password" placeholder="Mínimo 6 caracteres"></div>
+        <div class="form-group"><label>Confirmar Senha *</label><input type="password" placeholder="Repita a senha"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Tipo de Acesso *</label>
+          <select>
+            <option value="admin">👑 Administrador — acesso total</option>
+            <option value="user">👤 Usuário — acesso padrão</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Status</label>
+          <select><option value="ativo">✅ Ativo</option><option value="inativo">⏸ Inativo</option></select>
+        </div>
+      </div>
+      <div style="background:#f0f7ff;border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text-mid);">
+        👑 <strong>Administrador:</strong> acesso completo incluindo configurações e exclusões.<br>
+        👤 <strong>Usuário:</strong> pode criar e visualizar notinhas, clientes e piscineiros.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modalNovoUsuario')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('modalNovoUsuario');showToast('Usuário criado com sucesso!')">💾 Criar Usuário</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Usuário -->
+<div class="modal" id="modalEditUsuario">
+  <div class="modal-bg" onclick="closeModal('modalEditUsuario')"></div>
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">✏️ Editar Usuário</div>
+      <button class="modal-close" onclick="closeModal('modalEditUsuario')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>Nome</label><input type="text" value="Paulo"></div>
+        <div class="form-group"><label>Login</label><input type="text" value="paulo"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Nova Senha</label><input type="password" placeholder="Deixe em branco para manter"></div>
+        <div class="form-group"><label>Tipo de Acesso</label>
+          <select><option value="admin" selected>👑 Administrador</option><option value="user">👤 Usuário</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modalEditUsuario')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('modalEditUsuario');showToast('Usuário atualizado!')">💾 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal IA -->
+<div class="modal" id="modalIA">
+  <div class="modal-bg" onclick="closeModal('modalIA')"></div>
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">🤖 Ler Notinha com IA</div>
+      <button class="modal-close" onclick="closeModal('modalIA')">✕</button>
+    </div>
+    <div class="modal-body" style="text-align:center;">
+      <div style="font-size:48px;margin-bottom:14px;">🤖</div>
+      <div style="font-size:16px;font-weight:600;margin-bottom:8px;">Leitura de Notinha por IA</div>
+      <div style="font-size:13px;color:var(--text-light);margin-bottom:20px;">Extrai automaticamente produtos, quantidades e valores da foto da notinha.</div>
+      <div style="background:#f0f7ff;border-radius:var(--radius);padding:16px;font-size:13px;color:var(--text-mid);margin-bottom:16px;">
+        📸 Anexe a foto da notinha primeiro, depois clique em "Processar com IA"
+      </div>
+      <div style="display:inline-flex;align-items:center;gap:8px;background:#fef3c7;border-radius:8px;padding:8px 16px;font-size:12px;color:#92400e;">
+        ⚡ Disponível após integração com backend Node.js
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modalIA')">Fechar</button>
+      <button class="btn btn-ai" disabled style="opacity:0.6;">🤖 Processar com IA</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ====== USUÁRIOS DEMO ======
+const USERS = [
+  { user:'paulo',   pass:'hydra123', name:'Paulo',  role:'admin', initial:'P' },
+  { user:'rogerio', pass:'hydra123', name:'Rogerio', role:'user',  initial:'R' },
+  { user:'jemima',  pass:'hydra123', name:'Jemima', role:'user',  initial:'J' },
+];
+let currentUser = null;
+
+// ====== LOGIN ======
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim().toLowerCase();
+  const p = document.getElementById('loginPass').value;
+  const found = USERS.find(x => x.user === u && x.pass === p);
+  if (!found) {
+    document.getElementById('loginError').style.display='block';
+    document.getElementById('loginPass').value='';
+    return;
+  }
+  document.getElementById('loginError').style.display='none';
+  currentUser = found;
+  // Update UI with user info
+  document.getElementById('headerName').textContent = found.name;
+  document.getElementById('headerRole').textContent = found.role === 'admin' ? 'Administrador' : 'Usuário';
+  document.getElementById('headerRole').className = 'header-role-badge ' + (found.role==='admin' ? 'role-admin' : 'role-user');
+  document.getElementById('avatarInitial').textContent = found.initial;
+  document.getElementById('sidebarAv').textContent = found.initial;
+  document.getElementById('sidebarName').textContent = found.name;
+  document.getElementById('sidebarRole').textContent = found.role === 'admin' ? '👑 Administrador' : '👤 Usuário';
+  // Show/hide config for non-admin
+  document.querySelectorAll('.admin-only').forEach(el => {
+    el.style.display = found.role==='admin' ? '' : 'none';
+  });
+  // Transition
+  document.getElementById('loginScreen').style.opacity='0';
+  document.getElementById('loginScreen').style.transition='opacity 0.4s';
+  setTimeout(() => {
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('app').style.display='flex';
+    navigate('dashboard');
+  }, 400);
+}
+
+function doLogout() {
+  closeAvatarMenu();
+  currentUser = null;
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+  document.getElementById('app').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('loginScreen').style.opacity='1';
+}
+
+// ====== AVATAR MENU ======
+function toggleAvatarMenu() {
+  document.getElementById('avatarMenu').classList.toggle('open');
+}
+function closeAvatarMenu() {
+  document.getElementById('avatarMenu').classList.remove('open');
+}
+document.addEventListener('click', function(e) {
+  if (!document.getElementById('avatarBtn').contains(e.target)) {
+    closeAvatarMenu();
+  }
+});
+
+// ====== NAVIGATION ======
+const pages = {
+  'dashboard':         { el:'page-dashboard',         title:'🏠 Dashboard' },
+  'notinhas':          { el:'page-notinhas',           title:'📄 Notinhas em Aberto' },
+  'piscineiros':       { el:'page-piscineiros',        title:'🏊 Piscineiros & Clientes' },
+  'perfil-piscineiro': { el:'page-perfil-piscineiro',  title:'🏊 Perfil do Piscineiro' },
+  'perfil-cliente':    { el:'page-perfil-cliente',     title:'👤 Perfil do Cliente' },
+  'orcamentos':        { el:'page-orcamentos',         title:'📋 Gerador de Orçamentos' },
+  'nova-notinha':      { el:'page-nova-notinha',       title:'➕ Nova Notinha' },
+  'inteligencia':      { el:'page-inteligencia',       title:'📊 Inteligência de Vendas' },
+  'agenda':            { el:'page-agenda',             title:'📅 Agenda de Cobranças' },
+  'historico':         { el:'page-historico',          title:'📚 Histórico' },
+  'configuracoes':     { el:'page-configuracoes',      title:'⚙️ Configurações' },
+};
+const navMap = {
+  'dashboard':'dashboard','notinhas':'notinhas','piscineiros':'piscineiros',
+  'perfil-piscineiro':'piscineiros','perfil-cliente':'piscineiros',
+  'orcamentos':'orcamentos','nova-notinha':'nova-notinha',
+  'inteligencia':'inteligencia','agenda':'agenda',
+  'historico':'historico','configuracoes':'configuracoes'
+};
+
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const p = pages[page];
+  if (!p) return;
+  document.getElementById(p.el).classList.add('active');
+  // Header title
+  const parts = p.title.split(' ');
+  document.getElementById('headerTitle').innerHTML = parts[0] + ' <span>' + parts.slice(1).join(' ') + '</span>';
+  // Nav highlight
+  const target = navMap[page] || page;
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if ((n.getAttribute('onclick')||'').includes("'"+target+"'")) n.classList.add('active');
+  });
+  closeSidebar();
+  window.scrollTo(0,0);
+}
+
+// ====== SIDEBAR ======
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// ====== TABS ======
+function setTab(btn, targetId) {
+  const parent = btn.closest('.page') || btn.closest('.modal-body') || document;
+  btn.closest('.tab-row').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // Hide all sibling tabs — find the first non-tab-row sibling
+  const tabRow = btn.closest('.tab-row');
+  let el = tabRow.nextElementSibling;
+  while(el) {
+    if(el.id) el.style.display = (el.id === targetId) ? '' : 'none';
+    el = el.nextElementSibling;
+  }
+}
+
+// ====== FILTERS ======
+function setFilter(el) {
+  const bar = el.closest('.filter-bar') || el.parentElement;
+  bar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ====== MODALS ======
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ====== TOAST ======
+function showToast(msg, duration=3000) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// ====== NOVA NOTINHA ======
+let prodCount = 1;
+function addProduto() {
+  prodCount++;
+  const body = document.getElementById('produtosBody');
+  const tr = document.createElement('tr');
+  tr.id = 'prod-' + prodCount;
+  tr.innerHTML = `
+    <td style="color:var(--text-light);">${prodCount}</td>
+    <td><input type="text" placeholder="Nome do produto..."></td>
+    <td><input type="number" min="1" value="1" style="width:60px;" oninput="calcTotal(${prodCount})"></td>
+    <td><input type="text" placeholder="0,00" id="vu-${prodCount}" style="width:90px;" oninput="calcTotal(${prodCount})"></td>
+    <td><strong id="total-${prodCount}" style="color:var(--pool-dark);">R$ 0,00</strong></td>
+    <td><button class="btn btn-danger btn-sm" onclick="removerProduto('prod-${prodCount}')">✕</button></td>
+  `;
+  body.appendChild(tr);
+}
+function removerProduto(id) {
+  const el = document.getElementById(id);
+  if(el) { el.remove(); recalcGeral(); }
+}
+function calcTotal(n) {
+  const row = document.getElementById('prod-' + n);
+  if(!row) return;
+  const qtd = parseFloat(row.querySelector('input[type=number]').value) || 0;
+  const vu = parseFloat((document.getElementById('vu-'+n)||{value:'0'}).value.replace(',','.')) || 0;
+  const t = qtd * vu;
+  const el = document.getElementById('total-'+n);
+  if(el) el.textContent = 'R$ ' + t.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  recalcGeral();
+}
+function recalcGeral() {
+  let total = 0;
+  document.querySelectorAll('[id^="total-"]').forEach(el => {
+    const v = parseFloat(el.textContent.replace('R$ ','').replace('.','').replace(',','.')) || 0;
+    total += v;
+  });
+  const tg = document.getElementById('totalGeral');
+  if(tg) tg.textContent = 'R$ ' + total.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+// ====== FOTO PREVIEW ======
+function mostrarFoto(input) {
+  const preview = document.getElementById('fotoPreview');
+  if(input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.style.display = 'block';
+      preview.innerHTML = `
+        <div class="foto-viewer">
+          <img src="${e.target.result}" id="fotoImg" style="max-height:300px;object-fit:contain;width:100%;">
+          <div class="foto-viewer-toolbar">
+            <button class="btn btn-icon btn-sm" onclick="zoomFoto()">🔍 Zoom</button>
+            <button class="btn btn-icon btn-sm" onclick="downloadFoto()">⬇ Baixar</button>
+            <button class="btn btn-icon btn-sm" onclick="window.print()">🖨 Imprimir</button>
+          </div>
+        </div>`;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+function zoomFoto() {
+  const img = document.getElementById('fotoImg');
+  if(img) {
+    const win = window.open('','_blank');
+    win.document.write('<img src="'+img.src+'" style="max-width:100%;display:block;margin:auto;">');
+    win.document.title='Foto da Notinha';
+  }
+}
+function downloadFoto() {
+  const img = document.getElementById('fotoImg');
+  if(img) {
+    const a = document.createElement('a');
+    a.href = img.src;
+    a.download = 'notinha.jpg';
+    a.click();
+  }
+}
+
+// ====== IA ======
+function lerComIA() { openModal('modalIA'); }
+
+// ====== ORÇAMENTO ======
+function abrirOrcamento() {
+  const ip = document.getElementById('ipInput').value.trim() || 'localhost';
+  window.open('http://' + ip + ':3000', '_blank');
+}
+
+// ====== DASHBOARD CHART ======
+(function buildChart() {
+  const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const now = new Date().getMonth();
+  const el = document.getElementById('chartFat');
+  if(!el) return;
+  el.innerHTML = '';
+  months.slice(0, now+1).forEach(m => {
+    const bw = document.createElement('div');
+    bw.className = 'bar-wrap';
+    const bar = document.createElement('div');
+    bar.className = 'bar';
+    bar.style.height = '25%';
+    bar.style.background = '#e2edf7';
+    bar.title = 'Sem dados';
+    const lbl = document.createElement('div');
+    lbl.className = 'bar-label';
+    lbl.textContent = m;
+    bw.appendChild(bar);
+    bw.appendChild(lbl);
+    el.appendChild(bw);
+  });
+})();
+</script>
+</body>
+</html>
