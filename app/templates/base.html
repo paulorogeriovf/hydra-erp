@@ -1,0 +1,227 @@
+<!-- Hydra ERP
+     Responsável por: definir a estrutura visual base utilizada pelas páginas do sistema. -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}Hydra ERP{% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/main.css') }}"
+    >
+</head>
+
+<body>
+
+    <div id="overlay" onclick="closeSidebar()"></div>
+
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+
+        <div class="sidebar-logo">
+
+            <div class="logo-mark">
+                🌊
+            </div>
+
+            <div class="logo-text">
+                HYDRA
+            </div>
+
+            <div class="logo-sub">
+                Gestão
+            </div>
+
+        </div>
+
+
+        <nav class="nav-section">
+
+            <div class="nav-label">
+                Principal
+            </div>
+
+            <a
+                class="nav-item"
+                href="/"
+            >
+                <span class="nav-icon">🏠</span>
+                Dashboard
+            </a>
+
+            <a
+                class="nav-item"
+                href="{{ url_for('piscineiros.listar') }}"
+            >
+                <span class="nav-icon">🏊</span>
+                Piscineiros
+            </a>
+
+            <a
+                class="nav-item"
+                href="{{ url_for('clientes.listar') }}"
+            >
+                <span class="nav-icon">👥</span>
+                Clientes
+            </a>
+
+
+            <div
+                class="nav-label"
+                style="margin-top:6px;"
+            >
+                Operacional
+            </div>
+
+            <a
+                class="nav-item"
+                href="{{ url_for('produtos.listar') }}"
+            >
+                <span class="nav-icon">📦</span>
+                Produtos
+            </a>
+
+
+            <div
+                class="nav-label"
+                style="margin-top:6px;"
+            >
+                Financeiro
+            </div>
+
+            <a
+                class="nav-item"
+                href="#"
+            >
+                <span class="nav-icon">📄</span>
+                Notinhas
+            </a>
+
+            <a
+                class="nav-item"
+                href="#"
+            >
+                <span class="nav-icon">💰</span>
+                Comissões
+            </a>
+
+            <a
+                class="nav-item"
+                href="#"
+            >
+                <span class="nav-icon">📅</span>
+                Cobranças
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            Hydra Piscinas
+
+        </div>
+
+    </aside>
+
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div id="main">
+
+        <header id="header">
+
+            <div
+                style="
+                    display:flex;
+                    align-items:center;
+                    gap:14px;
+                "
+            >
+
+                <button
+                    class="btn-menu"
+                    onclick="toggleSidebar()"
+                >
+                    ☰
+                </button>
+
+                <div class="header-title">
+
+                    {% block header_title %}
+                        <span>Hydra ERP</span>
+                    {% endblock %}
+
+                </div>
+
+            </div>
+
+
+            <div class="header-right">
+
+                <div class="header-greeting">
+                    Sistema de Gestão
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <main id="content">
+
+            <!-- Mensagens Flask -->
+            {% with mensagens = get_flashed_messages(with_categories=true) %}
+
+                {% if mensagens %}
+
+                    {% for categoria, mensagem in mensagens %}
+
+                        <div
+                            class="
+                                {% if categoria == 'success' %}
+                                    badge badge-paid
+                                {% else %}
+                                    badge badge-late
+                                {% endif %}
+                            "
+                            style="margin-bottom:15px;"
+                        >
+
+                            {{ mensagem }}
+
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+            {% endwith %}
+
+
+            {% block content %}
+            {% endblock %}
+
+        </main>
+
+    </div>
+
+
+    <script
+        src="{{ url_for('static', filename='js/main.js') }}"
+    ></script>
+
+</body>
+
+</html>

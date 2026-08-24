@@ -1,48 +1,58 @@
 <!-- Hydra ERP
-     Responsável por: exibir a lista de produtos cadastrados e suas ações. -->
+     Responsável por: exibir e gerenciar os produtos cadastrados. -->
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Produtos - Hydra ERP</title>
-</head>
-
-<body>
-
-    <h1>Produtos</h1>
-
-    <!-- Mensagens de sucesso ou erro -->
-    {% with mensagens = get_flashed_messages(with_categories=true) %}
-
-        {% if mensagens %}
-
-            {% for categoria, mensagem in mensagens %}
-
-                <p>
-                    {{ mensagem }}
-                </p>
-
-            {% endfor %}
-
-        {% endif %}
-
-    {% endwith %}
+{% extends "base.html" %}
 
 
-    <!-- Botão para cadastrar um novo produto -->
-    <a href="{{ url_for('produtos.novo') }}">
-        Novo Produto
+{% block title %}
+Produtos - Hydra ERP
+{% endblock %}
+
+
+{% block header_title %}
+📦 <span>Produtos</span>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <div class="page-title">
+
+        Produtos
+
+        <small>
+            Cadastro e gerenciamento dos produtos
+        </small>
+
+    </div>
+
+
+    <a
+        class="btn btn-primary"
+        href="{{ url_for('produtos.novo') }}"
+    >
+        ➕ Novo Produto
     </a>
 
-    <hr>
+</div>
 
 
-    <!-- Verifica se existem produtos cadastrados -->
-    {% if produtos %}
+<div class="table-wrap">
 
-        <table border="1" cellpadding="8">
+    <div class="table-head">
+
+        <span class="table-head-title">
+            📦 Produtos cadastrados
+        </span>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
 
             <thead>
 
@@ -60,6 +70,7 @@
 
             </thead>
 
+
             <tbody>
 
                 {% for produto in produtos %}
@@ -70,26 +81,23 @@
                             {{ produto.id }}
                         </td>
 
-
                         <td>
-                            {{ produto.nome }}
+                            <strong>
+                                {{ produto.nome }}
+                            </strong>
                         </td>
-
 
                         <td>
                             {{ produto.marca or '-' }}
                         </td>
 
-
                         <td>
                             {{ produto.categoria or '-' }}
                         </td>
 
-
                         <td>
                             R$ {{ produto.preco_normal }}
                         </td>
-
 
                         <td>
 
@@ -105,7 +113,6 @@
 
                         </td>
 
-
                         <td>
 
                             {% if produto.gera_comissao %}
@@ -120,50 +127,90 @@
 
                         </td>
 
-
                         <td>
 
                             {% if produto.ativo %}
 
-                                Ativo
+                                <span class="badge badge-active">
+                                    Ativo
+                                </span>
 
                             {% else %}
 
-                                Inativo
+                                <span class="badge badge-inactive">
+                                    Inativo
+                                </span>
 
                             {% endif %}
 
                         </td>
 
 
-                        <!-- Ações do produto -->
                         <td>
 
-                            <a href="{{ url_for('produtos.editar', produto_id=produto.id) }}">
-                                Editar
-                            </a>
+                            <div class="action-group">
 
-                            <form
-                                method="POST"
-                                action="{{ url_for('produtos.alterar_status', produto_id=produto.id) }}"
-                                style="display: inline;"
-                            >
+                                <a
+                                    class="btn btn-ghost btn-sm"
+                                    href="{{ url_for(
+                                        'produtos.editar',
+                                        produto_id=produto.id
+                                    ) }}"
+                                >
+                                    ✏️ Editar
+                                </a>
 
-                                {% if produto.ativo %}
 
-                                    <button type="submit">
-                                        Inativar
-                                    </button>
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'produtos.alterar_status',
+                                        produto_id=produto.id
+                                    ) }}"
+                                >
 
-                                {% else %}
+                                    {% if produto.ativo %}
 
-                                    <button type="submit">
-                                        Ativar
-                                    </button>
+                                        <button
+                                            class="btn btn-warning btn-sm"
+                                            type="submit"
+                                        >
+                                            ⏸ Inativar
+                                        </button>
 
-                                {% endif %}
+                                    {% else %}
 
-                            </form>
+                                        <button
+                                            class="btn btn-success btn-sm"
+                                            type="submit"
+                                        >
+                                            ▶ Ativar
+                                        </button>
+
+                                    {% endif %}
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="9"
+                            style="
+                                text-align:center;
+                                padding:40px;
+                                color:var(--text-light);
+                            "
+                        >
+
+                            Nenhum produto cadastrado.
 
                         </td>
 
@@ -175,12 +222,8 @@
 
         </table>
 
-    {% else %}
+    </div>
 
-        <p>Nenhum produto cadastrado.</p>
+</div>
 
-    {% endif %}
-
-</body>
-
-</html>
+{% endblock %}
