@@ -1,0 +1,129 @@
+<!-- Hydra ERP
+     Responsável por: exibir o formulário de cadastro de novos produtos. -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Novo Produto - Hydra ERP</title>
+</head>
+<body>
+
+    <h1>Novo Produto</h1>
+
+    <form method="POST">
+
+        <div>
+            <label>Nome *</label>
+            <br>
+            <input
+                type="text"
+                name="nome"
+                required
+            >
+        </div>
+
+        <br>
+
+        <div>
+            <label>Marca</label>
+            <br>
+            <input
+                type="text"
+                name="marca"
+            >
+        </div>
+
+        <br>
+
+        <div>
+            <label>Categoria</label>
+            <br>
+            <input
+                type="text"
+                name="categoria"
+            >
+        </div>
+
+        <br>
+
+        <div>
+            <label>Preço Normal *</label>
+            <br>
+            <input
+                type="number"
+                name="preco_normal"
+                step="0.01"
+                min="0"
+                required
+            >
+        </div>
+
+        <br>
+
+        <div>
+            <label>Preço Atacado</label>
+            <br>
+            <input
+                type="number"
+                name="preco_atacado"
+                step="0.01"
+                min="0"
+            >
+        </div>
+
+        <br>
+
+        <div>
+            <label>
+                <input
+                    type="checkbox"
+                    name="gera_comissao"
+                >
+
+                Produto gera comissão
+            </label>
+        </div>
+
+        <br>
+
+        <div>
+            <label>Percentual de Comissão</label>
+            <br>
+
+            <input
+                type="number"
+                name="percentual_comissao"
+                step="0.01"
+                min="0"
+                max="100"
+            >
+        </div>
+
+        <br>
+
+        <div>
+            <label>Observação</label>
+            <br>
+
+            <textarea
+                name="observacao"
+                rows="4"
+                cols="40"
+            ></textarea>
+        </div>
+
+        <br>
+
+        <button type="submit">
+            Salvar Produto
+        </button>
+
+        <a href="{{ url_for('produtos.listar') }}">
+            Cancelar
+        </a>
+
+    </form>
+
+</body>
+</html>

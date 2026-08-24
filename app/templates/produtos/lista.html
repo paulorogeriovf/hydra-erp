@@ -1,0 +1,186 @@
+<!-- Hydra ERP
+     Responsável por: exibir a lista de produtos cadastrados e suas ações. -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Produtos - Hydra ERP</title>
+</head>
+
+<body>
+
+    <h1>Produtos</h1>
+
+    <!-- Mensagens de sucesso ou erro -->
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+
+        {% if mensagens %}
+
+            {% for categoria, mensagem in mensagens %}
+
+                <p>
+                    {{ mensagem }}
+                </p>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- Botão para cadastrar um novo produto -->
+    <a href="{{ url_for('produtos.novo') }}">
+        Novo Produto
+    </a>
+
+    <hr>
+
+
+    <!-- Verifica se existem produtos cadastrados -->
+    {% if produtos %}
+
+        <table border="1" cellpadding="8">
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Produto</th>
+                    <th>Marca</th>
+                    <th>Categoria</th>
+                    <th>Preço Normal</th>
+                    <th>Preço Atacado</th>
+                    <th>Comissão</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for produto in produtos %}
+
+                    <tr>
+
+                        <td>
+                            {{ produto.id }}
+                        </td>
+
+
+                        <td>
+                            {{ produto.nome }}
+                        </td>
+
+
+                        <td>
+                            {{ produto.marca or '-' }}
+                        </td>
+
+
+                        <td>
+                            {{ produto.categoria or '-' }}
+                        </td>
+
+
+                        <td>
+                            R$ {{ produto.preco_normal }}
+                        </td>
+
+
+                        <td>
+
+                            {% if produto.preco_atacado %}
+
+                                R$ {{ produto.preco_atacado }}
+
+                            {% else %}
+
+                                -
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if produto.gera_comissao %}
+
+                                {{ produto.percentual_comissao }}%
+
+                            {% else %}
+
+                                Não
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if produto.ativo %}
+
+                                Ativo
+
+                            {% else %}
+
+                                Inativo
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Ações do produto -->
+                        <td>
+
+                            <a href="{{ url_for('produtos.editar', produto_id=produto.id) }}">
+                                Editar
+                            </a>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for('produtos.alterar_status', produto_id=produto.id) }}"
+                                style="display: inline;"
+                            >
+
+                                {% if produto.ativo %}
+
+                                    <button type="submit">
+                                        Inativar
+                                    </button>
+
+                                {% else %}
+
+                                    <button type="submit">
+                                        Ativar
+                                    </button>
+
+                                {% endif %}
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    {% else %}
+
+        <p>Nenhum produto cadastrado.</p>
+
+    {% endif %}
+
+</body>
+
+</html>

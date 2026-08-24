@@ -1,2 +1,4 @@
 # Hydra ERP
-# Responsável por: Organiza as regras de negócio do sistema.
+# Responsável por: centralizar os serviços e regras de negócio do sistema.
+
+from app.services.produto_service import ProdutoService
