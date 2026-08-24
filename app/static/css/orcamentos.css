@@ -1,0 +1,310 @@
+/* Hydra ERP
+   Responsável por: definir o estilo específico do Gerador de Orçamentos. */
+
+
+.orcamento-container {
+    width: 100%;
+}
+
+
+.orcamento-topo {
+    display: grid;
+    grid-template-columns: 1fr 220px 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+
+/* PRODUTOS */
+
+.orcamento-produtos {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+
+.orcamento-carregando {
+    text-align: center;
+    padding: 35px;
+    color: var(--text-light);
+}
+
+
+.orcamento-categoria {
+    margin-top: 18px;
+    margin-bottom: 8px;
+    padding: 9px 14px;
+
+    background: linear-gradient(
+        135deg,
+        var(--pool),
+        var(--pool-dark)
+    );
+
+    color: #fff;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    letter-spacing: .7px;
+    text-transform: uppercase;
+}
+
+
+.orcamento-categoria:first-child {
+    margin-top: 2px;
+}
+
+
+/* ITEM */
+
+.orcamento-produto {
+    display: grid;
+
+    grid-template-columns:
+        minmax(200px, 1fr)
+        150px
+        130px;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 11px 4px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.orcamento-produto:last-child {
+    border-bottom: none;
+}
+
+
+.orcamento-produto-nome {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+
+.orcamento-produto-marca {
+    display: block;
+
+    font-size: 11px;
+
+    color: var(--text-light);
+
+    margin-top: 3px;
+}
+
+
+.orcamento-preco {
+    text-align: right;
+
+    font-weight: 700;
+
+    color: var(--pool-dark);
+
+    white-space: nowrap;
+}
+
+
+/* QUANTIDADE */
+
+.orcamento-controle {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 6px;
+}
+
+
+.orcamento-controle input {
+    width: 60px;
+
+    padding: 7px;
+
+    text-align: center;
+
+    border: 1px solid var(--border);
+
+    border-radius: 7px;
+
+    font-size: 14px;
+}
+
+
+.orcamento-controle button {
+    width: 32px;
+    height: 32px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: var(--pool-dark);
+
+    color: #fff;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+    transition: .15s;
+}
+
+
+.orcamento-controle button:hover {
+    background: var(--pool-deeper);
+}
+
+
+/* RESUMO */
+
+.orcamento-resumo {
+    margin-top: 22px;
+
+    background: #fff;
+
+    padding: 20px;
+
+    border-radius: var(--radius);
+
+    border: 1px solid var(--border);
+
+    box-shadow: var(--shadow);
+
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 20px;
+
+    flex-wrap: wrap;
+}
+
+
+.orcamento-resumo h2 {
+    font-size: 28px;
+
+    color: var(--pool-dark);
+
+    margin: 3px 0 0;
+}
+
+
+.orcamento-total-label {
+    font-size: 12px;
+
+    color: var(--text-light);
+
+    text-transform: uppercase;
+
+    font-weight: 600;
+
+    letter-spacing: .5px;
+}
+
+
+.orcamento-acoes {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+
+/* RESULTADO */
+
+.orcamento-resultado-container {
+    margin-top: 20px;
+}
+
+
+#resultado {
+    background: #fff;
+
+    padding: 18px;
+
+    border-radius: var(--radius);
+
+    white-space: pre-wrap;
+    word-break: break-word;
+
+    overflow-x: auto;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+
+    border: 1px solid var(--border);
+
+    box-shadow: var(--shadow);
+
+    color: var(--text-mid);
+}
+
+
+/* RESPONSIVO */
+
+@media (max-width: 900px) {
+
+    .orcamento-topo {
+        grid-template-columns: 1fr;
+    }
+
+
+    .orcamento-produto {
+        grid-template-columns: 1fr;
+
+        text-align: center;
+
+        padding: 16px 8px;
+    }
+
+
+    .orcamento-preco {
+        text-align: center;
+    }
+
+
+    .orcamento-resumo {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+
+    .orcamento-acoes {
+        width: 100%;
+    }
+
+
+    .orcamento-acoes .btn {
+        flex: 1;
+        justify-content: center;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .orcamento-acoes {
+        flex-direction: column;
+    }
+
+
+    .orcamento-acoes .btn {
+        width: 100%;
+    }
+
+}

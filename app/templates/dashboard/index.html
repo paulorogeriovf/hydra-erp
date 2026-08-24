@@ -1,0 +1,304 @@
+<!-- Hydra ERP
+     Responsável por: exibir a visão geral e os principais indicadores do sistema. -->
+
+{% extends "base.html" %}
+
+
+{% block title %}
+Dashboard - Hydra ERP
+{% endblock %}
+
+
+{% block header_title %}
+🏠 <span>Dashboard</span>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <div class="page-title">
+
+        Dashboard
+
+        <small>
+            Visão geral do sistema Hydra
+        </small>
+
+    </div>
+
+</div>
+
+
+<!-- INDICADORES PRINCIPAIS -->
+<div class="cards-grid">
+
+    <div class="stat-card blue">
+
+        <div class="stat-label">
+            Clientes Ativos
+        </div>
+
+        <div class="stat-value sm">
+            {{ clientes_ativos }}
+        </div>
+
+        <div class="stat-trend">
+            {{ total_clientes }} cadastrados
+        </div>
+
+        <div class="stat-icon">
+            👥
+        </div>
+
+    </div>
+
+
+    <div class="stat-card teal">
+
+        <div class="stat-label">
+            Piscineiros Ativos
+        </div>
+
+        <div class="stat-value sm">
+            {{ piscineiros_ativos }}
+        </div>
+
+        <div class="stat-trend">
+            {{ total_piscineiros }} cadastrados
+        </div>
+
+        <div class="stat-icon">
+            🏊
+        </div>
+
+    </div>
+
+
+    <div class="stat-card indigo">
+
+        <div class="stat-label">
+            Produtos Ativos
+        </div>
+
+        <div class="stat-value sm">
+            {{ produtos_ativos }}
+        </div>
+
+        <div class="stat-trend">
+            {{ total_produtos }} cadastrados
+        </div>
+
+        <div class="stat-icon">
+            📦
+        </div>
+
+    </div>
+
+
+    <div class="stat-card amber">
+
+        <div class="stat-label">
+            Clientes sem Piscineiro
+        </div>
+
+        <div class="stat-value sm">
+            {{ clientes_sem_piscineiro }}
+        </div>
+
+        <div class="stat-trend">
+            Venda direta Hydra
+        </div>
+
+        <div class="stat-icon">
+            🏪
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- MÓDULOS -->
+<div class="section-title">
+    📌 Acesso rápido
+</div>
+
+
+<div class="three-col">
+
+    <div class="chart-box">
+
+        <div class="chart-title">
+            📦 Produtos
+        </div>
+
+        <p
+            style="
+                font-size:13px;
+                color:var(--text-light);
+                margin-bottom:18px;
+            "
+        >
+            Cadastre produtos, preços e regras de comissão.
+        </p>
+
+        <a
+            class="btn btn-primary"
+            href="{{ url_for('produtos.listar') }}"
+        >
+            Ver Produtos
+        </a>
+
+    </div>
+
+
+    <div class="chart-box">
+
+        <div class="chart-title">
+            🏊 Piscineiros
+        </div>
+
+        <p
+            style="
+                font-size:13px;
+                color:var(--text-light);
+                margin-bottom:18px;
+            "
+        >
+            Gerencie os profissionais e seus clientes vinculados.
+        </p>
+
+        <a
+            class="btn btn-primary"
+            href="{{ url_for('piscineiros.listar') }}"
+        >
+            Ver Piscineiros
+        </a>
+
+    </div>
+
+
+    <div class="chart-box">
+
+        <div class="chart-title">
+            👥 Clientes
+        </div>
+
+        <p
+            style="
+                font-size:13px;
+                color:var(--text-light);
+                margin-bottom:18px;
+            "
+        >
+            Consulte clientes e altere vínculos de piscineiro.
+        </p>
+
+        <a
+            class="btn btn-primary"
+            href="{{ url_for('clientes.listar') }}"
+        >
+            Ver Clientes
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- FUTUROS INDICADORES -->
+<div class="section-title">
+    💰 Financeiro
+</div>
+
+
+<div class="cards-grid">
+
+    <div class="stat-card blue">
+
+        <div class="stat-label">
+            Total a Receber
+        </div>
+
+        <div class="stat-value">
+            R$ —
+        </div>
+
+        <div class="stat-trend">
+            Disponível após módulo de Notinhas
+        </div>
+
+        <div class="stat-icon">
+            💰
+        </div>
+
+    </div>
+
+
+    <div class="stat-card amber">
+
+        <div class="stat-label">
+            Notinhas em Aberto
+        </div>
+
+        <div class="stat-value sm">
+            —
+        </div>
+
+        <div class="stat-trend">
+            Aguardando módulo
+        </div>
+
+        <div class="stat-icon">
+            📄
+        </div>
+
+    </div>
+
+
+    <div class="stat-card red">
+
+        <div class="stat-label">
+            Notinhas Vencidas
+        </div>
+
+        <div class="stat-value sm">
+            —
+        </div>
+
+        <div class="stat-trend">
+            Aguardando módulo
+        </div>
+
+        <div class="stat-icon">
+            ⚠️
+        </div>
+
+    </div>
+
+
+    <div class="stat-card green">
+
+        <div class="stat-label">
+            Comissões Pendentes
+        </div>
+
+        <div class="stat-value">
+            R$ —
+        </div>
+
+        <div class="stat-trend">
+            Aguardando módulo
+        </div>
+
+        <div class="stat-icon">
+            💵
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

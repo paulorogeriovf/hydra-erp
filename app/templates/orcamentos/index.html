@@ -1,0 +1,186 @@
+<!-- Hydra ERP
+     Responsável por: exibir o gerador de orçamentos da Hydra. -->
+
+{% extends "base.html" %}
+
+{% block title %}
+Gerador de Orçamentos - Hydra ERP
+{% endblock %}
+
+{% block header_title %}
+🧾 <span>Gerador de Orçamentos</span>
+{% endblock %}
+
+{% block content %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/orcamentos.css') }}"
+>
+
+<div
+    class="orcamento-container"
+    id="orcamentoApp"
+    data-api-url="{{ url_for('orcamentos.api_produtos') }}"
+    data-logo-url="{{ url_for('static', filename='img/logo.jpg') }}"
+>
+
+    <div class="page-header">
+
+        <div class="page-title">
+
+            Gerador de Orçamentos
+
+            <small>
+                Hydra Piscinas · Uso interno
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- DADOS DO ORÇAMENTO -->
+    <section class="orcamento-topo">
+
+        <div class="form-group">
+
+            <label>
+                👤 Cliente
+            </label>
+
+            <input
+                type="text"
+                id="nomeCliente"
+                placeholder="Nome do cliente"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                💲 Desconto (%)
+            </label>
+
+            <input
+                type="number"
+                id="desconto"
+                placeholder="0"
+                min="0"
+                max="100"
+                step="0.01"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                🔍 Buscar produto
+            </label>
+
+            <input
+                type="text"
+                id="campoBusca"
+                placeholder="Digite o nome do produto..."
+            >
+
+        </div>
+
+    </section>
+
+
+    <!-- PRODUTOS -->
+    <section
+        id="produtos"
+        class="orcamento-produtos"
+    >
+
+        <div class="orcamento-carregando">
+            Carregando produtos...
+        </div>
+
+    </section>
+
+
+    <!-- RESUMO -->
+    <footer class="orcamento-resumo">
+
+        <div>
+
+            <div class="orcamento-total-label">
+                Total do orçamento
+            </div>
+
+            <h2>
+                R$
+                <span id="total">
+                    0,00
+                </span>
+            </h2>
+
+        </div>
+
+
+        <div class="orcamento-acoes">
+
+            <button
+                class="btn btn-primary"
+                id="btnGerar"
+                type="button"
+            >
+                🧾 Gerar Orçamento
+            </button>
+
+            <button
+                class="btn btn-success"
+                id="btnCopiar"
+                type="button"
+            >
+                📋 Copiar
+            </button>
+
+            <button
+                class="btn btn-ai"
+                id="btnPDF"
+                type="button"
+            >
+                📄 Gerar PDF
+            </button>
+
+        </div>
+
+    </footer>
+
+
+    <!-- TEXTO GERADO -->
+    <div
+        id="resultadoContainer"
+        class="orcamento-resultado-container"
+        style="display:none;"
+    >
+
+        <div class="section-title">
+            📋 Orçamento Gerado
+        </div>
+
+        <pre id="resultado"></pre>
+
+    </div>
+
+</div>
+
+
+<!-- Biblioteca utilizada pelo gerador antigo para criação do PDF -->
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+></script>
+
+<script
+    src="{{ url_for('static', filename='js/orcamentos.js') }}"
+></script>
+
+{% endblock %}

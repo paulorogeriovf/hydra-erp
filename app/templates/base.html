@@ -55,12 +55,12 @@
             </div>
 
             <a
-                class="nav-item {% if request.endpoint == 'home' %}active{% endif %}"
-                href="/"
-            >
-                <span class="nav-icon">🏠</span>
-                Dashboard
-            </a>
+    class="nav-item {% if request.blueprint == 'dashboard' %}active{% endif %}"
+    href="{{ url_for('dashboard.index') }}"
+>
+    <span class="nav-icon">🏠</span>
+    Dashboard
+</a>
 
             <a
                 class="nav-item {% if request.blueprint == 'piscineiros' %}active{% endif %}"
@@ -88,12 +88,20 @@
             </div>
 
             <a
-                class="nav-item {% if request.blueprint == 'produtos' %}active{% endif %}"
-                href="{{ url_for('produtos.listar') }}"
-            >
-                <span class="nav-icon">📦</span>
-                Produtos
-            </a>
+    class="nav-item {% if request.blueprint == 'produtos' %}active{% endif %}"
+    href="{{ url_for('produtos.listar') }}"
+>
+    <span class="nav-icon">📦</span>
+    Produtos
+</a>
+
+<a
+    class="nav-item {% if request.blueprint == 'orcamentos' %}active{% endif %}"
+    href="{{ url_for('orcamentos.index') }}"
+>
+    <span class="nav-icon">🧾</span>
+    Orçamentos
+</a>
 
 
             <!-- FINANCEIRO -->

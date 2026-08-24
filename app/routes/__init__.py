@@ -1,6 +1,8 @@
 # Hydra ERP
 # Responsável por: centralizar os Blueprints e rotas da aplicação.
 
+from app.routes.dashboard import dashboard_bp
 from app.routes.produtos import produtos_bp
 from app.routes.piscineiros import piscineiros_bp
 from app.routes.clientes import clientes_bp
+from app.routes.orcamentos import orcamentos_bp
