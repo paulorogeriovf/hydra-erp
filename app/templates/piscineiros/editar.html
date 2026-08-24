@@ -1,93 +1,153 @@
 <!-- Hydra ERP
      Responsável por: editar os dados de um piscineiro cadastrado. -->
 
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>Editar Piscineiro - Hydra ERP</title>
-</head>
+{% block title %}
+Editar Piscineiro - Hydra ERP
+{% endblock %}
 
-<body>
+{% block header_title %}
+✏️ <span>Editar Piscineiro</span>
+{% endblock %}
 
-    <h1>Editar Piscineiro</h1>
+{% block content %}
 
-    {% with mensagens = get_flashed_messages(with_categories=true) %}
-        {% if mensagens %}
-            {% for categoria, mensagem in mensagens %}
-                <p>{{ mensagem }}</p>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+<div class="page-header">
+
+    <div class="page-title">
+        Editar Piscineiro
+
+        <small>
+            Atualize os dados do profissional
+        </small>
+    </div>
+
+</div>
+
+
+<div class="form-card">
 
     <form method="POST">
 
-        <label>Nome *</label><br>
-        <input
-            type="text"
-            name="nome"
-            value="{{ piscineiro.nome }}"
-            required
-        >
+        <div class="form-row">
 
-        <br><br>
+            <div class="form-group">
 
-        <label>Telefone</label><br>
-        <input
-            type="text"
-            name="telefone"
-            value="{{ piscineiro.telefone or '' }}"
-        >
+                <label>
+                    Nome *
+                </label>
 
-        <br><br>
+                <input
+                    type="text"
+                    name="nome"
+                    value="{{ piscineiro.nome }}"
+                    required
+                >
 
-        <label>WhatsApp</label><br>
-        <input
-            type="text"
-            name="whatsapp"
-            value="{{ piscineiro.whatsapp or '' }}"
-        >
+            </div>
 
-        <br><br>
 
-        <label>Cidade</label><br>
-        <input
-            type="text"
-            name="cidade"
-            value="{{ piscineiro.cidade or '' }}"
-        >
+            <div class="form-group">
 
-        <br><br>
+                <label>
+                    Telefone
+                </label>
 
-        <label>Endereço</label><br>
-        <input
-            type="text"
-            name="endereco"
-            value="{{ piscineiro.endereco or '' }}"
-        >
+                <input
+                    type="text"
+                    name="telefone"
+                    value="{{ piscineiro.telefone or '' }}"
+                >
 
-        <br><br>
+            </div>
 
-        <label>Observação</label><br>
+        </div>
 
-        <textarea
-            name="observacao"
-            rows="4"
-            cols="40"
-        >{{ piscineiro.observacao or '' }}</textarea>
 
-        <br><br>
+        <div class="form-row">
 
-        <button type="submit">
-            Salvar Alterações
-        </button>
+            <div class="form-group">
 
-        <a href="{{ url_for('piscineiros.listar') }}">
-            Cancelar
-        </a>
+                <label>
+                    WhatsApp
+                </label>
+
+                <input
+                    type="text"
+                    name="whatsapp"
+                    value="{{ piscineiro.whatsapp or '' }}"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Cidade
+                </label>
+
+                <input
+                    type="text"
+                    name="cidade"
+                    value="{{ piscineiro.cidade or '' }}"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Endereço
+            </label>
+
+            <input
+                type="text"
+                name="endereco"
+                value="{{ piscineiro.endereco or '' }}"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Observação
+            </label>
+
+            <textarea
+                name="observacao"
+            >{{ piscineiro.observacao or '' }}</textarea>
+
+        </div>
+
+
+        <div class="action-group">
+
+            <button
+                class="btn btn-primary"
+                type="submit"
+            >
+                💾 Salvar Alterações
+            </button>
+
+
+            <a
+                class="btn btn-ghost"
+                href="{{ url_for('piscineiros.listar') }}"
+            >
+                Cancelar
+            </a>
+
+        </div>
 
     </form>
 
-</body>
-</html>
+</div>
+
+{% endblock %}

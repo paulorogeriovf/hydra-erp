@@ -1,37 +1,112 @@
 <!-- Hydra ERP
      Responsável por: exibir e gerenciar os piscineiros cadastrados. -->
 
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>Piscineiros - Hydra ERP</title>
-</head>
+{% block title %}
+Piscineiros - Hydra ERP
+{% endblock %}
 
-<body>
+{% block header_title %}
+🏊 <span>Piscineiros</span>
+{% endblock %}
 
-    <h1>Piscineiros</h1>
+{% block content %}
 
-    {% with mensagens = get_flashed_messages(with_categories=true) %}
-        {% if mensagens %}
-            {% for categoria, mensagem in mensagens %}
-                <p>{{ mensagem }}</p>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+<div class="page-header">
 
-    <a href="{{ url_for('piscineiros.novo') }}">
-        Novo Piscineiro
+    <div class="page-title">
+        Piscineiros
+
+        <small>
+            Gestão dos profissionais e seus clientes vinculados
+        </small>
+    </div>
+
+    <a
+        class="btn btn-primary"
+        href="{{ url_for('piscineiros.novo') }}"
+    >
+        ➕ Novo Piscineiro
     </a>
 
-    <hr>
+</div>
 
-    {% if piscineiros %}
 
-        <table border="1" cellpadding="8">
+<div class="cards-grid">
+
+    <div class="stat-card teal">
+        <div class="stat-label">
+            Total Piscineiros
+        </div>
+
+        <div class="stat-value sm">
+            {{ piscineiros|length }}
+        </div>
+
+        <div class="stat-icon">
+            🏊
+        </div>
+    </div>
+
+
+    <div class="stat-card green">
+        <div class="stat-label">
+            Ativos
+        </div>
+
+        <div class="stat-value sm">
+            {{ piscineiros|selectattr("ativo")|list|length }}
+        </div>
+
+        <div class="stat-icon">
+            ✅
+        </div>
+    </div>
+
+
+    <div class="stat-card blue">
+        <div class="stat-label">
+            Clientes Vinculados
+        </div>
+
+        <div class="stat-value sm">
+
+            {% set total_clientes = namespace(valor=0) %}
+
+            {% for piscineiro in piscineiros %}
+                {% set total_clientes.valor = total_clientes.valor + (piscineiro.clientes|length) %}
+            {% endfor %}
+
+            {{ total_clientes.valor }}
+
+        </div>
+
+        <div class="stat-icon">
+            👥
+        </div>
+    </div>
+
+</div>
+
+
+<div class="table-wrap">
+
+    <div class="table-head">
+
+        <span class="table-head-title">
+            🏊 Piscineiros cadastrados
+        </span>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
 
             <thead>
+
                 <tr>
                     <th>ID</th>
                     <th>Nome</th>
@@ -42,7 +117,9 @@
                     <th>Status</th>
                     <th>Ações</th>
                 </tr>
+
             </thead>
+
 
             <tbody>
 
@@ -50,56 +127,115 @@
 
                     <tr>
 
-                        <td>{{ piscineiro.id }}</td>
-
-                        <td>{{ piscineiro.nome }}</td>
-
-                        <td>{{ piscineiro.telefone or '-' }}</td>
-
-                        <td>{{ piscineiro.whatsapp or '-' }}</td>
-
-                        <td>{{ piscineiro.cidade or '-' }}</td>
-
-                        <td>{{ piscineiro.clientes|length }}</td>
+                        <td>
+                            {{ piscineiro.id }}
+                        </td>
 
                         <td>
-                            {% if piscineiro.ativo %}
-                                Ativo
-                            {% else %}
-                                Inativo
-                            {% endif %}
+                            <strong>
+                                {{ piscineiro.nome }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ piscineiro.telefone or '-' }}
+                        </td>
+
+                        <td>
+                            {{ piscineiro.whatsapp or '-' }}
+                        </td>
+
+                        <td>
+                            {{ piscineiro.cidade or '-' }}
+                        </td>
+
+                        <td>
+                            {{ piscineiro.clientes|length }}
                         </td>
 
                         <td>
 
-                            <a href="{{ url_for(
-                                'piscineiros.editar',
-                                piscineiro_id=piscineiro.id
-                            ) }}">
-                                Editar
-                            </a>
+                            {% if piscineiro.ativo %}
 
-                            <form
-                                method="POST"
-                                action="{{ url_for(
-                                    'piscineiros.alterar_status',
-                                    piscineiro_id=piscineiro.id
-                                ) }}"
-                                style="display:inline;"
-                            >
+                                <span class="badge badge-active">
+                                    Ativo
+                                </span>
 
-                                {% if piscineiro.ativo %}
-                                    <button type="submit">
-                                        Inativar
-                                    </button>
-                                {% else %}
-                                    <button type="submit">
-                                        Ativar
-                                    </button>
-                                {% endif %}
+                            {% else %}
 
-                            </form>
+                                <span class="badge badge-inactive">
+                                    Inativo
+                                </span>
 
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="action-group">
+
+                                <a
+                                    class="btn btn-ghost btn-sm"
+                                    href="{{ url_for(
+                                        'piscineiros.editar',
+                                        piscineiro_id=piscineiro.id
+                                    ) }}"
+                                >
+                                    ✏️ Editar
+                                </a>
+
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'piscineiros.alterar_status',
+                                        piscineiro_id=piscineiro.id
+                                    ) }}"
+                                >
+
+                                    {% if piscineiro.ativo %}
+
+                                        <button
+                                            class="btn btn-warning btn-sm"
+                                            type="submit"
+                                        >
+                                            ⏸ Inativar
+                                        </button>
+
+                                    {% else %}
+
+                                        <button
+                                            class="btn btn-success btn-sm"
+                                            type="submit"
+                                        >
+                                            ▶ Ativar
+                                        </button>
+
+                                    {% endif %}
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            style="
+                                text-align:center;
+                                padding:40px;
+                                color:var(--text-light);
+                            "
+                        >
+                            Nenhum piscineiro cadastrado.
                         </td>
 
                     </tr>
@@ -110,11 +246,8 @@
 
         </table>
 
-    {% else %}
+    </div>
 
-        <p>Nenhum piscineiro cadastrado.</p>
+</div>
 
-    {% endif %}
-
-</body>
-</html>
+{% endblock %}

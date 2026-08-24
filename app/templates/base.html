@@ -49,12 +49,13 @@
 
         <nav class="nav-section">
 
+            <!-- PRINCIPAL -->
             <div class="nav-label">
                 Principal
             </div>
 
             <a
-                class="nav-item"
+                class="nav-item {% if request.endpoint == 'home' %}active{% endif %}"
                 href="/"
             >
                 <span class="nav-icon">🏠</span>
@@ -62,7 +63,7 @@
             </a>
 
             <a
-                class="nav-item"
+                class="nav-item {% if request.blueprint == 'piscineiros' %}active{% endif %}"
                 href="{{ url_for('piscineiros.listar') }}"
             >
                 <span class="nav-icon">🏊</span>
@@ -70,7 +71,7 @@
             </a>
 
             <a
-                class="nav-item"
+                class="nav-item {% if request.blueprint == 'clientes' %}active{% endif %}"
                 href="{{ url_for('clientes.listar') }}"
             >
                 <span class="nav-icon">👥</span>
@@ -78,6 +79,7 @@
             </a>
 
 
+            <!-- OPERACIONAL -->
             <div
                 class="nav-label"
                 style="margin-top:6px;"
@@ -86,7 +88,7 @@
             </div>
 
             <a
-                class="nav-item"
+                class="nav-item {% if request.blueprint == 'produtos' %}active{% endif %}"
                 href="{{ url_for('produtos.listar') }}"
             >
                 <span class="nav-icon">📦</span>
@@ -94,6 +96,7 @@
             </a>
 
 
+            <!-- FINANCEIRO -->
             <div
                 class="nav-label"
                 style="margin-top:6px;"
@@ -102,7 +105,7 @@
             </div>
 
             <a
-                class="nav-item"
+                class="nav-item {% if request.blueprint == 'notinhas' %}active{% endif %}"
                 href="#"
             >
                 <span class="nav-icon">📄</span>
@@ -110,7 +113,7 @@
             </a>
 
             <a
-                class="nav-item"
+                class="nav-item {% if request.blueprint == 'comissoes' %}active{% endif %}"
                 href="#"
             >
                 <span class="nav-icon">💰</span>
@@ -118,7 +121,7 @@
             </a>
 
             <a
-                class="nav-item"
+                class="nav-item {% if request.blueprint == 'cobrancas' %}active{% endif %}"
                 href="#"
             >
                 <span class="nav-icon">📅</span>
@@ -128,10 +131,9 @@
         </nav>
 
 
+        <!-- RODAPÉ DA SIDEBAR -->
         <div class="sidebar-footer">
-
             Hydra Piscinas
-
         </div>
 
     </aside>
@@ -181,7 +183,7 @@
 
         <main id="content">
 
-            <!-- Mensagens Flask -->
+            <!-- MENSAGENS FLASK -->
             {% with mensagens = get_flashed_messages(with_categories=true) %}
 
                 {% if mensagens %}
@@ -210,6 +212,7 @@
             {% endwith %}
 
 
+            <!-- CONTEÚDO ESPECÍFICO DE CADA PÁGINA -->
             {% block content %}
             {% endblock %}
 

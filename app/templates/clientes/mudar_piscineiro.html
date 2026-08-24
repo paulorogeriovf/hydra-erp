@@ -1,90 +1,165 @@
 <!-- Hydra ERP
-     Responsável por: alterar o piscineiro responsável por um cliente
-     e registrar a mudança no histórico. -->
+     Responsável por: alterar o piscineiro atual do cliente
+     preservando o histórico de vínculos. -->
 
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>Mudar Piscineiro - Hydra ERP</title>
-</head>
+{% block title %}
+Mudar Piscineiro - Hydra ERP
+{% endblock %}
 
-<body>
+{% block header_title %}
+🔄 <span>Mudar Piscineiro</span>
+{% endblock %}
 
-    <h1>Mudar Piscineiro</h1>
+{% block content %}
 
-    {% with mensagens = get_flashed_messages(with_categories=true) %}
-        {% if mensagens %}
-            {% for categoria, mensagem in mensagens %}
-                <p>{{ mensagem }}</p>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+<div class="page-header">
 
-    <p>
-        Cliente:
-        <strong>{{ cliente.nome }}</strong>
-    </p>
+    <div class="page-title">
+        Mudar Piscineiro
 
-    <p>
-        Piscineiro atual:
+        <small>
+            Alteração de vínculo do cliente
+        </small>
+    </div>
+
+</div>
+
+
+<div class="form-card">
+
+    <div
+        style="
+            background:#f0f7ff;
+            border-radius:10px;
+            padding:16px;
+            margin-bottom:22px;
+        "
+    >
+
+        <div
+            style="
+                font-size:12px;
+                color:var(--text-light);
+                margin-bottom:4px;
+            "
+        >
+            Cliente
+        </div>
+
         <strong>
+            {{ cliente.nome }}
+        </strong>
+
+        <div
+            style="
+                font-size:12px;
+                color:var(--text-light);
+                margin-top:12px;
+                margin-bottom:4px;
+            "
+        >
+            Piscineiro atual
+        </div>
+
+        <strong>
+
             {% if cliente.piscineiro %}
                 {{ cliente.piscineiro.nome }}
             {% else %}
                 Sem piscineiro
             {% endif %}
+
         </strong>
-    </p>
+
+    </div>
+
 
     <form method="POST">
 
-        <label>Novo Piscineiro</label><br>
+        <div class="form-group">
 
-        <select name="piscineiro_id">
+            <label>
+                Novo Piscineiro
+            </label>
 
-            <option value="">
-                Sem piscineiro
-            </option>
+            <select name="piscineiro_id">
 
-            {% for piscineiro in piscineiros %}
-
-                <option
-                    value="{{ piscineiro.id }}"
-                    {% if cliente.piscineiro_id == piscineiro.id %}
-                        selected
-                    {% endif %}
-                >
-                    {{ piscineiro.nome }}
+                <option value="">
+                    Sem piscineiro
                 </option>
 
-            {% endfor %}
+                {% for piscineiro in piscineiros %}
 
-        </select>
+                    <option
+                        value="{{ piscineiro.id }}"
 
-        <br><br>
+                        {% if cliente.piscineiro_id == piscineiro.id %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ piscineiro.nome }}
+                    </option>
 
-        <label>Motivo / Observação</label><br>
+                {% endfor %}
 
-        <textarea
-            name="observacao"
-            rows="4"
-            cols="40"
-            placeholder="Ex.: Cliente passou a ser atendido por outro piscineiro."
-        ></textarea>
+            </select>
 
-        <br><br>
+        </div>
 
-        <button type="submit">
-            Confirmar Alteração
-        </button>
 
-        <a href="{{ url_for('clientes.listar') }}">
-            Cancelar
-        </a>
+        <div class="form-group">
+
+            <label>
+                Motivo / Observação
+            </label>
+
+            <textarea
+                name="observacao"
+                placeholder="Ex.: Cliente passou a ser atendido por outro piscineiro."
+            ></textarea>
+
+        </div>
+
+
+        <div
+            style="
+                background:#fef3c7;
+                border-radius:8px;
+                padding:12px 16px;
+                margin-bottom:20px;
+                font-size:13px;
+                color:#92400e;
+            "
+        >
+            ℹ️ A alteração não modifica os registros históricos.
+            Notinhas antigas continuarão vinculadas ao piscineiro
+            responsável naquela operação.
+        </div>
+
+
+        <div class="action-group">
+
+            <button
+                class="btn btn-primary"
+                type="submit"
+            >
+                🔄 Confirmar Alteração
+            </button>
+
+
+            <a
+                class="btn btn-ghost"
+                href="{{ url_for('clientes.listar') }}"
+            >
+                Cancelar
+            </a>
+
+        </div>
 
     </form>
 
-</body>
-</html>
+</div>
+
+{% endblock %}

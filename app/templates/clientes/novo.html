@@ -1,92 +1,163 @@
 <!-- Hydra ERP
-     Responsável por: cadastrar novos clientes. -->
+     Responsável por: cadastrar novos clientes e definir seu piscineiro inicial. -->
 
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>Novo Cliente - Hydra ERP</title>
-</head>
+{% block title %}
+Novo Cliente - Hydra ERP
+{% endblock %}
 
-<body>
+{% block header_title %}
+👤 <span>Novo Cliente</span>
+{% endblock %}
 
-    <h1>Novo Cliente</h1>
+{% block content %}
 
-    {% with mensagens = get_flashed_messages(with_categories=true) %}
-        {% if mensagens %}
-            {% for categoria, mensagem in mensagens %}
-                <p>{{ mensagem }}</p>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+<div class="page-header">
+
+    <div class="page-title">
+        Novo Cliente
+
+        <small>
+            Cadastre o cliente e, se necessário, vincule um piscineiro
+        </small>
+    </div>
+
+</div>
+
+
+<div class="form-card">
 
     <form method="POST">
 
-        <label>Nome *</label><br>
-        <input type="text" name="nome" required>
+        <div class="form-row">
 
-        <br><br>
+            <div class="form-group">
 
-        <label>Telefone</label><br>
-        <input type="text" name="telefone">
+                <label>Nome *</label>
 
-        <br><br>
+                <input
+                    type="text"
+                    name="nome"
+                    required
+                >
 
-        <label>WhatsApp</label><br>
-        <input type="text" name="whatsapp">
+            </div>
 
-        <br><br>
 
-        <label>Cidade</label><br>
-        <input type="text" name="cidade">
+            <div class="form-group">
 
-        <br><br>
+                <label>Piscineiro Atual</label>
 
-        <label>Endereço</label><br>
-        <input type="text" name="endereco">
+                <select name="piscineiro_id">
 
-        <br><br>
+                    <option value="">
+                        Sem piscineiro
+                    </option>
 
-        <label>Piscineiro Atual</label><br>
+                    {% for piscineiro in piscineiros %}
 
-        <select name="piscineiro_id">
+                        <option value="{{ piscineiro.id }}">
+                            {{ piscineiro.nome }}
+                        </option>
 
-            <option value="">
-                Sem piscineiro
-            </option>
+                    {% endfor %}
 
-            {% for piscineiro in piscineiros %}
+                </select>
 
-                <option value="{{ piscineiro.id }}">
-                    {{ piscineiro.nome }}
-                </option>
+            </div>
 
-            {% endfor %}
+        </div>
 
-        </select>
 
-        <br><br>
+        <div class="form-row">
 
-        <label>Observação</label><br>
+            <div class="form-group">
 
-        <textarea
-            name="observacao"
-            rows="4"
-            cols="40"
-        ></textarea>
+                <label>Telefone</label>
 
-        <br><br>
+                <input
+                    type="text"
+                    name="telefone"
+                >
 
-        <button type="submit">
-            Salvar Cliente
-        </button>
+            </div>
 
-        <a href="{{ url_for('clientes.listar') }}">
-            Cancelar
-        </a>
+
+            <div class="form-group">
+
+                <label>WhatsApp</label>
+
+                <input
+                    type="text"
+                    name="whatsapp"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>Cidade</label>
+
+                <input
+                    type="text"
+                    name="cidade"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Endereço</label>
+
+                <input
+                    type="text"
+                    name="endereco"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Observação</label>
+
+            <textarea
+                name="observacao"
+            ></textarea>
+
+        </div>
+
+
+        <div class="action-group">
+
+            <button
+                class="btn btn-primary"
+                type="submit"
+            >
+                💾 Salvar Cliente
+            </button>
+
+
+            <a
+                class="btn btn-ghost"
+                href="{{ url_for('clientes.listar') }}"
+            >
+                Cancelar
+            </a>
+
+        </div>
 
     </form>
 
-</body>
-</html>
+</div>
+
+{% endblock %}
