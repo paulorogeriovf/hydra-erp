@@ -18,7 +18,12 @@ def create_app():
     from app import models
 
     from app.routes.produtos import produtos_bp
+    from app.routes.piscineiros import piscineiros_bp
+    from app.routes.clientes import clientes_bp
+
     app.register_blueprint(produtos_bp)
+    app.register_blueprint(piscineiros_bp)
+    app.register_blueprint(clientes_bp)
 
     @app.route("/")
     def home():

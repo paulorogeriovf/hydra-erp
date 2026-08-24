@@ -1,0 +1,114 @@
+<!-- Hydra ERP
+     Responsável por: editar os dados cadastrais de um cliente. -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Cliente - Hydra ERP</title>
+</head>
+
+<body>
+
+    <h1>Editar Cliente</h1>
+
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+        {% if mensagens %}
+            {% for categoria, mensagem in mensagens %}
+                <p>{{ mensagem }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <p>
+        Piscineiro atual:
+        <strong>
+            {% if cliente.piscineiro %}
+                {{ cliente.piscineiro.nome }}
+            {% else %}
+                Sem piscineiro
+            {% endif %}
+        </strong>
+    </p>
+
+    <p>
+        Para alterar o piscineiro, utilize a opção
+        <strong>Mudar Piscineiro</strong>.
+    </p>
+
+    <form method="POST">
+
+        <label>Nome *</label><br>
+
+        <input
+            type="text"
+            name="nome"
+            value="{{ cliente.nome }}"
+            required
+        >
+
+        <br><br>
+
+        <label>Telefone</label><br>
+
+        <input
+            type="text"
+            name="telefone"
+            value="{{ cliente.telefone or '' }}"
+        >
+
+        <br><br>
+
+        <label>WhatsApp</label><br>
+
+        <input
+            type="text"
+            name="whatsapp"
+            value="{{ cliente.whatsapp or '' }}"
+        >
+
+        <br><br>
+
+        <label>Cidade</label><br>
+
+        <input
+            type="text"
+            name="cidade"
+            value="{{ cliente.cidade or '' }}"
+        >
+
+        <br><br>
+
+        <label>Endereço</label><br>
+
+        <input
+            type="text"
+            name="endereco"
+            value="{{ cliente.endereco or '' }}"
+        >
+
+        <br><br>
+
+        <label>Observação</label><br>
+
+        <textarea
+            name="observacao"
+            rows="4"
+            cols="40"
+        >{{ cliente.observacao or '' }}</textarea>
+
+        <br><br>
+
+        <button type="submit">
+            Salvar Alterações
+        </button>
+
+        <a href="{{ url_for('clientes.listar') }}">
+            Cancelar
+        </a>
+
+    </form>
+
+</body>
+</html>

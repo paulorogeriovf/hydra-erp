@@ -1,0 +1,120 @@
+<!-- Hydra ERP
+     Responsável por: exibir e gerenciar os piscineiros cadastrados. -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Piscineiros - Hydra ERP</title>
+</head>
+
+<body>
+
+    <h1>Piscineiros</h1>
+
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+        {% if mensagens %}
+            {% for categoria, mensagem in mensagens %}
+                <p>{{ mensagem }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <a href="{{ url_for('piscineiros.novo') }}">
+        Novo Piscineiro
+    </a>
+
+    <hr>
+
+    {% if piscineiros %}
+
+        <table border="1" cellpadding="8">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>WhatsApp</th>
+                    <th>Cidade</th>
+                    <th>Clientes</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for piscineiro in piscineiros %}
+
+                    <tr>
+
+                        <td>{{ piscineiro.id }}</td>
+
+                        <td>{{ piscineiro.nome }}</td>
+
+                        <td>{{ piscineiro.telefone or '-' }}</td>
+
+                        <td>{{ piscineiro.whatsapp or '-' }}</td>
+
+                        <td>{{ piscineiro.cidade or '-' }}</td>
+
+                        <td>{{ piscineiro.clientes|length }}</td>
+
+                        <td>
+                            {% if piscineiro.ativo %}
+                                Ativo
+                            {% else %}
+                                Inativo
+                            {% endif %}
+                        </td>
+
+                        <td>
+
+                            <a href="{{ url_for(
+                                'piscineiros.editar',
+                                piscineiro_id=piscineiro.id
+                            ) }}">
+                                Editar
+                            </a>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'piscineiros.alterar_status',
+                                    piscineiro_id=piscineiro.id
+                                ) }}"
+                                style="display:inline;"
+                            >
+
+                                {% if piscineiro.ativo %}
+                                    <button type="submit">
+                                        Inativar
+                                    </button>
+                                {% else %}
+                                    <button type="submit">
+                                        Ativar
+                                    </button>
+                                {% endif %}
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    {% else %}
+
+        <p>Nenhum piscineiro cadastrado.</p>
+
+    {% endif %}
+
+</body>
+</html>

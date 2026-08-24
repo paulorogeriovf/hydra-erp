@@ -1,0 +1,90 @@
+<!-- Hydra ERP
+     Responsável por: alterar o piscineiro responsável por um cliente
+     e registrar a mudança no histórico. -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mudar Piscineiro - Hydra ERP</title>
+</head>
+
+<body>
+
+    <h1>Mudar Piscineiro</h1>
+
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+        {% if mensagens %}
+            {% for categoria, mensagem in mensagens %}
+                <p>{{ mensagem }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <p>
+        Cliente:
+        <strong>{{ cliente.nome }}</strong>
+    </p>
+
+    <p>
+        Piscineiro atual:
+        <strong>
+            {% if cliente.piscineiro %}
+                {{ cliente.piscineiro.nome }}
+            {% else %}
+                Sem piscineiro
+            {% endif %}
+        </strong>
+    </p>
+
+    <form method="POST">
+
+        <label>Novo Piscineiro</label><br>
+
+        <select name="piscineiro_id">
+
+            <option value="">
+                Sem piscineiro
+            </option>
+
+            {% for piscineiro in piscineiros %}
+
+                <option
+                    value="{{ piscineiro.id }}"
+                    {% if cliente.piscineiro_id == piscineiro.id %}
+                        selected
+                    {% endif %}
+                >
+                    {{ piscineiro.nome }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <br><br>
+
+        <label>Motivo / Observação</label><br>
+
+        <textarea
+            name="observacao"
+            rows="4"
+            cols="40"
+            placeholder="Ex.: Cliente passou a ser atendido por outro piscineiro."
+        ></textarea>
+
+        <br><br>
+
+        <button type="submit">
+            Confirmar Alteração
+        </button>
+
+        <a href="{{ url_for('clientes.listar') }}">
+            Cancelar
+        </a>
+
+    </form>
+
+</body>
+</html>

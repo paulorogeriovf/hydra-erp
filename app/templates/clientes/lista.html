@@ -1,0 +1,133 @@
+<!-- Hydra ERP
+     Responsável por: exibir e gerenciar os clientes cadastrados. -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Clientes - Hydra ERP</title>
+</head>
+
+<body>
+
+    <h1>Clientes</h1>
+
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+        {% if mensagens %}
+            {% for categoria, mensagem in mensagens %}
+                <p>{{ mensagem }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <a href="{{ url_for('clientes.novo') }}">
+        Novo Cliente
+    </a>
+
+    <hr>
+
+    {% if clientes %}
+
+        <table border="1" cellpadding="8">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>WhatsApp</th>
+                    <th>Cidade</th>
+                    <th>Piscineiro Atual</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for cliente in clientes %}
+
+                    <tr>
+
+                        <td>{{ cliente.id }}</td>
+
+                        <td>{{ cliente.nome }}</td>
+
+                        <td>{{ cliente.telefone or '-' }}</td>
+
+                        <td>{{ cliente.whatsapp or '-' }}</td>
+
+                        <td>{{ cliente.cidade or '-' }}</td>
+
+                        <td>
+                            {% if cliente.piscineiro %}
+                                {{ cliente.piscineiro.nome }}
+                            {% else %}
+                                Sem piscineiro
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if cliente.ativo %}
+                                Ativo
+                            {% else %}
+                                Inativo
+                            {% endif %}
+                        </td>
+
+                        <td>
+
+                            <a href="{{ url_for(
+                                'clientes.editar',
+                                cliente_id=cliente.id
+                            ) }}">
+                                Editar
+                            </a>
+
+                            <a href="{{ url_for(
+                                'clientes.mudar_piscineiro',
+                                cliente_id=cliente.id
+                            ) }}">
+                                Mudar Piscineiro
+                            </a>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'clientes.alterar_status',
+                                    cliente_id=cliente.id
+                                ) }}"
+                                style="display:inline;"
+                            >
+
+                                {% if cliente.ativo %}
+                                    <button type="submit">
+                                        Inativar
+                                    </button>
+                                {% else %}
+                                    <button type="submit">
+                                        Ativar
+                                    </button>
+                                {% endif %}
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    {% else %}
+
+        <p>Nenhum cliente cadastrado.</p>
+
+    {% endif %}
+
+</body>
+</html>

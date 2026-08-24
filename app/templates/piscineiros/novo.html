@@ -1,0 +1,71 @@
+<!-- Hydra ERP
+     Responsável por: cadastrar novos piscineiros. -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Novo Piscineiro - Hydra ERP</title>
+</head>
+
+<body>
+
+    <h1>Novo Piscineiro</h1>
+
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+        {% if mensagens %}
+            {% for categoria, mensagem in mensagens %}
+                <p>{{ mensagem }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+
+        <label>Nome *</label><br>
+        <input type="text" name="nome" required>
+
+        <br><br>
+
+        <label>Telefone</label><br>
+        <input type="text" name="telefone">
+
+        <br><br>
+
+        <label>WhatsApp</label><br>
+        <input type="text" name="whatsapp">
+
+        <br><br>
+
+        <label>Cidade</label><br>
+        <input type="text" name="cidade">
+
+        <br><br>
+
+        <label>Endereço</label><br>
+        <input type="text" name="endereco">
+
+        <br><br>
+
+        <label>Observação</label><br>
+        <textarea
+            name="observacao"
+            rows="4"
+            cols="40"
+        ></textarea>
+
+        <br><br>
+
+        <button type="submit">
+            Salvar Piscineiro
+        </button>
+
+        <a href="{{ url_for('piscineiros.listar') }}">
+            Cancelar
+        </a>
+
+    </form>
+
+</body>
+</html>

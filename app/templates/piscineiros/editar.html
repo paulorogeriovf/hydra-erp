@@ -1,0 +1,93 @@
+<!-- Hydra ERP
+     Responsável por: editar os dados de um piscineiro cadastrado. -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Piscineiro - Hydra ERP</title>
+</head>
+
+<body>
+
+    <h1>Editar Piscineiro</h1>
+
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+        {% if mensagens %}
+            {% for categoria, mensagem in mensagens %}
+                <p>{{ mensagem }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+
+        <label>Nome *</label><br>
+        <input
+            type="text"
+            name="nome"
+            value="{{ piscineiro.nome }}"
+            required
+        >
+
+        <br><br>
+
+        <label>Telefone</label><br>
+        <input
+            type="text"
+            name="telefone"
+            value="{{ piscineiro.telefone or '' }}"
+        >
+
+        <br><br>
+
+        <label>WhatsApp</label><br>
+        <input
+            type="text"
+            name="whatsapp"
+            value="{{ piscineiro.whatsapp or '' }}"
+        >
+
+        <br><br>
+
+        <label>Cidade</label><br>
+        <input
+            type="text"
+            name="cidade"
+            value="{{ piscineiro.cidade or '' }}"
+        >
+
+        <br><br>
+
+        <label>Endereço</label><br>
+        <input
+            type="text"
+            name="endereco"
+            value="{{ piscineiro.endereco or '' }}"
+        >
+
+        <br><br>
+
+        <label>Observação</label><br>
+
+        <textarea
+            name="observacao"
+            rows="4"
+            cols="40"
+        >{{ piscineiro.observacao or '' }}</textarea>
+
+        <br><br>
+
+        <button type="submit">
+            Salvar Alterações
+        </button>
+
+        <a href="{{ url_for('piscineiros.listar') }}">
+            Cancelar
+        </a>
+
+    </form>
+
+</body>
+</html>

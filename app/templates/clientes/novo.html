@@ -1,0 +1,92 @@
+<!-- Hydra ERP
+     Responsável por: cadastrar novos clientes. -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Novo Cliente - Hydra ERP</title>
+</head>
+
+<body>
+
+    <h1>Novo Cliente</h1>
+
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+        {% if mensagens %}
+            {% for categoria, mensagem in mensagens %}
+                <p>{{ mensagem }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+
+        <label>Nome *</label><br>
+        <input type="text" name="nome" required>
+
+        <br><br>
+
+        <label>Telefone</label><br>
+        <input type="text" name="telefone">
+
+        <br><br>
+
+        <label>WhatsApp</label><br>
+        <input type="text" name="whatsapp">
+
+        <br><br>
+
+        <label>Cidade</label><br>
+        <input type="text" name="cidade">
+
+        <br><br>
+
+        <label>Endereço</label><br>
+        <input type="text" name="endereco">
+
+        <br><br>
+
+        <label>Piscineiro Atual</label><br>
+
+        <select name="piscineiro_id">
+
+            <option value="">
+                Sem piscineiro
+            </option>
+
+            {% for piscineiro in piscineiros %}
+
+                <option value="{{ piscineiro.id }}">
+                    {{ piscineiro.nome }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <br><br>
+
+        <label>Observação</label><br>
+
+        <textarea
+            name="observacao"
+            rows="4"
+            cols="40"
+        ></textarea>
+
+        <br><br>
+
+        <button type="submit">
+            Salvar Cliente
+        </button>
+
+        <a href="{{ url_for('clientes.listar') }}">
+            Cancelar
+        </a>
+
+    </form>
+
+</body>
+</html>
