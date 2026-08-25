@@ -1,0 +1,252 @@
+<!-- Hydra ERP
+     Responsável por: exibir o saldo de comissão
+     e o histórico de retiradas de um piscineiro. -->
+
+{% extends "base.html" %}
+
+{% block title %}
+Comissão - {{ piscineiro.nome }} - Hydra ERP
+{% endblock %}
+
+{% block header_title %}
+💰 <span>Comissão - {{ piscineiro.nome }}</span>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div class="page-title">
+
+        {{ piscineiro.nome }}
+
+        <small>
+            Extrato de comissão
+        </small>
+
+    </div>
+
+
+    <a
+        class="btn btn-ghost"
+        href="{{ url_for('comissoes.index') }}"
+    >
+        ← Voltar
+    </a>
+
+</div>
+
+
+<div class="cards-grid">
+
+    <div class="stat-card blue">
+
+        <div class="stat-label">
+            Total Gerado
+        </div>
+
+        <div class="stat-value">
+            R$ {{ "%.2f"|format(gerado)|replace(".", ",") }}
+        </div>
+
+        <div class="stat-icon">
+            📈
+        </div>
+
+    </div>
+
+
+    <div class="stat-card amber">
+
+        <div class="stat-label">
+            Total Retirado
+        </div>
+
+        <div class="stat-value">
+            R$ {{ "%.2f"|format(retirado)|replace(".", ",") }}
+        </div>
+
+        <div class="stat-icon">
+            💸
+        </div>
+
+    </div>
+
+
+    <div class="stat-card green">
+
+        <div class="stat-label">
+            Disponível
+        </div>
+
+        <div class="stat-value">
+            R$ {{ "%.2f"|format(saldo)|replace(".", ",") }}
+        </div>
+
+        <div class="stat-icon">
+            💰
+        </div>
+
+    </div>
+
+</div>
+
+
+{% if saldo > 0 %}
+
+<div class="section-title">
+    💵 Registrar Retirada
+</div>
+
+
+<div class="form-card">
+
+    <form
+        method="POST"
+        action="{{ url_for(
+            'comissoes.registrar_retirada',
+            piscineiro_id=piscineiro.id
+        ) }}"
+    >
+
+        <div class="form-group">
+
+            <label>
+                Valor da retirada *
+            </label>
+
+            <input
+                type="number"
+                name="valor"
+                min="0.01"
+                max="{{ saldo }}"
+                step="0.01"
+                required
+            >
+
+            <small
+                style="
+                    display:block;
+                    margin-top:5px;
+                    color:var(--text-light);
+                "
+            >
+                Disponível:
+                R$ {{ "%.2f"|format(saldo)|replace(".", ",") }}
+            </small>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Observação
+            </label>
+
+            <textarea
+                name="observacao"
+                placeholder="Ex.: Retirada em dinheiro."
+            ></textarea>
+
+        </div>
+
+
+        <button
+            class="btn btn-success"
+            type="submit"
+        >
+            💰 Registrar Retirada
+        </button>
+
+    </form>
+
+</div>
+
+{% endif %}
+
+
+<div class="section-title">
+    📚 Histórico de Retiradas
+</div>
+
+
+<div class="table-wrap">
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Data</th>
+                    <th>Valor</th>
+                    <th>Observação</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for retirada in retiradas %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ retirada.data_retirada.strftime("%d/%m/%Y às %H:%M") }}
+
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+
+                                R$ {{ "%.2f"|format(retirada.valor)|replace(".", ",") }}
+
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            {{ retirada.observacao or "-" }}
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="3"
+                            style="
+                                text-align:center;
+                                padding:35px;
+                                color:var(--text-light);
+                            "
+                        >
+
+                            Nenhuma retirada registrada.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

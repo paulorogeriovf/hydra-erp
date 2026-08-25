@@ -12,3 +12,5 @@ from app.models.item_notinha import ItemNotinha
 from app.models.pagamento import Pagamento
 from app.models.anexo_notinha import AnexoNotinha
 from app.models.observacao_notinha import ObservacaoNotinha
+
+from app.models.retirada_comissao import RetiradaComissao

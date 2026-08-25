@@ -121,12 +121,12 @@
 </a>
 
             <a
-                class="nav-item {% if request.blueprint == 'comissoes' %}active{% endif %}"
-                href="#"
-            >
-                <span class="nav-icon">💰</span>
-                Comissões
-            </a>
+    class="nav-item {% if request.blueprint == 'comissoes' %}active{% endif %}"
+    href="{{ url_for('comissoes.index') }}"
+>
+    <span class="nav-icon">💰</span>
+    Comissões
+</a>
 
             <a
     class="nav-item {% if request.blueprint == 'cobrancas' %}active{% endif %}"

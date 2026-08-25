@@ -11,3 +11,5 @@ from app.services.pagamento_service import PagamentoService
 from app.services.observacao_notinha_service import ObservacaoNotinhaService
 from app.services.anexo_notinha_service import AnexoNotinhaService
 from app.services.cobranca_service import CobrancaService
+
+from app.services.comissao_service import ComissaoService

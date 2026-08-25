@@ -1,0 +1,166 @@
+<!-- Hydra ERP
+     Responsável por: exibir o resumo de comissões dos piscineiros. -->
+
+{% extends "base.html" %}
+
+{% block title %}
+Comissões - Hydra ERP
+{% endblock %}
+
+{% block header_title %}
+💰 <span>Comissões</span>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div class="page-title">
+
+        Comissões
+
+        <small>
+            Controle de valores gerados, retirados e disponíveis
+        </small>
+
+    </div>
+
+</div>
+
+
+<div class="table-wrap">
+
+    <div class="table-head">
+
+        <span class="table-head-title">
+            💰 Comissões por Piscineiro
+        </span>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Piscineiro</th>
+                    <th>Gerado</th>
+                    <th>Retirado</th>
+                    <th>Disponível</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for item in dados %}
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                {{ item.piscineiro.nome }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            R$ {{ "%.2f"|format(item.gerado)|replace(".", ",") }}
+
+                        </td>
+
+
+                        <td>
+
+                            R$ {{ "%.2f"|format(item.retirado)|replace(".", ",") }}
+
+                        </td>
+
+
+                        <td>
+
+                            <strong
+                                style="color:var(--success);"
+                            >
+
+                                R$ {{ "%.2f"|format(item.saldo)|replace(".", ",") }}
+
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            {% if item.saldo > 0 %}
+
+                                <span class="badge badge-open">
+                                    Disponível
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge badge-paid">
+                                    Sem saldo
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                class="btn btn-ghost btn-sm"
+                                href="{{ url_for(
+                                    'comissoes.detalhes',
+                                    piscineiro_id=item.piscineiro.id
+                                ) }}"
+                            >
+                                👁 Ver
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            style="
+                                text-align:center;
+                                padding:40px;
+                                color:var(--text-light);
+                            "
+                        >
+
+                            Nenhum piscineiro cadastrado.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
