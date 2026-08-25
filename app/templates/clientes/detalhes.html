@@ -1,0 +1,458 @@
+<!-- Hydra ERP
+     Responsável por: exibir o perfil completo,
+     histórico e situação financeira de um cliente. -->
+
+{% extends "base.html" %}
+
+{% block title %}
+{{ cliente.nome }} - Hydra ERP
+{% endblock %}
+
+{% block header_title %}
+👤 <span>{{ cliente.nome }}</span>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div class="page-title">
+        {{ cliente.nome }}
+
+        <small>
+            Perfil do cliente
+        </small>
+    </div>
+
+    <div class="action-group">
+
+        <a
+            class="btn btn-ghost"
+            href="{{ url_for('clientes.listar') }}"
+        >
+            ← Voltar
+        </a>
+
+        <a
+            class="btn btn-outline"
+            href="{{ url_for(
+                'clientes.editar',
+                cliente_id=cliente.id
+            ) }}"
+        >
+            ✏️ Editar
+        </a>
+
+        <a
+            class="btn btn-outline"
+            href="{{ url_for(
+                'clientes.mudar_piscineiro',
+                cliente_id=cliente.id
+            ) }}"
+        >
+            🔄 Piscineiro
+        </a>
+
+    </div>
+
+</div>
+
+
+<div class="cards-grid">
+
+    <div class="stat-card blue">
+        <div class="stat-label">
+            Total Comprado
+        </div>
+
+        <div class="stat-value">
+            R$ {{ "%.2f"|format(resumo.total_comprado)|replace(".", ",") }}
+        </div>
+
+        <div class="stat-icon">📈</div>
+    </div>
+
+
+    <div class="stat-card green">
+        <div class="stat-label">
+            Total Pago
+        </div>
+
+        <div class="stat-value">
+            R$ {{ "%.2f"|format(resumo.total_pago)|replace(".", ",") }}
+        </div>
+
+        <div class="stat-icon">✅</div>
+    </div>
+
+
+    <div class="stat-card amber">
+        <div class="stat-label">
+            Pendente
+        </div>
+
+        <div class="stat-value">
+            R$ {{ "%.2f"|format(resumo.total_pendente)|replace(".", ",") }}
+        </div>
+
+        <div class="stat-icon">💰</div>
+    </div>
+
+
+    <div class="stat-card red">
+        <div class="stat-label">
+            Vencido
+        </div>
+
+        <div class="stat-value">
+            R$ {{ "%.2f"|format(resumo.total_vencido)|replace(".", ",") }}
+        </div>
+
+        <div class="stat-icon">⚠️</div>
+    </div>
+
+</div>
+
+
+<div class="two-col">
+
+    <div class="form-card">
+
+        <div class="section-title">
+            👤 Dados
+        </div>
+
+        <div class="fin-row">
+            <span class="fin-label">
+                Telefone
+            </span>
+
+            <span class="fin-val">
+                {{ cliente.telefone or "-" }}
+            </span>
+        </div>
+
+        <div class="fin-row">
+            <span class="fin-label">
+                WhatsApp
+            </span>
+
+            <span class="fin-val">
+                {{ cliente.whatsapp or "-" }}
+            </span>
+        </div>
+
+        <div class="fin-row">
+            <span class="fin-label">
+                Cidade
+            </span>
+
+            <span class="fin-val">
+                {{ cliente.cidade or "-" }}
+            </span>
+        </div>
+
+        <div class="fin-row">
+            <span class="fin-label">
+                Endereço
+            </span>
+
+            <span class="fin-val">
+                {{ cliente.endereco or "-" }}
+            </span>
+        </div>
+
+    </div>
+
+
+    <div class="form-card">
+
+        <div class="section-title">
+            🏊 Piscineiro Atual
+        </div>
+
+        {% if cliente.piscineiro %}
+
+            <strong>
+                {{ cliente.piscineiro.nome }}
+            </strong>
+
+            <div style="margin-top:15px;">
+
+                <a
+                    class="btn btn-ghost btn-sm"
+                    href="{{ url_for(
+                        'piscineiros.detalhes',
+                        piscineiro_id=cliente.piscineiro.id
+                    ) }}"
+                >
+                    👁 Ver Piscineiro
+                </a>
+
+            </div>
+
+        {% else %}
+
+            <span class="badge badge-inactive">
+                Sem piscineiro
+            </span>
+
+        {% endif %}
+
+        <div
+            style="
+                margin-top:20px;
+                color:var(--text-mid);
+            "
+        >
+            {{ cliente.observacao or "Nenhuma observação." }}
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="section-title">
+    📦 Produtos Mais Comprados
+</div>
+
+<div class="table-wrap">
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Valor acumulado</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for produto in produtos %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {{ produto.nome_produto }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ produto.quantidade_total }}
+                    </td>
+
+                    <td>
+                        R$ {{ "%.2f"|format(produto.valor_total)|replace(".", ",") }}
+                    </td>
+
+                </tr>
+
+            {% else %}
+
+                <tr>
+                    <td colspan="3">
+                        Nenhum produto comprado ainda.
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<div class="section-title">
+    📄 Histórico de Notinhas
+</div>
+
+<div class="table-wrap">
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>Data</th>
+                    <th>Piscineiro da Venda</th>
+                    <th>Valor</th>
+                    <th>Pago</th>
+                    <th>Saldo</th>
+                    <th>Situação</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for dados in resumo.notinhas %}
+
+                    {% set notinha = dados.notinha %}
+
+                    <tr>
+
+                        <td>
+                            #{{ notinha.id }}
+                        </td>
+
+                        <td>
+                            {{ notinha.data_retirada.strftime("%d/%m/%Y") }}
+                        </td>
+
+                        <td>
+
+                            {% if notinha.piscineiro %}
+                                {{ notinha.piscineiro.nome }}
+                            {% else %}
+                                Hydra / Direto
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            R$ {{ "%.2f"|format(notinha.valor_total)|replace(".", ",") }}
+                        </td>
+
+                        <td>
+                            R$ {{ "%.2f"|format(dados.pago)|replace(".", ",") }}
+                        </td>
+
+                        <td>
+                            R$ {{ "%.2f"|format(dados.saldo)|replace(".", ",") }}
+                        </td>
+
+                        <td>
+
+                            {% if "VENCIDA" in dados.situacao %}
+
+                                <span class="badge badge-late">
+                                    ⚠️ {{ dados.situacao }}
+                                </span>
+
+                            {% elif dados.situacao == "PAGA" %}
+
+                                <span class="badge badge-paid">
+                                    ✅ PAGA
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge badge-open">
+                                    {{ dados.situacao }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <a
+                                class="btn btn-ghost btn-sm"
+                                href="{{ url_for(
+                                    'notinhas.detalhes',
+                                    notinha_id=notinha.id
+                                ) }}"
+                            >
+                                👁 Ver
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="8">
+                            Nenhuma notinha registrada.
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<div class="section-title">
+    🔄 Histórico de Piscineiros
+</div>
+
+<div class="table-wrap">
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Anterior</th>
+                <th>Novo</th>
+                <th>Observação</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for item in historico %}
+
+                <tr>
+
+                    <td>
+                        {{ item.data_alteracao.strftime("%d/%m/%Y às %H:%M") }}
+                    </td>
+
+                    <td>
+                        {% if item.piscineiro_anterior %}
+                            {{ item.piscineiro_anterior.nome }}
+                        {% else %}
+                            Sem piscineiro
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if item.piscineiro_novo %}
+                            {{ item.piscineiro_novo.nome }}
+                        {% else %}
+                            Sem piscineiro
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {{ item.observacao or "-" }}
+                    </td>
+
+                </tr>
+
+            {% else %}
+
+                <tr>
+                    <td colspan="4">
+                        Nenhuma mudança de piscineiro registrada.
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

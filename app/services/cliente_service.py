@@ -7,6 +7,13 @@ from app.models.cliente import Cliente
 from app.models.piscineiro import Piscineiro
 from app.models.historico_piscineiro_cliente import HistoricoPiscineiroCliente
 
+from decimal import Decimal
+
+from app.models.notinha import Notinha
+from app.models.item_notinha import ItemNotinha
+from app.models.historico_piscineiro_cliente import HistoricoPiscineiroCliente
+from app.services.notinha_service import NotinhaService
+
 
 class ClienteService:
 
@@ -160,3 +167,139 @@ class ClienteService:
         db.session.commit()
 
         return cliente
+
+    @staticmethod
+    def resumo_financeiro(cliente_id):
+
+        cliente = ClienteService.buscar_por_id(
+            cliente_id
+        )
+
+        if not cliente:
+            raise ValueError(
+                "Cliente não encontrado."
+            )
+
+        notinhas = (
+            Notinha.query
+            .filter(
+                Notinha.cliente_id == cliente.id,
+                Notinha.status != "CANCELADA"
+            )
+            .order_by(
+                Notinha.data_retirada.desc()
+            )
+            .all()
+        )
+
+        total_comprado = Decimal("0.00")
+        total_pago = Decimal("0.00")
+        total_pendente = Decimal("0.00")
+        total_vencido = Decimal("0.00")
+
+        quantidade_notinhas = 0
+        quantidade_vencidas = 0
+
+        dados_notinhas = []
+
+        for notinha in notinhas:
+
+            quantidade_notinhas += 1
+
+            valor = Decimal(
+                str(notinha.valor_total)
+            )
+
+            pago = (
+                NotinhaService.total_pago(
+                    notinha
+                )
+            )
+
+            saldo = (
+                NotinhaService.saldo_pendente(
+                    notinha
+                )
+            )
+
+            situacao = (
+                NotinhaService.situacao(
+                    notinha
+                )
+            )
+
+            total_comprado += valor
+            total_pago += pago
+            total_pendente += saldo
+
+            if "VENCIDA" in situacao:
+                quantidade_vencidas += 1
+                total_vencido += saldo
+
+            dados_notinhas.append({
+                "notinha": notinha,
+                "pago": pago,
+                "saldo": saldo,
+                "situacao": situacao
+            })
+
+        return {
+            "total_comprado": total_comprado,
+            "total_pago": total_pago,
+            "total_pendente": total_pendente,
+            "total_vencido": total_vencido,
+            "quantidade_notinhas": quantidade_notinhas,
+            "quantidade_vencidas": quantidade_vencidas,
+            "notinhas": dados_notinhas
+        }
+
+
+    @staticmethod
+    def historico_piscineiros(cliente_id):
+
+        return (
+            HistoricoPiscineiroCliente.query
+            .filter_by(
+                cliente_id=cliente_id
+            )
+            .order_by(
+                HistoricoPiscineiroCliente.data_alteracao.desc()
+            )
+            .all()
+        )
+
+
+    @staticmethod
+    def produtos_mais_comprados(cliente_id):
+
+        resultados = (
+            db.session.query(
+                ItemNotinha.nome_produto,
+                db.func.sum(
+                    ItemNotinha.quantidade
+                ).label("quantidade_total"),
+                db.func.sum(
+                    ItemNotinha.subtotal
+                ).label("valor_total")
+            )
+            .join(
+                Notinha,
+                ItemNotinha.notinha_id == Notinha.id
+            )
+            .filter(
+                Notinha.cliente_id == cliente_id,
+                Notinha.status != "CANCELADA"
+            )
+            .group_by(
+                ItemNotinha.nome_produto
+            )
+            .order_by(
+                db.func.sum(
+                    ItemNotinha.quantidade
+                ).desc()
+            )
+            .limit(10)
+            .all()
+        )
+
+        return resultados

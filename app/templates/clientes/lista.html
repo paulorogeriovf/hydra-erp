@@ -182,6 +182,16 @@ Clientes - Hydra ERP
                             <div class="action-group">
 
                                 <a
+    class="btn btn-primary btn-sm"
+    href="{{ url_for(
+        'clientes.detalhes',
+        cliente_id=cliente.id
+    ) }}"
+>
+    👁 Ver
+</a>
+
+                                <a
                                     class="btn btn-ghost btn-sm"
                                     href="{{ url_for(
                                         'clientes.editar',

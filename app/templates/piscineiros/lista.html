@@ -177,6 +177,16 @@ Piscineiros - Hydra ERP
                             <div class="action-group">
 
                                 <a
+    class="btn btn-primary btn-sm"
+    href="{{ url_for(
+        'piscineiros.detalhes',
+        piscineiro_id=piscineiro.id
+    ) }}"
+>
+    👁 Ver
+</a>
+
+                                <a
                                     class="btn btn-ghost btn-sm"
                                     href="{{ url_for(
                                         'piscineiros.editar',

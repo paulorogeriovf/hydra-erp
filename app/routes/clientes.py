@@ -147,3 +147,41 @@ def alterar_status(cliente_id):
         flash(str(erro), "error")
 
     return redirect(url_for("clientes.listar"))
+
+@clientes_bp.route("/<int:cliente_id>")
+def detalhes(cliente_id):
+
+    cliente = (
+        ClienteService.buscar_por_id(
+            cliente_id
+        )
+    )
+
+    if not cliente:
+        return "Cliente não encontrado.", 404
+
+    resumo = (
+        ClienteService.resumo_financeiro(
+            cliente_id
+        )
+    )
+
+    historico = (
+        ClienteService.historico_piscineiros(
+            cliente_id
+        )
+    )
+
+    produtos = (
+        ClienteService.produtos_mais_comprados(
+            cliente_id
+        )
+    )
+
+    return render_template(
+        "clientes/detalhes.html",
+        cliente=cliente,
+        resumo=resumo,
+        historico=historico,
+        produtos=produtos
+    )

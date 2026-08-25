@@ -107,3 +107,51 @@ def alterar_status(piscineiro_id):
         flash(str(erro), "error")
 
     return redirect(url_for("piscineiros.listar"))
+
+@piscineiros_bp.route("/<int:piscineiro_id>")
+def detalhes(piscineiro_id):
+
+    piscineiro = (
+        PiscineiroService.buscar_por_id(
+            piscineiro_id
+        )
+    )
+
+    if not piscineiro:
+        return "Piscineiro não encontrado.", 404
+
+    resumo = (
+        PiscineiroService.resumo_financeiro(
+            piscineiro_id
+        )
+    )
+
+    produtos_mais_vendidos = (
+        PiscineiroService
+        .produtos_mais_vendidos(
+            piscineiro_id
+        )
+    )
+
+    grafico_vendas = (
+        PiscineiroService
+        .vendas_ultimos_meses(
+            piscineiro_id
+        )
+    )
+
+    clientes_atuais = sorted(
+        piscineiro.clientes,
+        key=lambda cliente: cliente.nome.lower()
+    )
+
+    return render_template(
+        "piscineiros/detalhes.html",
+        piscineiro=piscineiro,
+        clientes=clientes_atuais,
+        resumo=resumo,
+        produtos_mais_vendidos=produtos_mais_vendidos,
+        grafico_vendas=grafico_vendas
+    )
+
+
