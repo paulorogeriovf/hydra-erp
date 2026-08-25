@@ -113,12 +113,12 @@
             </div>
 
             <a
-                class="nav-item {% if request.blueprint == 'notinhas' %}active{% endif %}"
-                href="#"
-            >
-                <span class="nav-icon">📄</span>
-                Notinhas
-            </a>
+    class="nav-item {% if request.blueprint == 'notinhas' %}active{% endif %}"
+    href="{{ url_for('notinhas.listar') }}"
+>
+    <span class="nav-icon">📄</span>
+    Notinhas
+</a>
 
             <a
                 class="nav-item {% if request.blueprint == 'comissoes' %}active{% endif %}"

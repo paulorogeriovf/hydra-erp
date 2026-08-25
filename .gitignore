@@ -23,3 +23,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Arquivos enviados para o Hydra ERP
+data/uploads/

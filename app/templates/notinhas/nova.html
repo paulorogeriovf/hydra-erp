@@ -1,0 +1,650 @@
+<!-- Hydra ERP
+     Responsável por: cadastrar uma nova notinha
+     utilizando clientes e produtos existentes no ERP. -->
+
+{% extends "base.html" %}
+
+{% block title %}
+Nova Notinha - Hydra ERP
+{% endblock %}
+
+{% block header_title %}
+➕ <span>Nova Notinha</span>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div class="page-title">
+        Nova Notinha
+
+        <small>
+            Registre uma nova retirada ou compra
+        </small>
+    </div>
+
+</div>
+
+
+<form method="POST">
+
+    <div class="form-card">
+
+        <!-- CLIENTE -->
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>
+                    👤 Cliente *
+                </label>
+
+                <select
+                    name="cliente_id"
+                    id="clienteSelect"
+                    required
+                >
+
+                    <option value="">
+                        Selecione o cliente...
+                    </option>
+
+                    {% for cliente in clientes %}
+
+                        <option
+                            value="{{ cliente.id }}"
+                            data-piscineiro="{{
+                                cliente.piscineiro.nome
+                                if cliente.piscineiro
+                                else 'Sem piscineiro'
+                            }}"
+                        >
+                            {{ cliente.nome }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    🏊 Piscineiro relacionado
+                </label>
+
+                <input
+                    type="text"
+                    id="piscineiroExibicao"
+                    value="Selecione um cliente"
+                    readonly
+                >
+
+                <small
+                    style="
+                        display:block;
+                        color:var(--text-light);
+                        margin-top:5px;
+                    "
+                >
+                    O piscineiro é preenchido automaticamente pelo cadastro do cliente.
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- DATAS -->
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>
+                    📅 Data da retirada *
+                </label>
+
+                <input
+                    type="date"
+                    name="data_retirada"
+                    value="{{ hoje }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    ⏳ Data de vencimento *
+                </label>
+
+                <input
+                    type="date"
+                    name="data_vencimento"
+                    value="{{ vencimento_padrao }}"
+                    required
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- COBRANÇA -->
+
+        <div class="form-group">
+
+            <label>
+                💬 Responsável pela cobrança
+            </label>
+
+            <select name="responsavel_cobranca">
+
+                <option value="PISCINEIRO">
+                    🏊 Piscineiro
+                </option>
+
+                <option value="HYDRA">
+                    🏪 Hydra
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="section-title">
+            📦 Produtos
+        </div>
+
+
+        <div class="products-table-wrap">
+
+            <div style="overflow-x:auto;">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Produto</th>
+                            <th>Quantidade</th>
+                            <th>Valor Unitário</th>
+                            <th>Subtotal</th>
+                            <th></th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="itensNotinha">
+
+                        <tr class="item-notinha">
+
+                            <td>
+
+                                <select
+                                    name="produto_id[]"
+                                    class="produto-select"
+                                    required
+                                >
+
+                                    <option value="">
+                                        Selecione...
+                                    </option>
+
+                                    {% for produto in produtos %}
+
+                                        <option
+                                            value="{{ produto.id }}"
+                                            data-preco="{{ produto.preco_normal }}"
+                                        >
+                                            {{ produto.nome }}
+
+                                            {% if produto.marca %}
+                                                - {{ produto.marca }}
+                                            {% endif %}
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </td>
+
+
+                            <td>
+
+                                <input
+                                    type="number"
+                                    name="quantidade[]"
+                                    class="quantidade"
+                                    min="1"
+                                    step="1"
+                                    value="1"
+                                    required
+                                >
+
+                            </td>
+
+
+                            <td>
+
+                                <input
+                                    type="number"
+                                    name="preco_unitario[]"
+                                    class="preco-unitario"
+                                    min="0.01"
+                                    step="0.01"
+                                    required
+                                >
+
+                            </td>
+
+
+                            <td>
+
+                                <strong class="subtotal">
+                                    R$ 0,00
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+
+                                <button
+                                    class="btn btn-danger btn-sm remover-item"
+                                    type="button"
+                                >
+                                    ✕
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <div
+            style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                gap:12px;
+                margin-top:14px;
+                flex-wrap:wrap;
+            "
+        >
+
+            <button
+                class="btn btn-ghost btn-sm"
+                id="adicionarProduto"
+                type="button"
+            >
+                ➕ Adicionar Produto
+            </button>
+
+
+            <div
+                style="
+                    font-size:18px;
+                    font-weight:700;
+                    color:var(--pool-dark);
+                "
+            >
+                Total:
+                <span id="totalNotinha">
+                    R$ 0,00
+                </span>
+            </div>
+
+        </div>
+
+
+        <div
+            class="form-group"
+            style="margin-top:22px;"
+        >
+
+            <label>
+                📝 Observação inicial
+            </label>
+
+            <textarea
+                name="observacao"
+                placeholder="Ex.: Cliente informou que pagará no final do mês..."
+            ></textarea>
+
+        </div>
+
+
+        <div class="action-group">
+
+            <button
+                class="btn btn-primary"
+                type="submit"
+            >
+                💾 Salvar Notinha
+            </button>
+
+            <a
+                class="btn btn-ghost"
+                href="{{ url_for('notinhas.listar') }}"
+            >
+                Cancelar
+            </a>
+
+        </div>
+
+    </div>
+
+</form>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const clienteSelect =
+            document.getElementById(
+                "clienteSelect"
+            );
+
+        const piscineiroExibicao =
+            document.getElementById(
+                "piscineiroExibicao"
+            );
+
+
+        clienteSelect.addEventListener(
+            "change",
+            function () {
+
+                const opcao =
+                    this.options[
+                        this.selectedIndex
+                    ];
+
+                piscineiroExibicao.value =
+                    opcao.dataset.piscineiro
+                    || "Sem piscineiro";
+
+            }
+        );
+
+
+        function formatarMoeda(valor) {
+
+            return valor.toLocaleString(
+                "pt-BR",
+                {
+                    style: "currency",
+                    currency: "BRL"
+                }
+            );
+
+        }
+
+
+        function atualizarLinha(linha) {
+
+            const quantidade =
+                Number(
+                    linha
+                        .querySelector(
+                            ".quantidade"
+                        )
+                        .value
+                ) || 0;
+
+            const preco =
+                Number(
+                    linha
+                        .querySelector(
+                            ".preco-unitario"
+                        )
+                        .value
+                ) || 0;
+
+            const subtotal =
+                quantidade * preco;
+
+            linha
+                .querySelector(
+                    ".subtotal"
+                )
+                .textContent =
+                formatarMoeda(
+                    subtotal
+                );
+
+            atualizarTotal();
+
+        }
+
+
+        function atualizarTotal() {
+
+            let total = 0;
+
+            document
+                .querySelectorAll(
+                    ".item-notinha"
+                )
+                .forEach(
+                    linha => {
+
+                        const quantidade =
+                            Number(
+                                linha
+                                    .querySelector(
+                                        ".quantidade"
+                                    )
+                                    .value
+                            ) || 0;
+
+                        const preco =
+                            Number(
+                                linha
+                                    .querySelector(
+                                        ".preco-unitario"
+                                    )
+                                    .value
+                            ) || 0;
+
+                        total +=
+                            quantidade
+                            * preco;
+
+                    }
+                );
+
+            document
+                .getElementById(
+                    "totalNotinha"
+                )
+                .textContent =
+                formatarMoeda(
+                    total
+                );
+
+        }
+
+
+        function configurarLinha(linha) {
+
+            const produto =
+                linha.querySelector(
+                    ".produto-select"
+                );
+
+            const quantidade =
+                linha.querySelector(
+                    ".quantidade"
+                );
+
+            const preco =
+                linha.querySelector(
+                    ".preco-unitario"
+                );
+
+            const remover =
+                linha.querySelector(
+                    ".remover-item"
+                );
+
+
+            produto.addEventListener(
+                "change",
+                function () {
+
+                    const opcao =
+                        this.options[
+                            this.selectedIndex
+                        ];
+
+                    const precoProduto =
+                        opcao.dataset.preco;
+
+                    if (precoProduto) {
+                        preco.value =
+                            precoProduto;
+                    }
+
+                    atualizarLinha(
+                        linha
+                    );
+
+                }
+            );
+
+
+            quantidade.addEventListener(
+                "input",
+                () => atualizarLinha(
+                    linha
+                )
+            );
+
+
+            preco.addEventListener(
+                "input",
+                () => atualizarLinha(
+                    linha
+                )
+            );
+
+
+            remover.addEventListener(
+                "click",
+                function () {
+
+                    const linhas =
+                        document.querySelectorAll(
+                            ".item-notinha"
+                        );
+
+                    if (
+                        linhas.length === 1
+                    ) {
+
+                        alert(
+                            "A notinha precisa ter pelo menos um produto."
+                        );
+
+                        return;
+
+                    }
+
+                    linha.remove();
+
+                    atualizarTotal();
+
+                }
+            );
+
+        }
+
+
+        document
+            .querySelectorAll(
+                ".item-notinha"
+            )
+            .forEach(
+                configurarLinha
+            );
+
+
+        document
+            .getElementById(
+                "adicionarProduto"
+            )
+            .addEventListener(
+                "click",
+                function () {
+
+                    const corpo =
+                        document.getElementById(
+                            "itensNotinha"
+                        );
+
+                    const original =
+                        document.querySelector(
+                            ".item-notinha"
+                        );
+
+                    const nova =
+                        original.cloneNode(
+                            true
+                        );
+
+                    nova.querySelector(
+                        ".produto-select"
+                    ).value = "";
+
+                    nova.querySelector(
+                        ".quantidade"
+                    ).value = 1;
+
+                    nova.querySelector(
+                        ".preco-unitario"
+                    ).value = "";
+
+                    nova.querySelector(
+                        ".subtotal"
+                    ).textContent =
+                        "R$ 0,00";
+
+                    corpo.appendChild(
+                        nova
+                    );
+
+                    configurarLinha(
+                        nova
+                    );
+
+                }
+            );
+
+    }
+);
+
+</script>
+
+{% endblock %}

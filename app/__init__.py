@@ -26,6 +26,7 @@ def create_app():
     from app.routes.piscineiros import piscineiros_bp
     from app.routes.clientes import clientes_bp
     from app.routes.orcamentos import orcamentos_bp
+    from app.routes.notinhas import notinhas_bp
 
     # Registra as rotas no Flask.
     app.register_blueprint(dashboard_bp)
@@ -33,5 +34,6 @@ def create_app():
     app.register_blueprint(piscineiros_bp)
     app.register_blueprint(clientes_bp)
     app.register_blueprint(orcamentos_bp)
+    app.register_blueprint(notinhas_bp)
 
     return app

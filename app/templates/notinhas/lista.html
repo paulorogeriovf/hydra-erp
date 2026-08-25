@@ -1,0 +1,217 @@
+<!-- Hydra ERP
+     Responsável por: exibir as notinhas e suas situações financeiras. -->
+
+{% extends "base.html" %}
+
+{% block title %}
+Notinhas - Hydra ERP
+{% endblock %}
+
+{% block header_title %}
+📄 <span>Notinhas</span>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div class="page-title">
+        Notinhas
+
+        <small>
+            Controle de valores em aberto e pagamentos
+        </small>
+    </div>
+
+    <a
+        class="btn btn-primary"
+        href="{{ url_for('notinhas.nova') }}"
+    >
+        ➕ Nova Notinha
+    </a>
+
+</div>
+
+
+<div class="table-wrap">
+
+    <div class="table-head">
+
+        <span class="table-head-title">
+            📄 Notinhas cadastradas
+        </span>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Piscineiro</th>
+                    <th>Valor</th>
+                    <th>Pago</th>
+                    <th>Pendente</th>
+                    <th>Vencimento</th>
+                    <th>Status</th>
+                    <th>Cobrança</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for dados in dados_notinhas %}
+
+                    {% set notinha = dados.notinha %}
+
+                    <tr>
+
+                        <td>
+                            #{{ notinha.id }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                {{ notinha.cliente.nome }}
+                            </strong>
+                        </td>
+
+                        <td>
+
+                            {% if notinha.piscineiro %}
+
+                                {{ notinha.piscineiro.nome }}
+
+                            {% else %}
+
+                                Hydra / Direto
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            R$ {{ "%.2f"|format(notinha.valor_total)|replace(".", ",") }}
+                        </td>
+
+                        <td>
+                            R$ {{ "%.2f"|format(dados.total_pago)|replace(".", ",") }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                R$ {{ "%.2f"|format(dados.saldo)|replace(".", ",") }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ notinha.data_vencimento.strftime("%d/%m/%Y") }}
+                        </td>
+
+                        <td>
+
+                            {% if dados.situacao == "PAGA" %}
+
+                                <span class="badge badge-paid">
+                                    ✅ Paga
+                                </span>
+
+                            {% elif dados.situacao == "VENCIDA" %}
+
+                                <span class="badge badge-late">
+                                    ⚠️ Vencida
+                                </span>
+
+                            {% elif dados.situacao == "PARCIAL_VENCIDA" %}
+
+                                <span class="badge badge-late">
+                                    ⚠️ Parcial / Vencida
+                                </span>
+
+                            {% elif dados.situacao == "PARCIAL" %}
+
+                                <span class="badge badge-open">
+                                    💰 Parcial
+                                </span>
+
+                            {% elif dados.situacao == "CANCELADA" %}
+
+                                <span class="badge badge-cancel">
+                                    Cancelada
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge badge-open">
+                                    Em aberto
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if notinha.responsavel_cobranca == "HYDRA" %}
+
+                                🏪 Hydra
+
+                            {% else %}
+
+                                🏊 Piscineiro
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <a
+                                class="btn btn-ghost btn-sm"
+                                href="{{ url_for(
+                                    'notinhas.detalhes',
+                                    notinha_id=notinha.id
+                                ) }}"
+                            >
+                                👁 Ver
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="10"
+                            style="
+                                text-align:center;
+                                padding:40px;
+                                color:var(--text-light);
+                            "
+                        >
+
+                            Nenhuma notinha cadastrada.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

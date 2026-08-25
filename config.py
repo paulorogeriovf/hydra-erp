@@ -8,14 +8,19 @@ load_dotenv()
 
 
 class Config:
+
     SECRET_KEY = os.getenv("SECRET_KEY")
 
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    BASE_DIR = os.path.abspath(
+        os.path.dirname(__file__)
+    )
+
     UPLOAD_FOLDER = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
+        BASE_DIR,
         "data",
         "uploads"
     )
