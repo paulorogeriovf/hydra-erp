@@ -1,39 +1,61 @@
 <!-- Hydra ERP
      Responsável por: cadastrar uma nova notinha
-     utilizando clientes e produtos existentes no ERP. -->
+     utilizando clientes e produtos existentes no ERP,
+     com possibilidade de anexar a foto original. -->
 
 {% extends "base.html" %}
+
 
 {% block title %}
 Nova Notinha - Hydra ERP
 {% endblock %}
 
+
 {% block header_title %}
 ➕ <span>Nova Notinha</span>
 {% endblock %}
 
+
 {% block content %}
+
+
+<!-- =========================================================
+     CABEÇALHO
+========================================================= -->
 
 <div class="page-header">
 
     <div class="page-title">
+
         Nova Notinha
 
         <small>
             Registre uma nova retirada ou compra
         </small>
+
     </div>
 
 </div>
 
 
-<form method="POST">
+<!-- =========================================================
+     FORMULÁRIO
+========================================================= -->
+
+<form
+    method="POST"
+    enctype="multipart/form-data"
+>
 
     <div class="form-card">
 
-        <!-- CLIENTE -->
+
+        <!-- =================================================
+             CLIENTE
+        ================================================== -->
 
         <div class="form-row">
+
 
             <div class="form-group">
 
@@ -50,6 +72,7 @@ Nova Notinha - Hydra ERP
                     <option value="">
                         Selecione o cliente...
                     </option>
+
 
                     {% for cliente in clientes %}
 
@@ -91,17 +114,22 @@ Nova Notinha - Hydra ERP
                         margin-top:5px;
                     "
                 >
-                    O piscineiro é preenchido automaticamente pelo cadastro do cliente.
+                    O piscineiro é preenchido automaticamente
+                    pelo cadastro do cliente.
                 </small>
 
             </div>
 
+
         </div>
 
 
-        <!-- DATAS -->
+        <!-- =================================================
+             DATAS
+        ================================================== -->
 
         <div class="form-row">
+
 
             <div class="form-group">
 
@@ -134,10 +162,13 @@ Nova Notinha - Hydra ERP
 
             </div>
 
+
         </div>
 
 
-        <!-- COBRANÇA -->
+        <!-- =================================================
+             RESPONSÁVEL PELA COBRANÇA
+        ================================================== -->
 
         <div class="form-group">
 
@@ -145,7 +176,9 @@ Nova Notinha - Hydra ERP
                 💬 Responsável pela cobrança
             </label>
 
-            <select name="responsavel_cobranca">
+            <select
+                name="responsavel_cobranca"
+            >
 
                 <option value="PISCINEIRO">
                     🏊 Piscineiro
@@ -160,6 +193,10 @@ Nova Notinha - Hydra ERP
         </div>
 
 
+        <!-- =================================================
+             PRODUTOS
+        ================================================== -->
+
         <div class="section-title">
             📦 Produtos
         </div>
@@ -171,21 +208,41 @@ Nova Notinha - Hydra ERP
 
                 <table>
 
+
                     <thead>
 
                         <tr>
-                            <th>Produto</th>
-                            <th>Quantidade</th>
-                            <th>Valor Unitário</th>
-                            <th>Subtotal</th>
+
+                            <th>
+                                Produto
+                            </th>
+
+                            <th>
+                                Quantidade
+                            </th>
+
+                            <th>
+                                Valor Unitário
+                            </th>
+
+                            <th>
+                                Subtotal
+                            </th>
+
                             <th></th>
+
                         </tr>
 
                     </thead>
 
+
                     <tbody id="itensNotinha">
 
+
+                        <!-- PRIMEIRO PRODUTO -->
+
                         <tr class="item-notinha">
+
 
                             <td>
 
@@ -199,17 +256,23 @@ Nova Notinha - Hydra ERP
                                         Selecione...
                                     </option>
 
+
                                     {% for produto in produtos %}
 
                                         <option
                                             value="{{ produto.id }}"
                                             data-preco="{{ produto.preco_normal }}"
                                         >
+
                                             {{ produto.nome }}
 
                                             {% if produto.marca %}
-                                                - {{ produto.marca }}
+
+                                                -
+                                                {{ produto.marca }}
+
                                             {% endif %}
+
                                         </option>
 
                                     {% endfor %}
@@ -250,7 +313,9 @@ Nova Notinha - Hydra ERP
 
                             <td>
 
-                                <strong class="subtotal">
+                                <strong
+                                    class="subtotal"
+                                >
                                     R$ 0,00
                                 </strong>
 
@@ -260,7 +325,12 @@ Nova Notinha - Hydra ERP
                             <td>
 
                                 <button
-                                    class="btn btn-danger btn-sm remover-item"
+                                    class="
+                                        btn
+                                        btn-danger
+                                        btn-sm
+                                        remover-item
+                                    "
                                     type="button"
                                 >
                                     ✕
@@ -268,9 +338,12 @@ Nova Notinha - Hydra ERP
 
                             </td>
 
+
                         </tr>
 
+
                     </tbody>
+
 
                 </table>
 
@@ -278,6 +351,10 @@ Nova Notinha - Hydra ERP
 
         </div>
 
+
+        <!-- =================================================
+             ADICIONAR PRODUTO / TOTAL
+        ================================================== -->
 
         <div
             style="
@@ -306,14 +383,21 @@ Nova Notinha - Hydra ERP
                     color:var(--pool-dark);
                 "
             >
+
                 Total:
+
                 <span id="totalNotinha">
                     R$ 0,00
                 </span>
+
             </div>
 
         </div>
 
+
+        <!-- =================================================
+             OBSERVAÇÃO
+        ================================================== -->
 
         <div
             class="form-group"
@@ -332,6 +416,46 @@ Nova Notinha - Hydra ERP
         </div>
 
 
+        <!-- =================================================
+             FOTO DA NOTINHA
+        ================================================== -->
+
+        <div class="section-title">
+            📷 Foto da Notinha
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Foto ou arquivo
+            </label>
+
+            <input
+                type="file"
+                name="arquivo"
+                accept=".jpg,.jpeg,.png,.pdf"
+            >
+
+            <small
+                style="
+                    display:block;
+                    margin-top:5px;
+                    color:var(--text-light);
+                "
+            >
+                Você pode anexar a foto original da notinha
+                já durante o cadastro.
+                Formatos aceitos: JPG, JPEG, PNG ou PDF.
+            </small>
+
+        </div>
+
+
+        <!-- =================================================
+             AÇÕES
+        ================================================== -->
+
         <div class="action-group">
 
             <button
@@ -340,6 +464,7 @@ Nova Notinha - Hydra ERP
             >
                 💾 Salvar Notinha
             </button>
+
 
             <a
                 class="btn btn-ghost"
@@ -350,10 +475,15 @@ Nova Notinha - Hydra ERP
 
         </div>
 
+
     </div>
 
 </form>
 
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
 
 <script>
 
@@ -361,10 +491,16 @@ document.addEventListener(
     "DOMContentLoaded",
     function () {
 
+
+        // =====================================================
+        // CLIENTE / PISCINEIRO
+        // =====================================================
+
         const clienteSelect =
             document.getElementById(
                 "clienteSelect"
             );
+
 
         const piscineiroExibicao =
             document.getElementById(
@@ -381,6 +517,7 @@ document.addEventListener(
                         this.selectedIndex
                     ];
 
+
                 piscineiroExibicao.value =
                     opcao.dataset.piscineiro
                     || "Sem piscineiro";
@@ -388,6 +525,10 @@ document.addEventListener(
             }
         );
 
+
+        // =====================================================
+        // FORMATAÇÃO DE MOEDA
+        // =====================================================
 
         function formatarMoeda(valor) {
 
@@ -402,6 +543,10 @@ document.addEventListener(
         }
 
 
+        // =====================================================
+        // ATUALIZAR LINHA
+        // =====================================================
+
         function atualizarLinha(linha) {
 
             const quantidade =
@@ -413,6 +558,7 @@ document.addEventListener(
                         .value
                 ) || 0;
 
+
             const preco =
                 Number(
                     linha
@@ -422,26 +568,34 @@ document.addEventListener(
                         .value
                 ) || 0;
 
+
             const subtotal =
                 quantidade * preco;
+
 
             linha
                 .querySelector(
                     ".subtotal"
                 )
                 .textContent =
-                formatarMoeda(
-                    subtotal
-                );
+                    formatarMoeda(
+                        subtotal
+                    );
+
 
             atualizarTotal();
 
         }
 
 
+        // =====================================================
+        // ATUALIZAR TOTAL
+        // =====================================================
+
         function atualizarTotal() {
 
             let total = 0;
+
 
             document
                 .querySelectorAll(
@@ -459,6 +613,7 @@ document.addEventListener(
                                     .value
                             ) || 0;
 
+
                         const preco =
                             Number(
                                 linha
@@ -468,6 +623,7 @@ document.addEventListener(
                                     .value
                             ) || 0;
 
+
                         total +=
                             quantidade
                             * preco;
@@ -475,17 +631,22 @@ document.addEventListener(
                     }
                 );
 
+
             document
                 .getElementById(
                     "totalNotinha"
                 )
                 .textContent =
-                formatarMoeda(
-                    total
-                );
+                    formatarMoeda(
+                        total
+                    );
 
         }
 
+
+        // =====================================================
+        // CONFIGURAR LINHA DE PRODUTO
+        // =====================================================
 
         function configurarLinha(linha) {
 
@@ -494,21 +655,26 @@ document.addEventListener(
                     ".produto-select"
                 );
 
+
             const quantidade =
                 linha.querySelector(
                     ".quantidade"
                 );
+
 
             const preco =
                 linha.querySelector(
                     ".preco-unitario"
                 );
 
+
             const remover =
                 linha.querySelector(
                     ".remover-item"
                 );
 
+
+            // PRODUTO
 
             produto.addEventListener(
                 "change",
@@ -519,13 +685,22 @@ document.addEventListener(
                             this.selectedIndex
                         ];
 
+
                     const precoProduto =
                         opcao.dataset.preco;
 
+
                     if (precoProduto) {
+
                         preco.value =
                             precoProduto;
+
+                    } else {
+
+                        preco.value = "";
+
                     }
+
 
                     atualizarLinha(
                         linha
@@ -535,21 +710,35 @@ document.addEventListener(
             );
 
 
+            // QUANTIDADE
+
             quantidade.addEventListener(
                 "input",
-                () => atualizarLinha(
-                    linha
-                )
+                function () {
+
+                    atualizarLinha(
+                        linha
+                    );
+
+                }
             );
 
+
+            // PREÇO
 
             preco.addEventListener(
                 "input",
-                () => atualizarLinha(
-                    linha
-                )
+                function () {
+
+                    atualizarLinha(
+                        linha
+                    );
+
+                }
             );
 
+
+            // REMOVER
 
             remover.addEventListener(
                 "click",
@@ -559,6 +748,7 @@ document.addEventListener(
                         document.querySelectorAll(
                             ".item-notinha"
                         );
+
 
                     if (
                         linhas.length === 1
@@ -572,7 +762,9 @@ document.addEventListener(
 
                     }
 
+
                     linha.remove();
+
 
                     atualizarTotal();
 
@@ -582,6 +774,10 @@ document.addEventListener(
         }
 
 
+        // =====================================================
+        // CONFIGURAR PRIMEIRA LINHA
+        // =====================================================
+
         document
             .querySelectorAll(
                 ".item-notinha"
@@ -590,6 +786,10 @@ document.addEventListener(
                 configurarLinha
             );
 
+
+        // =====================================================
+        // ADICIONAR NOVO PRODUTO
+        // =====================================================
 
         document
             .getElementById(
@@ -604,36 +804,52 @@ document.addEventListener(
                             "itensNotinha"
                         );
 
+
                     const original =
                         document.querySelector(
                             ".item-notinha"
                         );
+
 
                     const nova =
                         original.cloneNode(
                             true
                         );
 
-                    nova.querySelector(
-                        ".produto-select"
-                    ).value = "";
 
-                    nova.querySelector(
-                        ".quantidade"
-                    ).value = 1;
+                    nova
+                        .querySelector(
+                            ".produto-select"
+                        )
+                        .value = "";
 
-                    nova.querySelector(
-                        ".preco-unitario"
-                    ).value = "";
 
-                    nova.querySelector(
-                        ".subtotal"
-                    ).textContent =
-                        "R$ 0,00";
+                    nova
+                        .querySelector(
+                            ".quantidade"
+                        )
+                        .value = 1;
+
+
+                    nova
+                        .querySelector(
+                            ".preco-unitario"
+                        )
+                        .value = "";
+
+
+                    nova
+                        .querySelector(
+                            ".subtotal"
+                        )
+                        .textContent =
+                            "R$ 0,00";
+
 
                     corpo.appendChild(
                         nova
                     );
+
 
                     configurarLinha(
                         nova
@@ -642,9 +858,18 @@ document.addEventListener(
                 }
             );
 
+
+        // =====================================================
+        // TOTAL INICIAL
+        // =====================================================
+
+        atualizarTotal();
+
+
     }
 );
 
 </script>
+
 
 {% endblock %}

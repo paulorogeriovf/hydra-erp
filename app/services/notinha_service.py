@@ -487,3 +487,122 @@ class NotinhaService:
             return "PARCIAL"
 
         return "ABERTA"
+
+        # =====================================================
+    # DIAS DE ATRASO
+    # =====================================================
+
+    @staticmethod
+    def dias_atraso(notinha):
+
+        if not notinha.data_vencimento:
+            return 0
+
+        if notinha.status in {
+            "PAGA",
+            "CANCELADA"
+        }:
+            return 0
+
+        hoje = date.today()
+
+        if notinha.data_vencimento >= hoje:
+            return 0
+
+        diferenca = (
+            hoje
+            - notinha.data_vencimento
+        )
+
+        return diferenca.days
+
+
+    # =====================================================
+    # MENSAGEM INDIVIDUAL DE COBRANÇA
+    # =====================================================
+
+    @staticmethod
+    def mensagem_cobranca(notinha):
+
+        if not notinha:
+            raise ValueError(
+                "Notinha não encontrada."
+            )
+
+        saldo = (
+            NotinhaService.saldo_pendente(
+                notinha
+            )
+        )
+
+        if saldo <= 0:
+            return None
+
+        cliente = (
+            notinha.cliente.nome
+            if notinha.cliente
+            else "Cliente"
+        )
+
+        data_retirada = (
+            notinha.data_retirada
+            .strftime("%d/%m/%Y")
+        )
+
+        data_vencimento = (
+            notinha.data_vencimento
+            .strftime("%d/%m/%Y")
+        )
+
+        valor_formatado = (
+            f"{saldo:,.2f}"
+            .replace(",", "X")
+            .replace(".", ",")
+            .replace("X", ".")
+        )
+
+        dias = (
+            NotinhaService.dias_atraso(
+                notinha
+            )
+        )
+
+
+        # ==============================
+        # NOTINHA VENCIDA
+        # ==============================
+
+        if dias > 0:
+
+            texto_atraso = (
+                "1 dia de atraso"
+                if dias == 1
+                else f"{dias} dias de atraso"
+            )
+
+            return (
+                f"Olá, {cliente}! Tudo bem? 😊\n\n"
+                f"Verificamos que a notinha do dia "
+                f"*{data_retirada}*, no valor pendente de "
+                f"*R$ {valor_formatado}*, ainda consta em aberto "
+                f"conosco.\n\n"
+                f"O vencimento foi em *{data_vencimento}* e "
+                f"atualmente está com *{texto_atraso}*.\n\n"
+                f"Poderia confirmar para nós se esse pagamento "
+                f"já foi realizado? Obrigado! 😊"
+            )
+
+
+        # ==============================
+        # AINDA NÃO VENCEU
+        # ==============================
+
+        return (
+            f"Olá, {cliente}! Tudo bem? 😊\n\n"
+            f"Passando para lembrar que temos uma notinha do dia "
+            f"*{data_retirada}*, com saldo de "
+            f"*R$ {valor_formatado}*.\n\n"
+            f"O vencimento está previsto para "
+            f"*{data_vencimento}*.\n\n"
+            f"Qualquer dúvida estamos à disposição. 😊"
+        )

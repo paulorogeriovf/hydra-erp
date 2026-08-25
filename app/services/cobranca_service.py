@@ -1,6 +1,6 @@
 # Hydra ERP
-# Responsável por: organizar as pendências financeiras
-# para facilitar o acompanhamento e as cobranças.
+# Responsável por: organizar as pendências financeiras,
+# cobranças, atrasos e mensagens automáticas.
 
 from collections import defaultdict
 from decimal import Decimal
@@ -10,6 +10,10 @@ from app.services.notinha_service import NotinhaService
 
 
 class CobrancaService:
+
+    # =========================================================
+    # LISTAR PENDÊNCIAS
+    # =========================================================
 
     @staticmethod
     def listar_pendentes():
@@ -40,23 +44,57 @@ class CobrancaService:
             if saldo <= 0:
                 continue
 
+
+            situacao = (
+                NotinhaService.situacao(
+                    notinha
+                )
+            )
+
+
+            dias_atraso = (
+                NotinhaService.dias_atraso(
+                    notinha
+                )
+            )
+
+
+            mensagem = (
+                NotinhaService.mensagem_cobranca(
+                    notinha
+                )
+            )
+
+
             resultado.append({
-                "notinha": notinha,
-                "saldo": saldo,
-                "total_pago": (
+
+                "notinha":
+                    notinha,
+
+                "saldo":
+                    saldo,
+
+                "total_pago":
                     NotinhaService.total_pago(
                         notinha
-                    )
-                ),
-                "situacao": (
-                    NotinhaService.situacao(
-                        notinha
-                    )
-                )
+                    ),
+
+                "situacao":
+                    situacao,
+
+                "dias_atraso":
+                    dias_atraso,
+
+                "mensagem_cobranca":
+                    mensagem
             })
 
         return resultado
 
+
+    # =========================================================
+    # RESUMO
+    # =========================================================
 
     @staticmethod
     def resumo():
@@ -71,6 +109,7 @@ class CobrancaService:
         quantidade = 0
         quantidade_vencidas = 0
 
+
         for dados in pendentes:
 
             quantidade += 1
@@ -79,7 +118,11 @@ class CobrancaService:
                 dados["saldo"]
             )
 
-            if "VENCIDA" in dados["situacao"]:
+
+            if (
+                dados["dias_atraso"]
+                > 0
+            ):
 
                 quantidade_vencidas += 1
 
@@ -87,15 +130,26 @@ class CobrancaService:
                     dados["saldo"]
                 )
 
+
         return {
-            "total_pendente": total_pendente,
-            "total_vencido": total_vencido,
-            "quantidade": quantidade,
-            "quantidade_vencidas": (
+
+            "total_pendente":
+                total_pendente,
+
+            "total_vencido":
+                total_vencido,
+
+            "quantidade":
+                quantidade,
+
+            "quantidade_vencidas":
                 quantidade_vencidas
-            )
         }
 
+
+    # =========================================================
+    # AGRUPAR POR RESPONSÁVEL
+    # =========================================================
 
     @staticmethod
     def agrupar_por_responsavel():
@@ -104,26 +158,38 @@ class CobrancaService:
             CobrancaService.listar_pendentes()
         )
 
-        hydra = defaultdict(list)
+
+        hydra = defaultdict(
+            list
+        )
+
 
         piscineiros = defaultdict(
             lambda: {
-                "piscineiro": None,
-                "clientes": defaultdict(list)
+
+                "piscineiro":
+                    None,
+
+                "clientes":
+                    defaultdict(list)
             }
         )
 
 
         for dados in pendentes:
 
-            notinha = dados["notinha"]
+            notinha = (
+                dados["notinha"]
+            )
 
-            cliente = notinha.cliente
+            cliente = (
+                notinha.cliente
+            )
 
 
-            # =========================
-            # COBRANÇA HYDRA
-            # =========================
+            # =================================================
+            # HYDRA
+            # =================================================
 
             if (
                 notinha.responsavel_cobranca
@@ -139,9 +205,9 @@ class CobrancaService:
                 continue
 
 
-            # =========================
-            # COBRANÇA PISCINEIRO
-            # =========================
+            # =================================================
+            # PISCINEIRO
+            # =================================================
 
             if notinha.piscineiro:
 
@@ -149,25 +215,33 @@ class CobrancaService:
                     notinha.piscineiro.id
                 )
 
-                piscineiros[
-                    piscineiro_id
-                ]["piscineiro"] = (
-                    notinha.piscineiro
-                )
 
                 piscineiros[
                     piscineiro_id
-                ]["clientes"][
+                ][
+                    "piscineiro"
+                ] = (
+                    notinha.piscineiro
+                )
+
+
+                piscineiros[
+                    piscineiro_id
+                ][
+                    "clientes"
+                ][
                     cliente.id
                 ].append(
                     dados
                 )
 
+
             else:
 
                 # Segurança:
-                # se por algum motivo não houver
-                # piscineiro, vai para Hydra.
+                # caso não exista piscineiro,
+                # a cobrança fica com a Hydra.
+
                 hydra[
                     cliente.id
                 ].append(
@@ -176,6 +250,10 @@ class CobrancaService:
 
 
         return {
-            "hydra": hydra,
-            "piscineiros": piscineiros
+
+            "hydra":
+                hydra,
+
+            "piscineiros":
+                piscineiros
         }
