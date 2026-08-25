@@ -1,6 +1,6 @@
 # Hydra ERP
 # Responsável por: concentrar as regras de negócio relacionadas
-# à criação, consulta e situação financeira das notinhas.
+# à criação, consulta, situação financeira e cobrança das notinhas.
 
 from datetime import date
 from decimal import Decimal, InvalidOperation
@@ -17,40 +17,71 @@ from app.models.pagamento import Pagamento
 
 class NotinhaService:
 
+    # =====================================================
+    # BUSCA
+    # =====================================================
+
     @staticmethod
     def buscar_por_id(notinha_id):
-        return db.session.get(Notinha, notinha_id)
+
+        return db.session.get(
+            Notinha,
+            notinha_id
+        )
+
+
+    # =====================================================
+    # LISTAGEM
+    # =====================================================
 
     @staticmethod
     def listar_notinhas():
+
         return (
             Notinha.query
-            .order_by(Notinha.data_criacao.desc())
+            .order_by(
+                Notinha.data_criacao.desc()
+            )
             .all()
         )
 
+
+    # =====================================================
+    # CONVERSÃO DECIMAL
+    # =====================================================
+
     @staticmethod
     def _converter_decimal(valor, campo):
+
         try:
+
             numero = Decimal(
                 str(valor).replace(",", ".")
             )
 
             if numero < 0:
+
                 raise ValueError(
                     f"{campo} não pode ser negativo."
                 )
 
             return numero
 
+
         except (
             InvalidOperation,
             TypeError,
             ValueError
         ):
+
             raise ValueError(
                 f"{campo} possui um valor inválido."
             )
+
+
+    # =====================================================
+    # CRIAR NOTINHA
+    # =====================================================
 
     @staticmethod
     def criar_notinha(
@@ -67,23 +98,30 @@ class NotinhaService:
         # =========================
 
         if not cliente_id:
+
             raise ValueError(
                 "O cliente é obrigatório."
             )
+
 
         cliente = db.session.get(
             Cliente,
             int(cliente_id)
         )
 
+
         if not cliente:
+
             raise ValueError(
                 "Cliente não encontrado."
             )
 
+
         if not cliente.ativo:
+
             raise ValueError(
-                "Não é possível criar uma notinha para um cliente inativo."
+                "Não é possível criar uma notinha "
+                "para um cliente inativo."
             )
 
 
@@ -92,18 +130,24 @@ class NotinhaService:
         # =========================
 
         if not data_retirada:
+
             raise ValueError(
                 "A data da retirada é obrigatória."
             )
 
+
         if not data_vencimento:
+
             raise ValueError(
                 "A data de vencimento é obrigatória."
             )
 
+
         if data_vencimento < data_retirada:
+
             raise ValueError(
-                "A data de vencimento não pode ser anterior à data da retirada."
+                "A data de vencimento não pode "
+                "ser anterior à data da retirada."
             )
 
 
@@ -112,8 +156,10 @@ class NotinhaService:
         # =========================
 
         if not itens:
+
             raise ValueError(
-                "A notinha precisa possuir pelo menos um produto."
+                "A notinha precisa possuir "
+                "pelo menos um produto."
             )
 
 
@@ -126,20 +172,24 @@ class NotinhaService:
             or "PISCINEIRO"
         ).upper()
 
+
         if responsavel_cobranca not in {
             "HYDRA",
             "PISCINEIRO"
         }:
+
             raise ValueError(
                 "Responsável pela cobrança inválido."
             )
 
+
         # Cliente sem piscineiro:
-        # a cobrança automaticamente fica com a Hydra.
+        # cobrança automaticamente fica com a Hydra.
         if (
             cliente.piscineiro_id is None
             and responsavel_cobranca == "PISCINEIRO"
         ):
+
             responsavel_cobranca = "HYDRA"
 
 
@@ -148,37 +198,49 @@ class NotinhaService:
         # =========================
 
         notinha = Notinha(
-            cliente_id=cliente.id,
+
+            cliente_id=
+                cliente.id,
 
             # Snapshot do piscineiro no momento da venda.
-            # Se o cliente trocar de piscineiro depois,
-            # esta notinha continua ligada ao antigo.
-            piscineiro_id=cliente.piscineiro_id,
+            piscineiro_id=
+                cliente.piscineiro_id,
 
-            data_retirada=data_retirada,
+            data_retirada=
+                data_retirada,
 
-            data_vencimento=data_vencimento,
+            data_vencimento=
+                data_vencimento,
 
-            valor_total=Decimal("0.00"),
+            valor_total=
+                Decimal("0.00"),
 
-            status="ABERTA",
+            status=
+                "ABERTA",
 
-            responsavel_cobranca=responsavel_cobranca,
+            responsavel_cobranca=
+                responsavel_cobranca,
 
             observacao=(
                 observacao or ""
             ).strip() or None
         )
 
+
         try:
 
-            db.session.add(notinha)
+            db.session.add(
+                notinha
+            )
 
-            # Gera o ID da notinha sem confirmar
-            # definitivamente a transação.
+
+            # Gera o ID sem confirmar a transação.
             db.session.flush()
 
-            valor_total = Decimal("0.00")
+
+            valor_total = Decimal(
+                "0.00"
+            )
 
 
             # =========================
@@ -187,11 +249,15 @@ class NotinhaService:
 
             for item in itens:
 
-                produto_id = item.get(
-                    "produto_id"
+                produto_id = (
+                    item.get(
+                        "produto_id"
+                    )
                 )
 
+
                 if not produto_id:
+
                     raise ValueError(
                         "Produto inválido na notinha."
                     )
@@ -200,15 +266,21 @@ class NotinhaService:
                 # QUANTIDADE
 
                 quantidade = (
-                    NotinhaService._converter_decimal(
-                        item.get("quantidade"),
+                    NotinhaService
+                    ._converter_decimal(
+                        item.get(
+                            "quantidade"
+                        ),
                         "Quantidade"
                     )
                 )
 
+
                 if quantidade <= 0:
+
                     raise ValueError(
-                        "A quantidade deve ser maior que zero."
+                        "A quantidade deve ser "
+                        "maior que zero."
                     )
 
 
@@ -219,14 +291,20 @@ class NotinhaService:
                     int(produto_id)
                 )
 
+
                 if not produto:
+
                     raise ValueError(
-                        "Um dos produtos selecionados não existe."
+                        "Um dos produtos selecionados "
+                        "não existe."
                     )
 
+
                 if not produto.ativo:
+
                     raise ValueError(
-                        f"O produto '{produto.nome}' está inativo."
+                        f"O produto '{produto.nome}' "
+                        f"está inativo."
                     )
 
 
@@ -234,23 +312,31 @@ class NotinhaService:
                 # PREÇO
                 # =========================
 
-                preco_informado = item.get(
-                    "preco_unitario"
+                preco_informado = (
+                    item.get(
+                        "preco_unitario"
+                    )
                 )
+
 
                 if (
                     preco_informado is None
-                    or str(preco_informado).strip() == ""
+                    or str(
+                        preco_informado
+                    ).strip() == ""
                 ):
 
                     preco_unitario = Decimal(
-                        str(produto.preco_normal)
+                        str(
+                            produto.preco_normal
+                        )
                     )
 
                 else:
 
                     preco_unitario = (
-                        NotinhaService._converter_decimal(
+                        NotinhaService
+                        ._converter_decimal(
                             preco_informado,
                             "Preço unitário"
                         )
@@ -258,8 +344,10 @@ class NotinhaService:
 
 
                 if preco_unitario <= 0:
+
                     raise ValueError(
-                        "O preço unitário deve ser maior que zero."
+                        "O preço unitário deve ser "
+                        "maior que zero."
                     )
 
 
@@ -277,21 +365,21 @@ class NotinhaService:
                     produto.gera_comissao
                 )
 
+
                 percentual_comissao = None
+
 
                 valor_comissao = Decimal(
                     "0.00"
                 )
 
 
-                # Só existe comissão se:
-                # - produto gerar comissão;
-                # - possuir percentual configurado;
-                # - a venda tiver piscineiro.
                 if (
                     gera_comissao
-                    and produto.percentual_comissao is not None
-                    and cliente.piscineiro_id is not None
+                    and produto.percentual_comissao
+                    is not None
+                    and cliente.piscineiro_id
+                    is not None
                 ):
 
                     percentual_comissao = Decimal(
@@ -299,6 +387,7 @@ class NotinhaService:
                             produto.percentual_comissao
                         )
                     )
+
 
                     valor_comissao = (
                         subtotal
@@ -312,38 +401,49 @@ class NotinhaService:
                 # =========================
 
                 item_notinha = ItemNotinha(
-                    notinha_id=notinha.id,
 
-                    produto_id=produto.id,
+                    notinha_id=
+                        notinha.id,
 
-                    quantidade=quantidade,
+                    produto_id=
+                        produto.id,
 
-                    preco_unitario=preco_unitario,
+                    quantidade=
+                        quantidade,
 
-                    subtotal=subtotal,
+                    preco_unitario=
+                        preco_unitario,
+
+                    subtotal=
+                        subtotal,
 
                     # Snapshot do produto.
-                    nome_produto=produto.nome,
+                    nome_produto=
+                        produto.nome,
 
-                    marca_produto=produto.marca,
+                    marca_produto=
+                        produto.marca,
 
                     # Snapshot da comissão.
-                    gera_comissao=gera_comissao,
+                    gera_comissao=
+                        gera_comissao,
 
-                    percentual_comissao=(
-                        percentual_comissao
-                    ),
+                    percentual_comissao=
+                        percentual_comissao,
 
-                    valor_comissao=(
+                    valor_comissao=
                         valor_comissao
-                    )
                 )
+
 
                 db.session.add(
                     item_notinha
                 )
 
-                valor_total += subtotal
+
+                valor_total += (
+                    subtotal
+                )
 
 
             # =========================
@@ -351,8 +451,10 @@ class NotinhaService:
             # =========================
 
             if valor_total <= 0:
+
                 raise ValueError(
-                    "O valor total da notinha deve ser maior que zero."
+                    "O valor total da notinha "
+                    "deve ser maior que zero."
                 )
 
 
@@ -361,17 +463,14 @@ class NotinhaService:
             )
 
 
-            # Confirma notinha + itens
-            # juntos na mesma transação.
             db.session.commit()
+
 
             return notinha
 
 
         except Exception:
 
-            # Se qualquer etapa falhar,
-            # nada daquela notinha fica salvo.
             db.session.rollback()
 
             raise
@@ -400,6 +499,7 @@ class NotinhaService:
             .scalar()
         )
 
+
         return Decimal(
             str(total)
         )
@@ -413,8 +513,11 @@ class NotinhaService:
     def saldo_pendente(notinha):
 
         valor_total = Decimal(
-            str(notinha.valor_total)
+            str(
+                notinha.valor_total
+            )
         )
+
 
         pago = (
             NotinhaService.total_pago(
@@ -422,13 +525,19 @@ class NotinhaService:
             )
         )
 
+
         saldo = (
             valor_total
             - pago
         )
 
+
         if saldo < 0:
-            return Decimal("0.00")
+
+            return Decimal(
+                "0.00"
+            )
+
 
         return saldo
 
@@ -444,13 +553,16 @@ class NotinhaService:
             "PAGA",
             "CANCELADA"
         }:
+
             return False
+
 
         saldo = (
             NotinhaService.saldo_pendente(
                 notinha
             )
         )
+
 
         return (
             saldo > 0
@@ -467,10 +579,14 @@ class NotinhaService:
     def situacao(notinha):
 
         if notinha.status == "CANCELADA":
+
             return "CANCELADA"
 
+
         if notinha.status == "PAGA":
+
             return "PAGA"
+
 
         if (
             NotinhaService.esta_vencida(
@@ -478,17 +594,28 @@ class NotinhaService:
             )
         ):
 
-            if notinha.status == "PARCIAL":
-                return "PARCIAL_VENCIDA"
+            if (
+                notinha.status
+                == "PARCIAL"
+            ):
+
+                return (
+                    "PARCIAL_VENCIDA"
+                )
+
 
             return "VENCIDA"
 
+
         if notinha.status == "PARCIAL":
+
             return "PARCIAL"
+
 
         return "ABERTA"
 
-        # =====================================================
+
+    # =====================================================
     # DIAS DE ATRASO
     # =====================================================
 
@@ -496,23 +623,34 @@ class NotinhaService:
     def dias_atraso(notinha):
 
         if not notinha.data_vencimento:
+
             return 0
+
 
         if notinha.status in {
             "PAGA",
             "CANCELADA"
         }:
+
             return 0
+
 
         hoje = date.today()
 
-        if notinha.data_vencimento >= hoje:
+
+        if (
+            notinha.data_vencimento
+            >= hoje
+        ):
+
             return 0
+
 
         diferenca = (
             hoje
             - notinha.data_vencimento
         )
+
 
         return diferenca.days
 
@@ -525,9 +663,11 @@ class NotinhaService:
     def mensagem_cobranca(notinha):
 
         if not notinha:
+
             raise ValueError(
                 "Notinha não encontrada."
             )
+
 
         saldo = (
             NotinhaService.saldo_pendente(
@@ -535,31 +675,12 @@ class NotinhaService:
             )
         )
 
+
+        # Sem saldo, não existe cobrança.
         if saldo <= 0:
+
             return None
 
-        cliente = (
-            notinha.cliente.nome
-            if notinha.cliente
-            else "Cliente"
-        )
-
-        data_retirada = (
-            notinha.data_retirada
-            .strftime("%d/%m/%Y")
-        )
-
-        data_vencimento = (
-            notinha.data_vencimento
-            .strftime("%d/%m/%Y")
-        )
-
-        valor_formatado = (
-            f"{saldo:,.2f}"
-            .replace(",", "X")
-            .replace(".", ",")
-            .replace("X", ".")
-        )
 
         dias = (
             NotinhaService.dias_atraso(
@@ -568,41 +689,172 @@ class NotinhaService:
         )
 
 
-        # ==============================
-        # NOTINHA VENCIDA
-        # ==============================
+        # Cobranças só serão usadas
+        # para notinhas vencidas.
+        if dias <= 0:
 
-        if dias > 0:
+            return None
 
-            texto_atraso = (
-                "1 dia de atraso"
-                if dias == 1
-                else f"{dias} dias de atraso"
+
+        # =========================
+        # NOMES
+        # =========================
+
+        cliente_nome = (
+            notinha.cliente.nome
+            if notinha.cliente
+            else "Cliente"
+        )
+
+
+        piscineiro_nome = (
+            notinha.piscineiro.nome
+            if notinha.piscineiro
+            else None
+        )
+
+
+        # =========================
+        # DATAS
+        # =========================
+
+        data_retirada = (
+            notinha.data_retirada
+            .strftime(
+                "%d/%m/%Y"
             )
+        )
+
+
+        data_vencimento = (
+            notinha.data_vencimento
+            .strftime(
+                "%d/%m/%Y"
+            )
+        )
+
+
+        # =========================
+        # VALOR
+        # =========================
+
+        valor_formatado = (
+            f"{saldo:,.2f}"
+            .replace(
+                ",",
+                "X"
+            )
+            .replace(
+                ".",
+                ","
+            )
+            .replace(
+                "X",
+                "."
+            )
+        )
+
+
+        # =========================
+        # ATRASO
+        # =========================
+
+        texto_atraso = (
+
+            "1 dia de atraso"
+
+            if dias == 1
+
+            else (
+                f"{dias} dias de atraso"
+            )
+        )
+
+
+        # =================================================
+        # HYDRA COBRA O CLIENTE
+        # =================================================
+
+        if (
+            notinha.responsavel_cobranca
+            == "HYDRA"
+        ):
+
+            if piscineiro_nome:
+
+                origem = (
+                    f"a notinha retirada pelo "
+                    f"*{piscineiro_nome}*"
+                )
+
+            else:
+
+                origem = (
+                    "a notinha retirada "
+                    "diretamente na Hydra"
+                )
+
 
             return (
-                f"Olá, {cliente}! Tudo bem? 😊\n\n"
-                f"Verificamos que a notinha do dia "
-                f"*{data_retirada}*, no valor pendente de "
-                f"*R$ {valor_formatado}*, ainda consta em aberto "
+
+                f"Olá, *{cliente_nome}*! "
+                f"Tudo bem? 😊\n\n"
+
+                f"Verificamos que {origem}, "
+                f"no dia *{data_retirada}*, "
+                f"com saldo pendente de "
+                f"*R$ {valor_formatado}*, "
+                f"ainda consta em aberto "
                 f"conosco.\n\n"
-                f"O vencimento foi em *{data_vencimento}* e "
-                f"atualmente está com *{texto_atraso}*.\n\n"
-                f"Poderia confirmar para nós se esse pagamento "
-                f"já foi realizado? Obrigado! 😊"
+
+                f"O vencimento foi em "
+                f"*{data_vencimento}* e "
+                f"atualmente está com "
+                f"*{texto_atraso}*.\n\n"
+
+                f"Poderia confirmar para nós "
+                f"se esse pagamento já foi "
+                f"realizado? Obrigado! 😊"
             )
 
 
-        # ==============================
-        # AINDA NÃO VENCEU
-        # ==============================
+        # =================================================
+        # PISCINEIRO É RESPONSÁVEL
+        # =================================================
 
-        return (
-            f"Olá, {cliente}! Tudo bem? 😊\n\n"
-            f"Passando para lembrar que temos uma notinha do dia "
-            f"*{data_retirada}*, com saldo de "
-            f"*R$ {valor_formatado}*.\n\n"
-            f"O vencimento está previsto para "
-            f"*{data_vencimento}*.\n\n"
-            f"Qualquer dúvida estamos à disposição. 😊"
-        )
+        if (
+            notinha.responsavel_cobranca
+            == "PISCINEIRO"
+        ):
+
+            if not piscineiro_nome:
+
+                return None
+
+
+            return (
+
+                f"Olá, *{piscineiro_nome}*! "
+                f"Tudo bem? 😊\n\n"
+
+                f"Verificamos que a notinha "
+                f"do seu cliente "
+                f"*{cliente_nome}*, retirada "
+                f"no dia *{data_retirada}*, "
+                f"com saldo pendente de "
+                f"*R$ {valor_formatado}*, "
+                f"ainda consta em aberto "
+                f"conosco.\n\n"
+
+                f"O vencimento foi em "
+                f"*{data_vencimento}* e "
+                f"atualmente está com "
+                f"*{texto_atraso}*.\n\n"
+
+                f"Poderia verificar para nós "
+                f"se esse pagamento já foi "
+                f"realizado? Obrigado! 😊"
+            )
+
+
+        return None

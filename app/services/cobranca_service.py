@@ -1,6 +1,6 @@
 # Hydra ERP
-# Responsável por: organizar as pendências financeiras,
-# cobranças, atrasos e mensagens automáticas.
+# Responsável por: organizar exclusivamente
+# as cobranças vencidas, seus atrasos e mensagens automáticas.
 
 from collections import defaultdict
 from decimal import Decimal
@@ -12,17 +12,20 @@ from app.services.notinha_service import NotinhaService
 class CobrancaService:
 
     # =========================================================
-    # LISTAR PENDÊNCIAS
+    # LISTAR SOMENTE VENCIDAS
     # =========================================================
 
     @staticmethod
-    def listar_pendentes():
+    def listar_vencidas():
 
         notinhas = (
             Notinha.query
             .filter(
                 Notinha.status.notin_(
-                    ["PAGA", "CANCELADA"]
+                    [
+                        "PAGA",
+                        "CANCELADA"
+                    ]
                 )
             )
             .order_by(
@@ -33,6 +36,7 @@ class CobrancaService:
 
         resultado = []
 
+
         for notinha in notinhas:
 
             saldo = (
@@ -41,19 +45,27 @@ class CobrancaService:
                 )
             )
 
+
+            # Sem saldo, não existe cobrança.
             if saldo <= 0:
                 continue
 
 
-            situacao = (
-                NotinhaService.situacao(
+            dias_atraso = (
+                NotinhaService.dias_atraso(
                     notinha
                 )
             )
 
 
-            dias_atraso = (
-                NotinhaService.dias_atraso(
+            # Ainda está no prazo.
+            # Não aparece em Cobranças.
+            if dias_atraso <= 0:
+                continue
+
+
+            situacao = (
+                NotinhaService.situacao(
                     notinha
                 )
             )
@@ -89,61 +101,75 @@ class CobrancaService:
                     mensagem
             })
 
+
         return resultado
 
 
     # =========================================================
-    # RESUMO
+    # RESUMO DAS COBRANÇAS VENCIDAS
     # =========================================================
 
     @staticmethod
     def resumo():
 
-        pendentes = (
-            CobrancaService.listar_pendentes()
+        vencidas = (
+            CobrancaService.listar_vencidas()
         )
 
-        total_pendente = Decimal("0.00")
-        total_vencido = Decimal("0.00")
 
-        quantidade = 0
-        quantidade_vencidas = 0
+        total_vencido = Decimal(
+            "0.00"
+        )
 
 
-        for dados in pendentes:
+        clientes_em_atraso = set()
 
-            quantidade += 1
 
-            total_pendente += (
+        maior_atraso = 0
+
+
+        for dados in vencidas:
+
+            total_vencido += (
                 dados["saldo"]
             )
 
 
+            notinha = (
+                dados["notinha"]
+            )
+
+
+            if notinha.cliente_id:
+
+                clientes_em_atraso.add(
+                    notinha.cliente_id
+                )
+
+
             if (
                 dados["dias_atraso"]
-                > 0
+                > maior_atraso
             ):
 
-                quantidade_vencidas += 1
-
-                total_vencido += (
-                    dados["saldo"]
+                maior_atraso = (
+                    dados["dias_atraso"]
                 )
 
 
         return {
 
-            "total_pendente":
-                total_pendente,
-
             "total_vencido":
                 total_vencido,
 
-            "quantidade":
-                quantidade,
-
             "quantidade_vencidas":
-                quantidade_vencidas
+                len(vencidas),
+
+            "clientes_em_atraso":
+                len(clientes_em_atraso),
+
+            "maior_atraso":
+                maior_atraso
         }
 
 
@@ -154,8 +180,8 @@ class CobrancaService:
     @staticmethod
     def agrupar_por_responsavel():
 
-        pendentes = (
-            CobrancaService.listar_pendentes()
+        vencidas = (
+            CobrancaService.listar_vencidas()
         )
 
 
@@ -171,16 +197,19 @@ class CobrancaService:
                     None,
 
                 "clientes":
-                    defaultdict(list)
+                    defaultdict(
+                        list
+                    )
             }
         )
 
 
-        for dados in pendentes:
+        for dados in vencidas:
 
             notinha = (
                 dados["notinha"]
             )
+
 
             cliente = (
                 notinha.cliente
@@ -188,7 +217,7 @@ class CobrancaService:
 
 
             # =================================================
-            # HYDRA
+            # HYDRA COBRA O CLIENTE
             # =================================================
 
             if (
@@ -206,10 +235,14 @@ class CobrancaService:
 
 
             # =================================================
-            # PISCINEIRO
+            # PISCINEIRO É O RESPONSÁVEL
             # =================================================
 
-            if notinha.piscineiro:
+            if (
+                notinha.responsavel_cobranca
+                == "PISCINEIRO"
+                and notinha.piscineiro
+            ):
 
                 piscineiro_id = (
                     notinha.piscineiro.id
@@ -239,8 +272,8 @@ class CobrancaService:
             else:
 
                 # Segurança:
-                # caso não exista piscineiro,
-                # a cobrança fica com a Hydra.
+                # se não houver piscineiro,
+                # joga para cobrança da Hydra.
 
                 hydra[
                     cliente.id

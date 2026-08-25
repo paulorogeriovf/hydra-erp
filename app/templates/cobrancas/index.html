@@ -1,7 +1,6 @@
 <!-- Hydra ERP
-     Responsável por: exibir pendências financeiras,
-     atrasos e ações de cobrança organizadas
-     por responsável, piscineiro e cliente. -->
+     Responsável por: exibir exclusivamente cobranças vencidas,
+     organizadas por responsável, piscineiro e cliente. -->
 
 {% extends "base.html" %}
 
@@ -12,7 +11,7 @@ Cobranças - Hydra ERP
 
 
 {% block header_title %}
-📅 <span>Cobranças</span>
+🚨 <span>Cobranças</span>
 {% endblock %}
 
 
@@ -30,7 +29,7 @@ Cobranças - Hydra ERP
         Cobranças
 
         <small>
-            Pendências organizadas por responsável e cliente
+            Notinhas vencidas que precisam de atenção
         </small>
 
     </div>
@@ -44,28 +43,7 @@ Cobranças - Hydra ERP
 
 <div class="cards-grid">
 
-    <div class="stat-card blue">
-
-        <div class="stat-label">
-            Total Pendente
-        </div>
-
-        <div class="stat-value">
-
-            R$ {{
-                "%.2f"
-                |format(resumo.total_pendente)
-                |replace(".", ",")
-            }}
-
-        </div>
-
-        <div class="stat-icon">
-            💰
-        </div>
-
-    </div>
-
+    <!-- TOTAL VENCIDO -->
 
     <div class="stat-card red">
 
@@ -84,20 +62,24 @@ Cobranças - Hydra ERP
         </div>
 
         <div class="stat-icon">
-            ⚠️
+            💰
         </div>
 
     </div>
 
 
+    <!-- NOTINHAS VENCIDAS -->
+
     <div class="stat-card amber">
 
         <div class="stat-label">
-            Notinhas Pendentes
+            Notinhas Vencidas
         </div>
 
         <div class="stat-value sm">
-            {{ resumo.quantidade }}
+
+            {{ resumo.quantidade_vencidas }}
+
         </div>
 
         <div class="stat-icon">
@@ -107,14 +89,49 @@ Cobranças - Hydra ERP
     </div>
 
 
-    <div class="stat-card red">
+    <!-- CLIENTES EM ATRASO -->
+
+    <div class="stat-card blue">
 
         <div class="stat-label">
-            Vencidas
+            Clientes em Atraso
         </div>
 
         <div class="stat-value sm">
-            {{ resumo.quantidade_vencidas }}
+
+            {{ resumo.clientes_em_atraso }}
+
+        </div>
+
+        <div class="stat-icon">
+            👥
+        </div>
+
+    </div>
+
+
+    <!-- MAIOR ATRASO -->
+
+    <div class="stat-card red">
+
+        <div class="stat-label">
+            Maior Atraso
+        </div>
+
+        <div class="stat-value sm">
+
+            {{ resumo.maior_atraso }}
+
+            {% if resumo.maior_atraso == 1 %}
+
+                dia
+
+            {% else %}
+
+                dias
+
+            {% endif %}
+
         </div>
 
         <div class="stat-icon">
@@ -131,7 +148,7 @@ Cobranças - Hydra ERP
 ========================================================= -->
 
 <div class="section-title">
-    🏪 Cobranças da Hydra
+    🏪 Hydra cobra diretamente
 </div>
 
 
@@ -153,7 +170,9 @@ Cobranças - Hydra ERP
             <div class="table-head">
 
                 <span class="table-head-title">
+
                     👤 {{ cliente.nome }}
+
                 </span>
 
 
@@ -169,6 +188,9 @@ Cobranças - Hydra ERP
                         %}
 
                     {% endfor %}
+
+
+                    Vencido:
 
                     R$ {{
                         "%.2f"
@@ -190,14 +212,43 @@ Cobranças - Hydra ERP
                     <thead>
 
                         <tr>
-                            <th>Notinha</th>
-                            <th>Data</th>
-                            <th>Vencimento</th>
-                            <th>Valor</th>
-                            <th>Saldo</th>
-                            <th>Atraso</th>
-                            <th>Status</th>
-                            <th>Ações</th>
+
+                            <th>
+                                Notinha
+                            </th>
+
+                            <th>
+                                Piscineiro
+                            </th>
+
+                            <th>
+                                Retirada
+                            </th>
+
+                            <th>
+                                Vencimento
+                            </th>
+
+                            <th>
+                                Valor
+                            </th>
+
+                            <th>
+                                Saldo
+                            </th>
+
+                            <th>
+                                Atraso
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Ações
+                            </th>
+
                         </tr>
 
                     </thead>
@@ -212,20 +263,59 @@ Cobranças - Hydra ERP
 
                             <tr>
 
+                                <!-- NOTINHA -->
+
                                 <td>
-                                    #{{ notinha.id }}
+
+                                    <strong>
+                                        #{{ notinha.id }}
+                                    </strong>
+
                                 </td>
 
 
+                                <!-- PISCINEIRO -->
+
                                 <td>
-                                    {{ notinha.data_retirada.strftime("%d/%m/%Y") }}
+
+                                    {% if notinha.piscineiro %}
+
+                                        {{ notinha.piscineiro.nome }}
+
+                                    {% else %}
+
+                                        Hydra / Direto
+
+                                    {% endif %}
+
                                 </td>
 
 
+                                <!-- RETIRADA -->
+
                                 <td>
-                                    {{ notinha.data_vencimento.strftime("%d/%m/%Y") }}
+
+                                    {{
+                                        notinha.data_retirada
+                                        .strftime("%d/%m/%Y")
+                                    }}
+
                                 </td>
 
+
+                                <!-- VENCIMENTO -->
+
+                                <td>
+
+                                    {{
+                                        notinha.data_vencimento
+                                        .strftime("%d/%m/%Y")
+                                    }}
+
+                                </td>
+
+
+                                <!-- VALOR ORIGINAL -->
 
                                 <td>
 
@@ -237,6 +327,8 @@ Cobranças - Hydra ERP
 
                                 </td>
 
+
+                                <!-- SALDO -->
 
                                 <td>
 
@@ -257,28 +349,22 @@ Cobranças - Hydra ERP
 
                                 <td>
 
-                                    {% if dados.dias_atraso > 0 %}
+                                    <span class="badge badge-late">
 
-                                        <span class="badge badge-late">
+                                        ⚠️
+                                        {{ dados.dias_atraso }}
 
-                                            ⚠️
-                                            {{ dados.dias_atraso }}
+                                        {% if dados.dias_atraso == 1 %}
 
-                                            {% if dados.dias_atraso == 1 %}
-                                                dia
-                                            {% else %}
-                                                dias
-                                            {% endif %}
+                                            dia
 
-                                        </span>
+                                        {% else %}
 
-                                    {% else %}
+                                            dias
 
-                                        <span class="badge badge-open">
-                                            No prazo
-                                        </span>
+                                        {% endif %}
 
-                                    {% endif %}
+                                    </span>
 
                                 </td>
 
@@ -287,27 +373,19 @@ Cobranças - Hydra ERP
 
                                 <td>
 
-                                    {% if "VENCIDA" in dados.situacao %}
+                                    {% if dados.situacao == "PARCIAL_VENCIDA" %}
 
                                         <span class="badge badge-late">
 
-                                            ⚠️ {{ dados.situacao }}
-
-                                        </span>
-
-                                    {% elif dados.situacao == "PARCIAL" %}
-
-                                        <span class="badge badge-open">
-
-                                            💰 Parcial
+                                            ⚠️ Parcial / Vencida
 
                                         </span>
 
                                     {% else %}
 
-                                        <span class="badge badge-open">
+                                        <span class="badge badge-late">
 
-                                            {{ dados.situacao }}
+                                            ⚠️ Vencida
 
                                         </span>
 
@@ -322,17 +400,25 @@ Cobranças - Hydra ERP
 
                                     <div
                                         class="action-group"
-                                        style="flex-wrap:nowrap;"
+                                        style="
+                                            flex-wrap:nowrap;
+                                        "
                                     >
 
                                         <a
-                                            class="btn btn-ghost btn-sm"
+                                            class="
+                                                btn
+                                                btn-ghost
+                                                btn-sm
+                                            "
                                             href="{{ url_for(
                                                 'notinhas.detalhes',
                                                 notinha_id=notinha.id
                                             ) }}"
                                         >
+
                                             👁 Ver
+
                                         </a>
 
 
@@ -347,10 +433,13 @@ Cobranças - Hydra ERP
                                                 "
                                                 type="button"
                                                 data-mensagem="{{
-                                                    dados.mensagem_cobranca | e
+                                                    dados.mensagem_cobranca
+                                                    | e
                                                 }}"
                                             >
+
                                                 💬 Cobrar
+
                                             </button>
 
                                         {% endif %}
@@ -386,7 +475,8 @@ Cobranças - Hydra ERP
         "
     >
 
-        ✅ Nenhuma cobrança pendente da Hydra.
+        ✅ Nenhuma cobrança vencida
+        de responsabilidade da Hydra.
 
     </div>
 
@@ -394,11 +484,11 @@ Cobranças - Hydra ERP
 
 
 <!-- =========================================================
-     COBRANÇAS POR PISCINEIRO
+     COBRANÇAS DOS PISCINEIROS
 ========================================================= -->
 
 <div class="section-title">
-    🏊 Cobranças por Piscineiro
+    🏊 Cobranças de responsabilidade dos piscineiros
 </div>
 
 
@@ -406,9 +496,12 @@ Cobranças - Hydra ERP
 
     {% for piscineiro_id, grupo in grupos.piscineiros.items() %}
 
+
         <div
             class="form-card"
-            style="margin-bottom:22px;"
+            style="
+                margin-bottom:22px;
+            "
         >
 
 
@@ -433,8 +526,24 @@ Cobranças - Hydra ERP
                             color:var(--text-dark);
                         "
                     >
+
                         🏊 {{ grupo.piscineiro.nome }}
+
                     </strong>
+
+
+                    <div
+                        style="
+                            margin-top:4px;
+                            color:var(--text-light);
+                            font-size:13px;
+                        "
+                    >
+
+                        Responsável pelas cobranças
+                        dos clientes abaixo
+
+                    </div>
 
                 </div>
 
@@ -450,17 +559,20 @@ Cobranças - Hydra ERP
 
                 <div
                     class="table-wrap"
-                    style="margin-bottom:14px;"
+                    style="
+                        margin-bottom:14px;
+                    "
                 >
 
 
-                    <!-- CABEÇALHO DO CLIENTE -->
+                    <!-- CABEÇALHO CLIENTE -->
 
                     <div class="table-head">
 
                         <span class="table-head-title">
 
-                            👤 {{ cliente.nome }}
+                            👤 Cliente:
+                            {{ cliente.nome }}
 
                         </span>
 
@@ -468,6 +580,7 @@ Cobranças - Hydra ERP
                         <strong>
 
                             {% set total_cliente = namespace(valor=0) %}
+
 
                             {% for dados in notinhas %}
 
@@ -477,6 +590,9 @@ Cobranças - Hydra ERP
                                 %}
 
                             {% endfor %}
+
+
+                            Vencido:
 
                             R$ {{
                                 "%.2f"
@@ -498,13 +614,39 @@ Cobranças - Hydra ERP
                             <thead>
 
                                 <tr>
-                                    <th>Notinha</th>
-                                    <th>Data</th>
-                                    <th>Vencimento</th>
-                                    <th>Saldo</th>
-                                    <th>Atraso</th>
-                                    <th>Status</th>
-                                    <th>Ações</th>
+
+                                    <th>
+                                        Notinha
+                                    </th>
+
+                                    <th>
+                                        Retirada
+                                    </th>
+
+                                    <th>
+                                        Vencimento
+                                    </th>
+
+                                    <th>
+                                        Valor
+                                    </th>
+
+                                    <th>
+                                        Saldo
+                                    </th>
+
+                                    <th>
+                                        Atraso
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Ações
+                                    </th>
+
                                 </tr>
 
                             </thead>
@@ -519,20 +661,55 @@ Cobranças - Hydra ERP
 
                                     <tr>
 
+                                        <!-- NOTINHA -->
+
                                         <td>
-                                            #{{ notinha.id }}
+
+                                            <strong>
+                                                #{{ notinha.id }}
+                                            </strong>
+
                                         </td>
 
 
+                                        <!-- RETIRADA -->
+
                                         <td>
-                                            {{ notinha.data_retirada.strftime("%d/%m/%Y") }}
+
+                                            {{
+                                                notinha.data_retirada
+                                                .strftime("%d/%m/%Y")
+                                            }}
+
                                         </td>
 
 
+                                        <!-- VENCIMENTO -->
+
                                         <td>
-                                            {{ notinha.data_vencimento.strftime("%d/%m/%Y") }}
+
+                                            {{
+                                                notinha.data_vencimento
+                                                .strftime("%d/%m/%Y")
+                                            }}
+
                                         </td>
 
+
+                                        <!-- VALOR ORIGINAL -->
+
+                                        <td>
+
+                                            R$ {{
+                                                "%.2f"
+                                                |format(notinha.valor_total)
+                                                |replace(".", ",")
+                                            }}
+
+                                        </td>
+
+
+                                        <!-- SALDO -->
 
                                         <td>
 
@@ -553,28 +730,27 @@ Cobranças - Hydra ERP
 
                                         <td>
 
-                                            {% if dados.dias_atraso > 0 %}
+                                            <span
+                                                class="
+                                                    badge
+                                                    badge-late
+                                                "
+                                            >
 
-                                                <span class="badge badge-late">
+                                                ⚠️
+                                                {{ dados.dias_atraso }}
 
-                                                    ⚠️
-                                                    {{ dados.dias_atraso }}
+                                                {% if dados.dias_atraso == 1 %}
 
-                                                    {% if dados.dias_atraso == 1 %}
-                                                        dia
-                                                    {% else %}
-                                                        dias
-                                                    {% endif %}
+                                                    dia
 
-                                                </span>
+                                                {% else %}
 
-                                            {% else %}
+                                                    dias
 
-                                                <span class="badge badge-open">
-                                                    No prazo
-                                                </span>
+                                                {% endif %}
 
-                                            {% endif %}
+                                            </span>
 
                                         </td>
 
@@ -583,27 +759,29 @@ Cobranças - Hydra ERP
 
                                         <td>
 
-                                            {% if "VENCIDA" in dados.situacao %}
+                                            {% if dados.situacao == "PARCIAL_VENCIDA" %}
 
-                                                <span class="badge badge-late">
+                                                <span
+                                                    class="
+                                                        badge
+                                                        badge-late
+                                                    "
+                                                >
 
-                                                    ⚠️ {{ dados.situacao }}
-
-                                                </span>
-
-                                            {% elif dados.situacao == "PARCIAL" %}
-
-                                                <span class="badge badge-open">
-
-                                                    💰 Parcial
+                                                    ⚠️ Parcial / Vencida
 
                                                 </span>
 
                                             {% else %}
 
-                                                <span class="badge badge-open">
+                                                <span
+                                                    class="
+                                                        badge
+                                                        badge-late
+                                                    "
+                                                >
 
-                                                    {{ dados.situacao }}
+                                                    ⚠️ Vencida
 
                                                 </span>
 
@@ -618,17 +796,25 @@ Cobranças - Hydra ERP
 
                                             <div
                                                 class="action-group"
-                                                style="flex-wrap:nowrap;"
+                                                style="
+                                                    flex-wrap:nowrap;
+                                                "
                                             >
 
                                                 <a
-                                                    class="btn btn-ghost btn-sm"
+                                                    class="
+                                                        btn
+                                                        btn-ghost
+                                                        btn-sm
+                                                    "
                                                     href="{{ url_for(
                                                         'notinhas.detalhes',
                                                         notinha_id=notinha.id
                                                     ) }}"
                                                 >
+
                                                     👁 Ver
+
                                                 </a>
 
 
@@ -643,10 +829,13 @@ Cobranças - Hydra ERP
                                                         "
                                                         type="button"
                                                         data-mensagem="{{
-                                                            dados.mensagem_cobranca | e
+                                                            dados.mensagem_cobranca
+                                                            | e
                                                         }}"
                                                     >
+
                                                         💬 Cobrar
+
                                                     </button>
 
                                                 {% endif %}
@@ -685,7 +874,8 @@ Cobranças - Hydra ERP
         "
     >
 
-        ✅ Nenhuma cobrança pendente por piscineiro.
+        ✅ Nenhuma cobrança vencida
+        de responsabilidade dos piscineiros.
 
     </div>
 
@@ -739,11 +929,13 @@ document.addEventListener(
                             this.innerHTML =
                                 "✅ Copiado";
 
-                        } catch (erro) {
+                        }
+
+                        catch (erro) {
 
 
                             /*
-                             * Fallback para navegador
+                             * Fallback para navegadores
                              * sem Clipboard API.
                              */
 
