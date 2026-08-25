@@ -129,12 +129,12 @@
             </a>
 
             <a
-                class="nav-item {% if request.blueprint == 'cobrancas' %}active{% endif %}"
-                href="#"
-            >
-                <span class="nav-icon">📅</span>
-                Cobranças
-            </a>
+    class="nav-item {% if request.blueprint == 'cobrancas' %}active{% endif %}"
+    href="{{ url_for('cobrancas.index') }}"
+>
+    <span class="nav-icon">📅</span>
+    Cobranças
+</a>
 
         </nav>
 
