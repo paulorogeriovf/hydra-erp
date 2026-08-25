@@ -1,5 +1,6 @@
 <!-- Hydra ERP
-     Responsável por: exibir a visão geral e os principais indicadores do sistema. -->
+     Responsável por: exibir a visão geral,
+     indicadores e informações estratégicas do sistema. -->
 
 {% extends "base.html" %}
 
@@ -16,6 +17,7 @@ Dashboard - Hydra ERP
 
 {% block content %}
 
+
 <div class="page-header">
 
     <div class="page-title">
@@ -23,7 +25,7 @@ Dashboard - Hydra ERP
         Dashboard
 
         <small>
-            Visão geral do sistema Hydra
+            Visão geral da operação da Hydra
         </small>
 
     </div>
@@ -31,8 +33,480 @@ Dashboard - Hydra ERP
 </div>
 
 
-<!-- INDICADORES PRINCIPAIS -->
+<!-- =========================================================
+     FINANCEIRO
+========================================================= -->
+
 <div class="cards-grid">
+
+
+    <div class="stat-card blue">
+
+        <div class="stat-label">
+            Total a Receber
+        </div>
+
+        <div class="stat-value">
+
+            R$ {{
+                "%.2f"
+                |format(resumo.total_receber)
+                |replace(".", ",")
+            }}
+
+        </div>
+
+        <div class="stat-trend">
+
+            {{ resumo.quantidade_pendentes }}
+            notinha(s) pendente(s)
+
+        </div>
+
+        <div class="stat-icon">
+            💰
+        </div>
+
+    </div>
+
+
+    <div class="stat-card red">
+
+        <div class="stat-label">
+            Total Vencido
+        </div>
+
+        <div class="stat-value">
+
+            R$ {{
+                "%.2f"
+                |format(resumo.total_vencido)
+                |replace(".", ",")
+            }}
+
+        </div>
+
+        <div class="stat-trend">
+
+            {{ resumo.quantidade_vencidas }}
+            vencida(s)
+
+        </div>
+
+        <div class="stat-icon">
+            ⚠️
+        </div>
+
+    </div>
+
+
+    <div class="stat-card green">
+
+        <div class="stat-label">
+            Vendas — 30 dias
+        </div>
+
+        <div class="stat-value">
+
+            R$ {{
+                "%.2f"
+                |format(resumo.vendas_30_dias)
+                |replace(".", ",")
+            }}
+
+        </div>
+
+        <div class="stat-icon">
+            📈
+        </div>
+
+    </div>
+
+
+    <div class="stat-card amber">
+
+        <div class="stat-label">
+            Comissões Disponíveis
+        </div>
+
+        <div class="stat-value">
+
+            R$ {{
+                "%.2f"
+                |format(resumo.comissoes_disponiveis)
+                |replace(".", ",")
+            }}
+
+        </div>
+
+        <div class="stat-icon">
+            💵
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     GRÁFICO GERAL
+========================================================= -->
+
+<div class="section-title">
+    📊 Evolução Geral de Vendas
+</div>
+
+
+<div class="chart-box">
+
+    <div class="chart-title">
+        📈 Últimos 6 meses
+    </div>
+
+    <div
+        style="
+            position:relative;
+            height:340px;
+        "
+    >
+
+        <canvas id="graficoVendasDashboard"></canvas>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     RANKINGS
+========================================================= -->
+
+<div
+    class="two-col"
+    style="margin-top:22px;"
+>
+
+
+    <!-- PISCINEIROS -->
+
+    <div class="table-wrap">
+
+        <div class="table-head">
+
+            <span class="table-head-title">
+                🏆 Piscineiros — últimos 90 dias
+            </span>
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>Piscineiro</th>
+                    <th>Vendido</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for item in top_piscineiros %}
+
+                    <tr>
+
+                        <td>
+                            {{ loop.index }}º
+                        </td>
+
+                        <td>
+
+                            <a
+                                href="{{ url_for(
+                                    'piscineiros.detalhes',
+                                    piscineiro_id=item.id
+                                ) }}"
+                            >
+
+                                <strong>
+                                    {{ item.nome }}
+                                </strong>
+
+                            </a>
+
+                        </td>
+
+                        <td>
+
+                            R$ {{
+                                "%.2f"
+                                |format(item.valor_total)
+                                |replace(".", ",")
+                            }}
+
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="3">
+
+                            Nenhuma venda registrada.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- PRODUTOS -->
+
+    <div class="table-wrap">
+
+        <div class="table-head">
+
+            <span class="table-head-title">
+                📦 Produtos — últimos 90 dias
+            </span>
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>Produto</th>
+                    <th>Qtd.</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for item in top_produtos %}
+
+                    <tr>
+
+                        <td>
+                            {{ loop.index }}º
+                        </td>
+
+                        <td>
+                            <strong>
+                                {{ item.nome_produto }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ item.quantidade_total }}
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="3">
+
+                            Nenhum produto vendido.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     COBRANÇAS
+========================================================= -->
+
+<div class="section-title">
+    🚨 Pendências Vencidas
+</div>
+
+
+<div class="table-wrap">
+
+    <div class="table-head">
+
+        <span class="table-head-title">
+            ⚠️ Cobranças que precisam de atenção
+        </span>
+
+
+        <a
+            class="btn btn-ghost btn-sm"
+            href="{{ url_for('cobrancas.index') }}"
+        >
+            Ver todas
+        </a>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Cliente</th>
+                    <th>Piscineiro</th>
+                    <th>Notinha</th>
+                    <th>Vencimento</th>
+                    <th>Saldo</th>
+                    <th>Ação</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for dados in pendencias_vencidas %}
+
+                    {% set notinha = dados.notinha %}
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                {{ notinha.cliente.nome }}
+                            </strong>
+
+                        </td>
+
+                        <td>
+
+                            {% if notinha.piscineiro %}
+
+                                {{ notinha.piscineiro.nome }}
+
+                            {% else %}
+
+                                Hydra / Direto
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            #{{ notinha.id }}
+                        </td>
+
+                        <td>
+
+                            {{
+                                notinha.data_vencimento
+                                .strftime("%d/%m/%Y")
+                            }}
+
+                        </td>
+
+                        <td>
+
+                            <strong>
+
+                                R$ {{
+                                    "%.2f"
+                                    |format(dados.saldo)
+                                    |replace(".", ",")
+                                }}
+
+                            </strong>
+
+                        </td>
+
+                        <td>
+
+                            <a
+                                class="btn btn-ghost btn-sm"
+                                href="{{ url_for(
+                                    'notinhas.detalhes',
+                                    notinha_id=notinha.id
+                                ) }}"
+                            >
+                                👁 Ver
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            style="
+                                text-align:center;
+                                padding:35px;
+                                color:var(--text-light);
+                            "
+                        >
+
+                            ✅ Nenhuma pendência vencida.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CADASTROS
+========================================================= -->
+
+<div class="section-title">
+    📌 Cadastros
+</div>
+
+
+<div class="cards-grid">
+
 
     <div class="stat-card blue">
 
@@ -120,185 +594,137 @@ Dashboard - Hydra ERP
 </div>
 
 
-<!-- MÓDULOS -->
-<div class="section-title">
-    📌 Acesso rápido
-</div>
+<!-- =========================================================
+     DADOS DO GRÁFICO
+========================================================= -->
+
+<div
+    id="dadosGraficoDashboard"
+    data-labels='{{ grafico_vendas["labels"] | tojson }}'
+    data-valores='{{ grafico_vendas["valores"] | tojson }}'
+></div>
 
 
-<div class="three-col">
-
-    <div class="chart-box">
-
-        <div class="chart-title">
-            📦 Produtos
-        </div>
-
-        <p
-            style="
-                font-size:13px;
-                color:var(--text-light);
-                margin-bottom:18px;
-            "
-        >
-            Cadastre produtos, preços e regras de comissão.
-        </p>
-
-        <a
-            class="btn btn-primary"
-            href="{{ url_for('produtos.listar') }}"
-        >
-            Ver Produtos
-        </a>
-
-    </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
-    <div class="chart-box">
+<script>
 
-        <div class="chart-title">
-            🏊 Piscineiros
-        </div>
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-        <p
-            style="
-                font-size:13px;
-                color:var(--text-light);
-                margin-bottom:18px;
-            "
-        >
-            Gerencie os profissionais e seus clientes vinculados.
-        </p>
+        const canvas =
+            document.getElementById(
+                "graficoVendasDashboard"
+            );
 
-        <a
-            class="btn btn-primary"
-            href="{{ url_for('piscineiros.listar') }}"
-        >
-            Ver Piscineiros
-        </a>
-
-    </div>
+        const dados =
+            document.getElementById(
+                "dadosGraficoDashboard"
+            );
 
 
-    <div class="chart-box">
-
-        <div class="chart-title">
-            👥 Clientes
-        </div>
-
-        <p
-            style="
-                font-size:13px;
-                color:var(--text-light);
-                margin-bottom:18px;
-            "
-        >
-            Consulte clientes e altere vínculos de piscineiro.
-        </p>
-
-        <a
-            class="btn btn-primary"
-            href="{{ url_for('clientes.listar') }}"
-        >
-            Ver Clientes
-        </a>
-
-    </div>
-
-</div>
+        if (!canvas || !dados) {
+            return;
+        }
 
 
-<!-- FUTUROS INDICADORES -->
-<div class="section-title">
-    💰 Financeiro
-</div>
+        const labels =
+            JSON.parse(
+                dados.dataset.labels
+            );
 
 
-<div class="cards-grid">
-
-    <div class="stat-card blue">
-
-        <div class="stat-label">
-            Total a Receber
-        </div>
-
-        <div class="stat-value">
-            R$ —
-        </div>
-
-        <div class="stat-trend">
-            Disponível após módulo de Notinhas
-        </div>
-
-        <div class="stat-icon">
-            💰
-        </div>
-
-    </div>
+        const valores =
+            JSON.parse(
+                dados.dataset.valores
+            );
 
 
-    <div class="stat-card amber">
+        new Chart(
+            canvas,
+            {
 
-        <div class="stat-label">
-            Notinhas em Aberto
-        </div>
+                type: "line",
 
-        <div class="stat-value sm">
-            —
-        </div>
+                data: {
 
-        <div class="stat-trend">
-            Aguardando módulo
-        </div>
+                    labels: labels,
 
-        <div class="stat-icon">
-            📄
-        </div>
+                    datasets: [
+                        {
+                            label: "Vendas",
 
-    </div>
+                            data: valores,
 
+                            borderColor:
+                                "rgba(0, 119, 182, 1)",
 
-    <div class="stat-card red">
+                            backgroundColor:
+                                "rgba(0, 174, 239, 0.15)",
 
-        <div class="stat-label">
-            Notinhas Vencidas
-        </div>
+                            fill: true,
 
-        <div class="stat-value sm">
-            —
-        </div>
+                            tension: 0.3,
 
-        <div class="stat-trend">
-            Aguardando módulo
-        </div>
+                            borderWidth: 2
+                        }
+                    ]
 
-        <div class="stat-icon">
-            ⚠️
-        </div>
+                },
 
-    </div>
+                options: {
 
+                    responsive: true,
 
-    <div class="stat-card green">
+                    maintainAspectRatio: false,
 
-        <div class="stat-label">
-            Comissões Pendentes
-        </div>
+                    plugins: {
 
-        <div class="stat-value">
-            R$ —
-        </div>
+                        legend: {
+                            display: false
+                        }
 
-        <div class="stat-trend">
-            Aguardando módulo
-        </div>
+                    },
 
-        <div class="stat-icon">
-            💵
-        </div>
+                    scales: {
 
-    </div>
+                        y: {
 
-</div>
+                            beginAtZero: true,
+
+                            ticks: {
+
+                                callback:
+                                    function (valor) {
+
+                                        return (
+                                            "R$ "
+                                            +
+                                            Number(valor)
+                                                .toLocaleString(
+                                                    "pt-BR"
+                                                )
+                                        );
+
+                                    }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>
+
 
 {% endblock %}

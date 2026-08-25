@@ -13,3 +13,4 @@ from app.services.anexo_notinha_service import AnexoNotinhaService
 from app.services.cobranca_service import CobrancaService
 
 from app.services.comissao_service import ComissaoService
+from app.services.dashboard_service import DashboardService
