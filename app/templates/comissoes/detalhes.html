@@ -165,6 +165,105 @@ Comissão - {{ piscineiro.nome }} - Hydra ERP
 
 {% endif %}
 
+<div class="section-title">
+    📈 Origem das Comissões
+</div>
+
+<div class="table-wrap">
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Notinha</th>
+                    <th>Data</th>
+                    <th>Cliente</th>
+                    <th>Produto</th>
+                    <th>Qtd.</th>
+                    <th>Subtotal</th>
+                    <th>%</th>
+                    <th>Comissão</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for origem in origens %}
+
+                    <tr>
+
+                        <td>
+                            <a
+                                href="{{ url_for(
+                                    'notinhas.detalhes',
+                                    notinha_id=origem.notinha.id
+                                ) }}"
+                            >
+                                #{{ origem.notinha.id }}
+                            </a>
+                        </td>
+
+                        <td>
+                            {{ origem.notinha.data_retirada.strftime("%d/%m/%Y") }}
+                        </td>
+
+                        <td>
+                            {{ origem.cliente.nome }}
+                        </td>
+
+                        <td>
+                            {{ origem.item.nome_produto }}
+                        </td>
+
+                        <td>
+                            {{ origem.item.quantidade }}
+                        </td>
+
+                        <td>
+                            R$ {{ "%.2f"|format(origem.item.subtotal)|replace(".", ",") }}
+                        </td>
+
+                        <td>
+                            {{ origem.item.percentual_comissao }}%
+                        </td>
+
+                        <td>
+                            <strong>
+                                R$ {{ "%.2f"|format(origem.item.valor_comissao)|replace(".", ",") }}
+                            </strong>
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            style="
+                                text-align:center;
+                                padding:35px;
+                                color:var(--text-light);
+                            "
+                        >
+                            Nenhuma comissão gerada ainda.
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
 
 <div class="section-title">
     📚 Histórico de Retiradas

@@ -1,6 +1,7 @@
 # Hydra ERP
-# Responsável por: disponibilizar a área de comissões
-# e registrar retiradas dos piscineiros.
+# Responsável por: disponibilizar a área de comissões,
+# exibir a origem dos valores e registrar retiradas
+# dos piscineiros.
 
 from flask import (
     Blueprint,
@@ -22,6 +23,10 @@ comissoes_bp = Blueprint(
 )
 
 
+# =========================================================
+# LISTAGEM GERAL DE COMISSÕES
+# =========================================================
+
 @comissoes_bp.route("/")
 def index():
 
@@ -35,6 +40,10 @@ def index():
     )
 
 
+# =========================================================
+# DETALHES DA COMISSÃO DE UM PISCINEIRO
+# =========================================================
+
 @comissoes_bp.route("/<int:piscineiro_id>")
 def detalhes(piscineiro_id):
 
@@ -42,26 +51,38 @@ def detalhes(piscineiro_id):
         piscineiro_id
     )
 
+    # Total de comissão gerada pelas vendas.
     gerado = (
         ComissaoService.total_gerado(
             piscineiro_id
         )
     )
 
+    # Total que o piscineiro já retirou.
     retirado = (
         ComissaoService.total_retirado(
             piscineiro_id
         )
     )
 
+    # Saldo ainda disponível para retirada.
     saldo = (
         ComissaoService.saldo_disponivel(
             piscineiro_id
         )
     )
 
+    # Histórico de retiradas realizadas.
     retiradas = (
         ComissaoService.listar_retiradas(
+            piscineiro_id
+        )
+    )
+
+    # Produtos/notinhas que deram origem
+    # às comissões do piscineiro.
+    origens = (
+        ComissaoService.listar_origens(
             piscineiro_id
         )
     )
@@ -72,9 +93,14 @@ def detalhes(piscineiro_id):
         gerado=gerado,
         retirado=retirado,
         saldo=saldo,
-        retiradas=retiradas
+        retiradas=retiradas,
+        origens=origens
     )
 
+
+# =========================================================
+# REGISTRAR RETIRADA DE COMISSÃO
+# =========================================================
 
 @comissoes_bp.route(
     "/<int:piscineiro_id>/retirada",
@@ -86,7 +112,9 @@ def registrar_retirada(piscineiro_id):
 
         ComissaoService.registrar_retirada(
             piscineiro_id=piscineiro_id,
-            valor=request.form.get("valor"),
+            valor=request.form.get(
+                "valor"
+            ),
             observacao=request.form.get(
                 "observacao"
             )

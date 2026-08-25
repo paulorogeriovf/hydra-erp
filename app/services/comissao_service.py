@@ -1,6 +1,7 @@
 # Hydra ERP
 # Responsável por: calcular comissões acumuladas,
-# retiradas e saldo disponível dos piscineiros.
+# retiradas, saldo disponível e origem das comissões
+# dos piscineiros.
 
 from decimal import Decimal, InvalidOperation
 
@@ -15,9 +16,15 @@ from app.models.retirada_comissao import RetiradaComissao
 
 class ComissaoService:
 
+    # =========================================================
+    # CONVERSÃO DE VALORES
+    # =========================================================
+
     @staticmethod
     def _converter_decimal(valor, campo):
+
         try:
+
             numero = Decimal(
                 str(valor).replace(",", ".")
             )
@@ -34,9 +41,15 @@ class ComissaoService:
             TypeError,
             ValueError
         ):
+
             raise ValueError(
                 f"{campo} possui um valor inválido."
             )
+
+
+    # =========================================================
+    # TOTAL DE COMISSÃO GERADA
+    # =========================================================
 
     @staticmethod
     def total_gerado(piscineiro_id):
@@ -66,6 +79,11 @@ class ComissaoService:
             str(total)
         )
 
+
+    # =========================================================
+    # TOTAL JÁ RETIRADO
+    # =========================================================
+
     @staticmethod
     def total_retirado(piscineiro_id):
 
@@ -89,6 +107,11 @@ class ComissaoService:
             str(total)
         )
 
+
+    # =========================================================
+    # SALDO DISPONÍVEL
+    # =========================================================
+
     @staticmethod
     def saldo_disponivel(piscineiro_id):
 
@@ -107,12 +130,19 @@ class ComissaoService:
 
         return saldo
 
+
+    # =========================================================
+    # LISTAGEM GERAL DOS PISCINEIROS
+    # =========================================================
+
     @staticmethod
     def listar_piscineiros():
 
         piscineiros = (
             Piscineiro.query
-            .order_by(Piscineiro.nome.asc())
+            .order_by(
+                Piscineiro.nome.asc()
+            )
             .all()
         )
 
@@ -132,7 +162,11 @@ class ComissaoService:
                 )
             )
 
-            saldo = gerado - retirado
+            saldo = (
+                gerado
+                -
+                retirado
+            )
 
             if saldo < 0:
                 saldo = Decimal("0.00")
@@ -145,6 +179,11 @@ class ComissaoService:
             })
 
         return resultado
+
+
+    # =========================================================
+    # REGISTRAR RETIRADA
+    # =========================================================
 
     @staticmethod
     def registrar_retirada(
@@ -159,6 +198,7 @@ class ComissaoService:
         )
 
         if not piscineiro:
+
             raise ValueError(
                 "Piscineiro não encontrado."
             )
@@ -177,8 +217,11 @@ class ComissaoService:
         )
 
         if valor > saldo:
+
             raise ValueError(
-                f"A retirada não pode ser maior que o saldo disponível de R$ {saldo:.2f}."
+                f"A retirada não pode ser maior "
+                f"que o saldo disponível de "
+                f"R$ {saldo:.2f}."
             )
 
         retirada = RetiradaComissao(
@@ -205,6 +248,11 @@ class ComissaoService:
 
             raise
 
+
+    # =========================================================
+    # HISTÓRICO DE RETIRADAS
+    # =========================================================
+
     @staticmethod
     def listar_retiradas(piscineiro_id):
 
@@ -218,3 +266,44 @@ class ComissaoService:
             )
             .all()
         )
+
+
+    # =========================================================
+    # ORIGEM DAS COMISSÕES
+    # =========================================================
+
+    @staticmethod
+    def listar_origens(piscineiro_id):
+
+        resultados = (
+            db.session.query(
+                ItemNotinha,
+                Notinha
+            )
+            .join(
+                Notinha,
+                ItemNotinha.notinha_id == Notinha.id
+            )
+            .filter(
+                Notinha.piscineiro_id == piscineiro_id,
+                ItemNotinha.valor_comissao > 0,
+                Notinha.status != "CANCELADA"
+            )
+            .order_by(
+                Notinha.data_retirada.desc(),
+                ItemNotinha.id.desc()
+            )
+            .all()
+        )
+
+        origens = []
+
+        for item, notinha in resultados:
+
+            origens.append({
+                "notinha": notinha,
+                "item": item,
+                "cliente": notinha.cliente
+            })
+
+        return origens
