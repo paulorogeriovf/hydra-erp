@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Ranking de Piscineiros - Hydra ERP
+{% endblock %}
+
+
+{% block header_title %}
+🏊 <span>Ranking de Piscineiros</span>
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="page-header">
+
+    <div class="page-title">
+
+        Ranking de Piscineiros
+
+        <small>
+            Piscineiros com maior movimentação
+        </small>
+
+    </div>
+
+
+    <a
+        class="btn btn-ghost"
+        href="{{ url_for(
+            'inteligencia_vendas.index'
+        ) }}"
+    >
+        ← Voltar
+    </a>
+
+</div>
+
+
+<div class="table-wrap">
+
+    <div class="table-head">
+
+        <span class="table-head-title">
+            🏆 Ranking Completo
+        </span>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>Piscineiro</th>
+                    <th>Notinhas</th>
+                    <th>Valor Movimentado</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for piscineiro, valor_total, quantidade_notinhas in piscineiros %}
+
+                    <tr>
+
+                        <td>
+                            {{ loop.index }}
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ piscineiro.nome }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+                            {{ quantidade_notinhas }}
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+
+                                R$ {{
+                                    "%.2f"
+                                    |format(valor_total)
+                                    |replace(".", ",")
+                                }}
+
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                class="btn btn-ghost btn-sm"
+                                href="{{ url_for(
+                                    'piscineiros.detalhes',
+                                    piscineiro_id=piscineiro.id
+                                ) }}"
+                            >
+                                👁 Ver
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="5"
+                            style="
+                                text-align:center;
+                                padding:40px;
+                                color:var(--text-light);
+                            "
+                        >
+                            Nenhum piscineiro com movimentação.
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

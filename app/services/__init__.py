@@ -16,3 +16,5 @@ from app.services.comissao_service import ComissaoService
 from app.services.dashboard_service import DashboardService
 
 from app.services.movimentacao_service import MovimentacaoService
+
+from app.services.inteligencia_vendas_service import InteligenciaVendasService

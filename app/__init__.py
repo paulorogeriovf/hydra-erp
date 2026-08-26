@@ -30,6 +30,8 @@ def create_app():
     from app.routes.cobrancas import cobrancas_bp
     from app.routes.comissoes import comissoes_bp
     from app.routes.historico import historico_bp
+    from app.routes.inteligencia_vendas import inteligencia_vendas_bp
+    
 
     # Registra as rotas no Flask.
     app.register_blueprint(dashboard_bp)
@@ -41,4 +43,5 @@ def create_app():
     app.register_blueprint(cobrancas_bp)
     app.register_blueprint(comissoes_bp)
     app.register_blueprint(historico_bp)
+    app.register_blueprint(inteligencia_vendas_bp)
     return app

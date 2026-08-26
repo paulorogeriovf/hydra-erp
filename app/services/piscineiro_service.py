@@ -624,33 +624,43 @@ class PiscineiroService:
 
         return {
 
-            "total_vendido":
-                total_vendido,
+    "total_vendido":
+        total_vendido,
 
-            "total_vendido_mes":
-                total_vendido_mes,
+    # Nome atual
+    "total_vendido_mes":
+        total_vendido_mes,
 
-            "total_vendido_3_meses":
-                total_vendido_3_meses,
+    # Compatibilidade com o HTML antigo
+    "total_30_dias":
+        total_vendido_mes,
 
-            "total_pendente":
-                total_pendente,
+    # Nome atual
+    "total_vendido_3_meses":
+        total_vendido_3_meses,
 
-            "total_vencido":
-                total_vencido,
+    # Compatibilidade com o HTML antigo
+    "total_90_dias":
+        total_vendido_3_meses,
 
-            "quantidade_notinhas":
-                quantidade_notinhas,
+    "total_pendente":
+        total_pendente,
 
-            "quantidade_vencidas":
-                quantidade_vencidas,
+    "total_vencido":
+        total_vencido,
 
-            "comissao_disponivel":
-                comissao_disponivel,
+    "quantidade_notinhas":
+        quantidade_notinhas,
 
-            "notinhas":
-                dados_notinhas
-        }
+    "quantidade_vencidas":
+        quantidade_vencidas,
+
+    "comissao_disponivel":
+        comissao_disponivel,
+
+    "notinhas":
+        dados_notinhas
+}
 
 
     # =========================================================

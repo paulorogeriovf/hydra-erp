@@ -1,0 +1,840 @@
+<!-- Hydra ERP
+     Responsável por: exibir indicadores,
+     rankings e oportunidades comerciais. -->
+
+{% extends "base.html" %}
+
+
+{% block title %}
+Inteligência de Vendas - Hydra ERP
+{% endblock %}
+
+
+{% block header_title %}
+📊 <span>Inteligência de Vendas</span>
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- =========================================================
+     CABEÇALHO
+========================================================= -->
+
+<div class="page-header">
+
+    <div class="page-title">
+
+        Inteligência de Vendas
+
+        <small>
+            Indicadores, rankings e oportunidades comerciais
+        </small>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     RESUMO
+========================================================= -->
+
+<div class="cards-grid">
+
+
+    <div class="stat-card blue">
+
+        <div class="stat-label">
+            Vendas no Mês
+        </div>
+
+        <div class="stat-value">
+
+            R$ {{
+                "%.2f"
+                |format(resumo.total_mes)
+                |replace(".", ",")
+            }}
+
+        </div>
+
+        <div class="stat-icon">
+            💰
+        </div>
+
+    </div>
+
+
+    <div class="stat-card green">
+
+        <div class="stat-label">
+            Ticket Médio
+        </div>
+
+        <div class="stat-value">
+
+            R$ {{
+                "%.2f"
+                |format(resumo.ticket_medio)
+                |replace(".", ",")
+            }}
+
+        </div>
+
+        <div class="stat-icon">
+            🧾
+        </div>
+
+    </div>
+
+
+    <div class="stat-card amber">
+
+        <div class="stat-label">
+            Clientes no Mês
+        </div>
+
+        <div class="stat-value sm">
+            {{ resumo.clientes_mes }}
+        </div>
+
+        <div class="stat-icon">
+            👥
+        </div>
+
+    </div>
+
+
+    <div class="stat-card blue">
+
+        <div class="stat-label">
+            Últimos 3 Meses
+        </div>
+
+        <div class="stat-value">
+
+            R$ {{
+                "%.2f"
+                |format(resumo.total_3_meses)
+                |replace(".", ",")
+            }}
+
+        </div>
+
+        <div class="stat-icon">
+            📈
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- =========================================================
+     RANKING DE PRODUTOS
+========================================================= -->
+
+<div class="section-title">
+    🏆 Produtos Mais Vendidos
+</div>
+
+
+<div class="table-wrap">
+
+    <div class="table-head">
+
+        <span class="table-head-title">
+            📦 Ranking de Produtos
+        </span>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Valor Movimentado</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for item in produtos %}
+
+                    <tr>
+
+                        <td>
+                            {{ loop.index }}
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ item.nome_produto }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+                            {{ item.quantidade_total }}
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+
+                                R$ {{
+                                    "%.2f"
+                                    |format(item.valor_total)
+                                    |replace(".", ",")
+                                }}
+
+                            </strong>
+
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="4"
+                            style="
+                                text-align:center;
+                                padding:35px;
+                                color:var(--text-light);
+                            "
+                        >
+                            Nenhuma venda registrada ainda.
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <div
+    style="
+        margin-top:12px;
+        text-align:right;
+    "
+>
+    <a
+        class="btn btn-ghost btn-sm"
+        href="{{ url_for(
+            'inteligencia_vendas.ranking_produtos'
+        ) }}"
+    >
+        📦 Ver ranking completo
+    </a>
+</div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     RANKING DE CLIENTES
+========================================================= -->
+
+<div
+    class="section-title"
+    style="margin-top:30px;"
+>
+    👤 Clientes que Mais Compram
+</div>
+
+
+<div class="table-wrap">
+
+    <div class="table-head">
+
+        <span class="table-head-title">
+            🏆 Ranking de Clientes
+        </span>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Notinhas</th>
+                    <th>Total Comprado</th>
+                    <th>Última Compra</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for cliente, valor_total, quantidade_notinhas, ultima_compra in clientes %}
+
+                    <tr>
+
+                        <td>
+                            {{ loop.index }}
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ cliente.nome }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+                            {{ quantidade_notinhas }}
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+
+                                R$ {{
+                                    "%.2f"
+                                    |format(valor_total)
+                                    |replace(".", ",")
+                                }}
+
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            {% if ultima_compra %}
+
+                                {{
+                                    ultima_compra
+                                    .strftime("%d/%m/%Y")
+                                }}
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                class="btn btn-ghost btn-sm"
+                                href="{{ url_for(
+                                    'clientes.detalhes',
+                                    cliente_id=cliente.id
+                                ) }}"
+                            >
+                                👁 Ver
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            style="
+                                text-align:center;
+                                padding:35px;
+                                color:var(--text-light);
+                            "
+                        >
+                            Nenhum cliente com compras ainda.
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <div
+    style="
+        margin-top:12px;
+        text-align:right;
+    "
+>
+    <a
+        class="btn btn-ghost btn-sm"
+        href="{{ url_for(
+            'inteligencia_vendas.ranking_clientes'
+        ) }}"
+    >
+        👤 Ver ranking completo
+    </a>
+</div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     RANKING DE PISCINEIROS
+========================================================= -->
+
+<div
+    class="section-title"
+    style="margin-top:30px;"
+>
+    🏊 Piscineiros que Mais Movimentam
+</div>
+
+
+<div class="table-wrap">
+
+    <div class="table-head">
+
+        <span class="table-head-title">
+            🏆 Ranking de Piscineiros
+        </span>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>Piscineiro</th>
+                    <th>Notinhas</th>
+                    <th>Valor Movimentado</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for piscineiro, valor_total, quantidade_notinhas in piscineiros %}
+
+                    <tr>
+
+                        <td>
+                            {{ loop.index }}
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ piscineiro.nome }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+                            {{ quantidade_notinhas }}
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+
+                                R$ {{
+                                    "%.2f"
+                                    |format(valor_total)
+                                    |replace(".", ",")
+                                }}
+
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                class="btn btn-ghost btn-sm"
+                                href="{{ url_for(
+                                    'piscineiros.detalhes',
+                                    piscineiro_id=piscineiro.id
+                                ) }}"
+                            >
+                                👁 Ver
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="5"
+                            style="
+                                text-align:center;
+                                padding:35px;
+                                color:var(--text-light);
+                            "
+                        >
+                            Nenhum piscineiro com movimentação ainda.
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <div
+    style="
+        margin-top:12px;
+        text-align:right;
+    "
+>
+    <a
+        class="btn btn-ghost btn-sm"
+        href="{{ url_for(
+            'inteligencia_vendas.ranking_piscineiros'
+        ) }}"
+    >
+        🏊 Ver ranking completo
+    </a>
+</div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CLIENTES SEM COMPRAR
+========================================================= -->
+
+<div
+    class="section-title"
+    style="margin-top:32px;"
+>
+    ⚠️ Clientes sem Comprar
+</div>
+
+
+<div
+    class="form-card"
+    style="margin-bottom:18px;"
+>
+
+    <form
+        method="GET"
+        action="{{ url_for('inteligencia_vendas.index') }}"
+    >
+
+        <div
+            style="
+                display:flex;
+                align-items:end;
+                gap:10px;
+                flex-wrap:wrap;
+            "
+        >
+
+            <div class="form-group">
+
+                <label>
+                    Considerar cliente sem comprar há
+                </label>
+
+                <select name="dias">
+
+                    <option
+                        value="30"
+                        {% if dias_sem_compra == 30 %}
+                            selected
+                        {% endif %}
+                    >
+                        30 dias
+                    </option>
+
+                    <option
+                        value="60"
+                        {% if dias_sem_compra == 60 %}
+                            selected
+                        {% endif %}
+                    >
+                        60 dias
+                    </option>
+
+                    <option
+                        value="90"
+                        {% if dias_sem_compra == 90 %}
+                            selected
+                        {% endif %}
+                    >
+                        90 dias
+                    </option>
+
+                    <option
+                        value="120"
+                        {% if dias_sem_compra == 120 %}
+                            selected
+                        {% endif %}
+                    >
+                        120 dias
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <button
+                class="btn btn-primary"
+                type="submit"
+            >
+                🔍 Atualizar
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<div class="table-wrap">
+
+    <div class="table-head">
+
+        <span class="table-head-title">
+
+            ⚠️ Sem comprar há
+            {{ dias_sem_compra }} dias ou mais
+
+        </span>
+
+
+        <span
+            style="
+                font-size:12px;
+                color:var(--text-light);
+            "
+        >
+
+            {{ clientes_inativos|length }}
+            cliente(s)
+
+        </span>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Cliente</th>
+                    <th>Piscineiro</th>
+                    <th>Última Compra</th>
+                    <th>Tempo sem Comprar</th>
+                    <th>Situação</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for dados in clientes_inativos %}
+
+                    {% set cliente = dados.cliente %}
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                {{ cliente.nome }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            {% if cliente.piscineiro %}
+
+                                {{ cliente.piscineiro.nome }}
+
+                            {% else %}
+
+                                Hydra / Direto
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if dados.ultima_compra %}
+
+                                {{
+                                    dados.ultima_compra
+                                    .strftime("%d/%m/%Y")
+                                }}
+
+                            {% else %}
+
+                                Nunca comprou
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if dados.nunca_comprou %}
+
+                                —
+
+                            {% else %}
+
+                                <strong>
+                                    {{ dados.dias_sem_comprar }}
+                                    dias
+                                </strong>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if dados.nunca_comprou %}
+
+                                <span class="badge badge-open">
+                                    Novo / sem compra
+                                </span>
+
+                            {% elif dados.dias_sem_comprar >= 90 %}
+
+                                <span class="badge badge-late">
+                                    🚨 Atenção
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge badge-open">
+                                    ⚠️ Sem comprar
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                class="btn btn-ghost btn-sm"
+                                href="{{ url_for(
+                                    'clientes.detalhes',
+                                    cliente_id=cliente.id
+                                ) }}"
+                            >
+                                👁 Ver Cliente
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            style="
+                                text-align:center;
+                                padding:40px;
+                                color:var(--text-light);
+                            "
+                        >
+
+                            ✅ Nenhum cliente está há
+                            {{ dias_sem_compra }}
+                            dias ou mais sem comprar.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

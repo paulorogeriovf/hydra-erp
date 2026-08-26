@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Ranking de Produtos - Hydra ERP
+{% endblock %}
+
+
+{% block header_title %}
+📦 <span>Ranking de Produtos</span>
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="page-header">
+
+    <div class="page-title">
+
+        Ranking de Produtos
+
+        <small>
+            Produtos com maior movimentação no ERP
+        </small>
+
+    </div>
+
+
+    <a
+        class="btn btn-ghost"
+        href="{{ url_for(
+            'inteligencia_vendas.index'
+        ) }}"
+    >
+        ← Voltar
+    </a>
+
+</div>
+
+
+<div class="table-wrap">
+
+    <div class="table-head">
+
+        <span class="table-head-title">
+            🏆 Ranking Completo
+        </span>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>Produto</th>
+                    <th>Quantidade Vendida</th>
+                    <th>Valor Movimentado</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for item in produtos %}
+
+                    <tr>
+
+                        <td>
+                            {{ loop.index }}
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ item.nome_produto }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            {{ item.quantidade_total }}
+
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+
+                                R$ {{
+                                    "%.2f"
+                                    |format(item.valor_total)
+                                    |replace(".", ",")
+                                }}
+
+                            </strong>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="4"
+                            style="
+                                text-align:center;
+                                padding:40px;
+                                color:var(--text-light);
+                            "
+                        >
+                            Nenhum produto vendido ainda.
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+{% endblock %}
