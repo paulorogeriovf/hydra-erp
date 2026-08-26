@@ -1,137 +1,383 @@
 <!-- Hydra ERP
-     Responsável por: permitir a edição de produtos cadastrados. -->
+     Responsável por: permitir a edição
+     dos produtos cadastrados. -->
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Editar Produto - Hydra ERP</title>
-</head>
+{% extends "base.html" %}
 
-<body>
 
-    <h1>Editar Produto</h1>
+{% block title %}
+Editar Produto - Hydra ERP
+{% endblock %}
+
+
+{% block header_title %}
+✏️ <span>Editar Produto</span>
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- =========================================================
+     CABEÇALHO
+========================================================= -->
+
+<div class="page-header">
+
+    <div class="page-title">
+
+        Editar Produto
+
+        <small>
+            Atualize os dados e regras comerciais do produto
+        </small>
+
+    </div>
+
+
+    <a
+        class="btn btn-ghost"
+        href="{{ url_for('produtos.listar') }}"
+    >
+        ← Voltar
+    </a>
+
+</div>
+
+
+<!-- =========================================================
+     FORMULÁRIO
+========================================================= -->
+
+<div class="form-card">
 
     <form method="POST">
 
-        <div>
-            <label>Nome *</label><br>
 
-            <input
-                type="text"
-                name="nome"
-                value="{{ produto.nome }}"
-                required
-            >
+        <!-- =================================================
+             IDENTIFICAÇÃO
+        ================================================== -->
+
+        <div class="section-title">
+            📦 Identificação
         </div>
 
-        <br>
 
-        <div>
-            <label>Marca</label><br>
+        <div class="form-row">
 
-            <input
-                type="text"
-                name="marca"
-                value="{{ produto.marca or '' }}"
-            >
+            <div class="form-group">
+
+                <label>
+                    Nome *
+                </label>
+
+                <input
+                    type="text"
+                    name="nome"
+                    value="{{ produto.nome }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Marca
+                </label>
+
+                <input
+                    type="text"
+                    name="marca"
+                    value="{{ produto.marca or '' }}"
+                >
+
+            </div>
+
         </div>
 
-        <br>
 
-        <div>
-            <label>Categoria</label><br>
+        <div class="form-group">
+
+            <label>
+                Categoria
+            </label>
 
             <input
                 type="text"
                 name="categoria"
                 value="{{ produto.categoria or '' }}"
             >
+
         </div>
 
-        <br>
 
-        <div>
-            <label>Preço Normal *</label><br>
+        <!-- =================================================
+             PREÇOS
+        ================================================== -->
 
-            <input
-                type="number"
-                name="preco_normal"
-                step="0.01"
-                min="0"
-                value="{{ produto.preco_normal }}"
-                required
+        <div class="section-title">
+            💰 Preços
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>
+                    Preço Normal *
+                </label>
+
+                <input
+                    type="number"
+                    name="preco_normal"
+                    step="0.01"
+                    min="0"
+                    value="{{ produto.preco_normal }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Preço Atacado
+                </label>
+
+                <input
+                    type="number"
+                    name="preco_atacado"
+                    step="0.01"
+                    min="0"
+                    value="{{ produto.preco_atacado or '' }}"
+                >
+
+                <small
+                    style="
+                        display:block;
+                        margin-top:5px;
+                        color:var(--text-light);
+                    "
+                >
+                    Campo opcional.
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             COMISSÃO
+        ================================================== -->
+
+        <div class="section-title">
+            💵 Comissão
+        </div>
+
+
+        <div class="form-group">
+
+            <label
+                style="
+                    display:flex;
+                    align-items:center;
+                    gap:8px;
+                    cursor:pointer;
+                "
             >
-        </div>
-
-        <br>
-
-        <div>
-            <label>Preço Atacado</label><br>
-
-            <input
-                type="number"
-                name="preco_atacado"
-                step="0.01"
-                min="0"
-                value="{{ produto.preco_atacado or '' }}"
-            >
-        </div>
-
-        <br>
-
-        <div>
-            <label>
 
                 <input
                     type="checkbox"
                     name="gera_comissao"
-                    {% if produto.gera_comissao %}checked{% endif %}
+                    id="geraComissao"
+                    style="width:auto;"
+                    {% if produto.gera_comissao %}
+                        checked
+                    {% endif %}
                 >
 
-                Produto gera comissão
+                Produto gera comissão para piscineiro
 
             </label>
+
         </div>
 
-        <br>
 
-        <div>
-            <label>Percentual de Comissão</label><br>
+        <div
+            class="form-group"
+            id="grupoPercentual"
+            style="display:none;"
+        >
 
-            <input
-                type="number"
-                name="percentual_comissao"
-                step="0.01"
-                min="0"
-                max="100"
-                value="{{ produto.percentual_comissao or '' }}"
+            <label>
+                Percentual de Comissão
+            </label>
+
+            <div
+                style="
+                    display:flex;
+                    align-items:center;
+                    gap:8px;
+                "
             >
+
+                <input
+                    type="number"
+                    name="percentual_comissao"
+                    id="percentualComissao"
+                    step="0.01"
+                    min="0"
+                    max="100"
+                    value="{{ produto.percentual_comissao or '' }}"
+                    placeholder="5,00"
+                >
+
+                <span
+                    style="
+                        font-weight:700;
+                        color:var(--text-light);
+                    "
+                >
+                    %
+                </span>
+
+            </div>
+
+
+            <small
+                style="
+                    display:block;
+                    margin-top:5px;
+                    color:var(--text-light);
+                "
+            >
+                Percentual utilizado para calcular
+                a comissão desse produto.
+            </small>
+
         </div>
 
-        <br>
 
-        <div>
-            <label>Observação</label><br>
+        <!-- =================================================
+             OBSERVAÇÃO
+        ================================================== -->
+
+        <div class="section-title">
+            📝 Observação
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Observação
+            </label>
 
             <textarea
                 name="observacao"
-                rows="4"
-                cols="40"
+                placeholder="Informações adicionais sobre o produto..."
             >{{ produto.observacao or '' }}</textarea>
+
         </div>
 
-        <br>
 
-        <button type="submit">
-            Salvar Alterações
-        </button>
+        <!-- =================================================
+             AÇÕES
+        ================================================== -->
 
-        <a href="{{ url_for('produtos.listar') }}">
-            Cancelar
-        </a>
+        <div class="action-group">
+
+            <button
+                class="btn btn-primary"
+                type="submit"
+            >
+                💾 Salvar Alterações
+            </button>
+
+
+            <a
+                class="btn btn-ghost"
+                href="{{ url_for('produtos.listar') }}"
+            >
+                Cancelar
+            </a>
+
+        </div>
 
     </form>
 
-</body>
-</html>
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const checkbox =
+            document.getElementById(
+                "geraComissao"
+            );
+
+        const grupoPercentual =
+            document.getElementById(
+                "grupoPercentual"
+            );
+
+        const percentual =
+            document.getElementById(
+                "percentualComissao"
+            );
+
+
+        function atualizarComissao() {
+
+            if (checkbox.checked) {
+
+                grupoPercentual.style.display =
+                    "block";
+
+                percentual.required =
+                    true;
+
+            } else {
+
+                grupoPercentual.style.display =
+                    "none";
+
+                percentual.required =
+                    false;
+
+                percentual.value =
+                    "";
+
+            }
+
+        }
+
+
+        checkbox.addEventListener(
+            "change",
+            atualizarComissao
+        );
+
+
+        atualizarComissao();
+
+    }
+);
+
+</script>
+
+
+{% endblock %}
