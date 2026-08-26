@@ -11,7 +11,9 @@ from app.models.produto import Produto
 from app.models.piscineiro import Piscineiro
 from app.models.cliente import Cliente
 
-from app.services.dashboard_service import DashboardService
+from app.services.dashboard_service import (
+    DashboardService
+)
 
 
 dashboard_bp = Blueprint(
@@ -39,6 +41,7 @@ def index():
         .count()
     )
 
+
     total_piscineiros = (
         Piscineiro.query.count()
     )
@@ -50,6 +53,7 @@ def index():
         )
         .count()
     )
+
 
     total_clientes = (
         Cliente.query.count()
@@ -63,6 +67,7 @@ def index():
         .count()
     )
 
+
     clientes_sem_piscineiro = (
         Cliente.query
         .filter(
@@ -75,7 +80,7 @@ def index():
 
 
     # =====================================================
-    # FINANCEIRO
+    # RESUMO
     # =====================================================
 
     resumo = (
@@ -102,6 +107,7 @@ def index():
         .top_piscineiros()
     )
 
+
     top_produtos = (
         DashboardService
         .top_produtos()
@@ -118,29 +124,79 @@ def index():
     )
 
 
+    # =====================================================
+    # OPORTUNIDADES
+    # =====================================================
+
+    oportunidades = (
+        DashboardService
+        .top_oportunidades()
+    )
+
+
+    # =====================================================
+    # MOVIMENTAÇÕES RECENTES
+    # =====================================================
+
+    movimentacoes = (
+        DashboardService
+        .movimentacoes_recentes()
+    )
+
+
+    # =====================================================
+    # TEMPLATE
+    # =====================================================
+
     return render_template(
         "dashboard/index.html",
 
-        total_produtos=total_produtos,
-        produtos_ativos=produtos_ativos,
+        # CADASTROS
+        total_produtos=
+            total_produtos,
 
-        total_piscineiros=total_piscineiros,
-        piscineiros_ativos=piscineiros_ativos,
+        produtos_ativos=
+            produtos_ativos,
 
-        total_clientes=total_clientes,
-        clientes_ativos=clientes_ativos,
+        total_piscineiros=
+            total_piscineiros,
+
+        piscineiros_ativos=
+            piscineiros_ativos,
+
+        total_clientes=
+            total_clientes,
+
+        clientes_ativos=
+            clientes_ativos,
 
         clientes_sem_piscineiro=
             clientes_sem_piscineiro,
 
-        resumo=resumo,
+        # RESUMO
+        resumo=
+            resumo,
 
-        grafico_vendas=grafico_vendas,
+        # GRÁFICO
+        grafico_vendas=
+            grafico_vendas,
 
-        top_piscineiros=top_piscineiros,
+        # RANKINGS
+        top_piscineiros=
+            top_piscineiros,
 
-        top_produtos=top_produtos,
+        top_produtos=
+            top_produtos,
 
+        # COBRANÇAS
         pendencias_vencidas=
-            pendencias_vencidas
+            pendencias_vencidas,
+
+        # INTELIGÊNCIA
+        oportunidades=
+            oportunidades,
+
+        # AUDITORIA
+        movimentacoes=
+            movimentacoes
     )

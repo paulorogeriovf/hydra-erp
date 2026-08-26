@@ -1,6 +1,6 @@
 <!-- Hydra ERP
-     Responsável por: exibir a visão geral,
-     indicadores e informações estratégicas do sistema. -->
+     Responsável por: exibir uma visão geral rápida
+     dos principais indicadores e alertas do sistema. -->
 
 {% extends "base.html" %}
 
@@ -18,6 +18,10 @@ Dashboard - Hydra ERP
 {% block content %}
 
 
+<!-- =========================================================
+     CABEÇALHO
+========================================================= -->
+
 <div class="page-header">
 
     <div class="page-title">
@@ -34,13 +38,40 @@ Dashboard - Hydra ERP
 
 
 <!-- =========================================================
-     FINANCEIRO
+     INDICADORES PRINCIPAIS
 ========================================================= -->
 
 <div class="cards-grid">
 
 
+    <!-- VENDAS DO MÊS -->
+
     <div class="stat-card blue">
+
+        <div class="stat-label">
+            Vendas no Mês
+        </div>
+
+        <div class="stat-value">
+
+            R$ {{
+                "%.2f"
+                |format(resumo.vendas_mes)
+                |replace(".", ",")
+            }}
+
+        </div>
+
+        <div class="stat-icon">
+            📈
+        </div>
+
+    </div>
+
+
+    <!-- TOTAL A RECEBER -->
+
+    <div class="stat-card amber">
 
         <div class="stat-label">
             Total a Receber
@@ -56,19 +87,14 @@ Dashboard - Hydra ERP
 
         </div>
 
-        <div class="stat-trend">
-
-            {{ resumo.quantidade_pendentes }}
-            notinha(s) pendente(s)
-
-        </div>
-
         <div class="stat-icon">
             💰
         </div>
 
     </div>
 
+
+    <!-- TOTAL VENCIDO -->
 
     <div class="stat-card red">
 
@@ -86,44 +112,16 @@ Dashboard - Hydra ERP
 
         </div>
 
-        <div class="stat-trend">
-
-            {{ resumo.quantidade_vencidas }}
-            vencida(s)
-
-        </div>
-
         <div class="stat-icon">
-            ⚠️
+            🚨
         </div>
 
     </div>
 
+
+    <!-- COMISSÕES -->
 
     <div class="stat-card green">
-
-        <div class="stat-label">
-            Vendas — 30 dias
-        </div>
-
-        <div class="stat-value">
-
-            R$ {{
-                "%.2f"
-                |format(resumo.vendas_30_dias)
-                |replace(".", ",")
-            }}
-
-        </div>
-
-        <div class="stat-icon">
-            📈
-        </div>
-
-    </div>
-
-
-    <div class="stat-card amber">
 
         <div class="stat-label">
             Comissões Disponíveis
@@ -149,28 +147,113 @@ Dashboard - Hydra ERP
 
 
 <!-- =========================================================
-     GRÁFICO GERAL
+     INDICADORES SECUNDÁRIOS
 ========================================================= -->
 
-<div class="section-title">
-    📊 Evolução Geral de Vendas
+<div class="cards-grid">
+
+
+    <div class="stat-card blue">
+
+        <div class="stat-label">
+            Últimos 3 Meses
+        </div>
+
+        <div class="stat-value">
+
+            R$ {{
+                "%.2f"
+                |format(resumo.vendas_3_meses)
+                |replace(".", ",")
+            }}
+
+        </div>
+
+        <div class="stat-icon">
+            📊
+        </div>
+
+    </div>
+
+
+    <div class="stat-card blue">
+
+        <div class="stat-label">
+            Ticket Médio
+        </div>
+
+        <div class="stat-value">
+
+            R$ {{
+                "%.2f"
+                |format(resumo.ticket_medio)
+                |replace(".", ",")
+            }}
+
+        </div>
+
+        <div class="stat-icon">
+            🧾
+        </div>
+
+    </div>
+
+
+    <div class="stat-card red">
+
+        <div class="stat-label">
+            Notinhas Vencidas
+        </div>
+
+        <div class="stat-value sm">
+            {{ resumo.quantidade_vencidas }}
+        </div>
+
+        <div class="stat-icon">
+            ⚠️
+        </div>
+
+    </div>
+
+
+    <div class="stat-card amber">
+
+        <div class="stat-label">
+            Próximas do Vencimento
+        </div>
+
+        <div class="stat-value sm">
+            {{ resumo.quantidade_proximas }}
+        </div>
+
+        <div class="stat-icon">
+            ⏳
+        </div>
+
+    </div>
+
 </div>
 
 
-<div class="chart-box">
+<!-- =========================================================
+     GRÁFICO DE VENDAS
+========================================================= -->
 
-    <div class="chart-title">
-        📈 Últimos 6 meses
-    </div>
+<div class="section-title">
+    📈 Evolução das Vendas
+</div>
+
+
+<div class="form-card">
 
     <div
         style="
+            height:320px;
             position:relative;
-            height:340px;
         "
     >
 
-        <canvas id="graficoVendasDashboard"></canvas>
+        <canvas id="graficoVendas"></canvas>
 
     </div>
 
@@ -178,180 +261,25 @@ Dashboard - Hydra ERP
 
 
 <!-- =========================================================
-     RANKINGS
+     DADOS DO GRÁFICO
 ========================================================= -->
 
 <div
-    class="two-col"
-    style="margin-top:22px;"
->
-
-
-    <!-- PISCINEIROS -->
-
-    <div class="table-wrap">
-
-        <div class="table-head">
-
-            <span class="table-head-title">
-                🏆 Piscineiros — últimos 90 dias
-            </span>
-
-        </div>
-
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>#</th>
-                    <th>Piscineiro</th>
-                    <th>Vendido</th>
-                </tr>
-
-            </thead>
-
-
-            <tbody>
-
-                {% for item in top_piscineiros %}
-
-                    <tr>
-
-                        <td>
-                            {{ loop.index }}º
-                        </td>
-
-                        <td>
-
-                            <a
-                                href="{{ url_for(
-                                    'piscineiros.detalhes',
-                                    piscineiro_id=item.id
-                                ) }}"
-                            >
-
-                                <strong>
-                                    {{ item.nome }}
-                                </strong>
-
-                            </a>
-
-                        </td>
-
-                        <td>
-
-                            R$ {{
-                                "%.2f"
-                                |format(item.valor_total)
-                                |replace(".", ",")
-                            }}
-
-                        </td>
-
-                    </tr>
-
-
-                {% else %}
-
-                    <tr>
-
-                        <td colspan="3">
-
-                            Nenhuma venda registrada.
-
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-
-    <!-- PRODUTOS -->
-
-    <div class="table-wrap">
-
-        <div class="table-head">
-
-            <span class="table-head-title">
-                📦 Produtos — últimos 90 dias
-            </span>
-
-        </div>
-
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>#</th>
-                    <th>Produto</th>
-                    <th>Qtd.</th>
-                </tr>
-
-            </thead>
-
-
-            <tbody>
-
-                {% for item in top_produtos %}
-
-                    <tr>
-
-                        <td>
-                            {{ loop.index }}º
-                        </td>
-
-                        <td>
-                            <strong>
-                                {{ item.nome_produto }}
-                            </strong>
-                        </td>
-
-                        <td>
-                            {{ item.quantidade_total }}
-                        </td>
-
-                    </tr>
-
-
-                {% else %}
-
-                    <tr>
-
-                        <td colspan="3">
-
-                            Nenhum produto vendido.
-
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</div>
+    id="dadosGraficoDashboard"
+    data-labels='{{ grafico_vendas["labels"] | tojson }}'
+    data-valores='{{ grafico_vendas["valores"] | tojson }}'
+></div>
 
 
 <!-- =========================================================
-     COBRANÇAS
+     TOP PRODUTOS
 ========================================================= -->
 
-<div class="section-title">
-    🚨 Pendências Vencidas
+<div
+    class="section-title"
+    style="margin-top:32px;"
+>
+    🏆 Top Produtos — Últimos 90 Dias
 </div>
 
 
@@ -360,15 +288,17 @@ Dashboard - Hydra ERP
     <div class="table-head">
 
         <span class="table-head-title">
-            ⚠️ Cobranças que precisam de atenção
+            📦 Produtos Mais Vendidos
         </span>
 
 
         <a
             class="btn btn-ghost btn-sm"
-            href="{{ url_for('cobrancas.index') }}"
+            href="{{ url_for(
+                'inteligencia_vendas.ranking_produtos'
+            ) }}"
         >
-            Ver todas
+            Ver ranking completo →
         </a>
 
     </div>
@@ -381,12 +311,260 @@ Dashboard - Hydra ERP
             <thead>
 
                 <tr>
-                    <th>Cliente</th>
+                    <th>#</th>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Valor</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for item in top_produtos %}
+
+                    <tr>
+
+                        <td>
+                            {{ loop.index }}
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ item.nome_produto }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+                            {{ item.quantidade_total }}
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+
+                                R$ {{
+                                    "%.2f"
+                                    |format(item.valor_total)
+                                    |replace(".", ",")
+                                }}
+
+                            </strong>
+
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="4"
+                            style="
+                                text-align:center;
+                                padding:30px;
+                                color:var(--text-light);
+                            "
+                        >
+                            Nenhuma venda registrada.
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     TOP PISCINEIROS
+========================================================= -->
+
+<div
+    class="section-title"
+    style="margin-top:30px;"
+>
+    🏊 Top Piscineiros — Últimos 90 Dias
+</div>
+
+
+<div class="table-wrap">
+
+    <div class="table-head">
+
+        <span class="table-head-title">
+            🏆 Piscineiros que Mais Movimentam
+        </span>
+
+
+        <a
+            class="btn btn-ghost btn-sm"
+            href="{{ url_for(
+                'inteligencia_vendas.ranking_piscineiros'
+            ) }}"
+        >
+            Ver ranking completo →
+        </a>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
                     <th>Piscineiro</th>
+                    <th>Valor Movimentado</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for item in top_piscineiros %}
+
+                    <tr>
+
+                        <td>
+                            {{ loop.index }}
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ item.nome }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+
+                                R$ {{
+                                    "%.2f"
+                                    |format(item.valor_total)
+                                    |replace(".", ",")
+                                }}
+
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                class="btn btn-ghost btn-sm"
+                                href="{{ url_for(
+                                    'piscineiros.detalhes',
+                                    piscineiro_id=item.id
+                                ) }}"
+                            >
+                                👁 Ver
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="4"
+                            style="
+                                text-align:center;
+                                padding:30px;
+                                color:var(--text-light);
+                            "
+                        >
+                            Nenhum piscineiro com movimentação.
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     COBRANÇAS VENCIDAS
+========================================================= -->
+
+<div
+    class="section-title"
+    style="margin-top:32px;"
+>
+    🚨 Cobranças que Precisam de Atenção
+</div>
+
+
+<div class="table-wrap">
+
+    <div class="table-head">
+
+        <span class="table-head-title">
+            ⚠️ Vencidas
+        </span>
+
+
+        <a
+            class="btn btn-ghost btn-sm"
+            href="{{ url_for(
+                'cobrancas.index'
+            ) }}"
+        >
+            Ver cobranças →
+        </a>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+
+                <tr>
                     <th>Notinha</th>
+                    <th>Cliente</th>
                     <th>Vencimento</th>
                     <th>Saldo</th>
-                    <th>Ação</th>
+                    <th>Atraso</th>
+                    <th>Ações</th>
                 </tr>
 
             </thead>
@@ -401,6 +579,11 @@ Dashboard - Hydra ERP
                     <tr>
 
                         <td>
+                            #{{ notinha.id }}
+                        </td>
+
+
+                        <td>
 
                             <strong>
                                 {{ notinha.cliente.nome }}
@@ -408,23 +591,6 @@ Dashboard - Hydra ERP
 
                         </td>
 
-                        <td>
-
-                            {% if notinha.piscineiro %}
-
-                                {{ notinha.piscineiro.nome }}
-
-                            {% else %}
-
-                                Hydra / Direto
-
-                            {% endif %}
-
-                        </td>
-
-                        <td>
-                            #{{ notinha.id }}
-                        </td>
 
                         <td>
 
@@ -434,6 +600,7 @@ Dashboard - Hydra ERP
                             }}
 
                         </td>
+
 
                         <td>
 
@@ -448,6 +615,25 @@ Dashboard - Hydra ERP
                             </strong>
 
                         </td>
+
+
+                        <td>
+
+                            <span class="badge badge-late">
+
+                                ⚠️
+                                {{ dados.dias_atraso }}
+
+                                {% if dados.dias_atraso == 1 %}
+                                    dia
+                                {% else %}
+                                    dias
+                                {% endif %}
+
+                            </span>
+
+                        </td>
+
 
                         <td>
 
@@ -474,12 +660,304 @@ Dashboard - Hydra ERP
                             colspan="6"
                             style="
                                 text-align:center;
-                                padding:35px;
+                                padding:30px;
                                 color:var(--text-light);
                             "
                         >
 
-                            ✅ Nenhuma pendência vencida.
+                            ✅ Nenhuma cobrança vencida.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     OPORTUNIDADES
+========================================================= -->
+
+<div
+    class="section-title"
+    style="margin-top:32px;"
+>
+    💡 Oportunidades de Vendas
+</div>
+
+
+<div class="table-wrap">
+
+    <div class="table-head">
+
+        <span class="table-head-title">
+            🧠 Oportunidades Detectadas
+        </span>
+
+
+        <a
+            class="btn btn-ghost btn-sm"
+            href="{{ url_for(
+                'inteligencia_vendas.oportunidades'
+            ) }}"
+        >
+            Ver todas →
+        </a>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Cliente</th>
+                    <th>Produto</th>
+                    <th>Média</th>
+                    <th>Sem Comprar</th>
+                    <th>Situação</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for dados in oportunidades %}
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                {{ dados.cliente.nome }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+                            {{ dados.produto_nome }}
+                        </td>
+
+
+                        <td>
+
+                            {{ dados.media_dias }}
+                            dias
+
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ dados.dias_sem_comprar }}
+                                dias
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            {% if dados.nivel == "ALTA" %}
+
+                                <span class="badge badge-late">
+                                    🚨 Alta atenção
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge badge-open">
+                                    ⚠️ Atenção
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                class="btn btn-ghost btn-sm"
+                                href="{{ url_for(
+                                    'clientes.detalhes',
+                                    cliente_id=dados.cliente.id
+                                ) }}"
+                            >
+                                👁 Ver
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            style="
+                                text-align:center;
+                                padding:30px;
+                                color:var(--text-light);
+                            "
+                        >
+
+                            Nenhuma oportunidade detectada ainda.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     MOVIMENTAÇÕES RECENTES
+========================================================= -->
+
+<div
+    class="section-title"
+    style="margin-top:32px;"
+>
+    📜 Movimentações Recentes
+</div>
+
+
+<div class="table-wrap">
+
+    <div class="table-head">
+
+        <span class="table-head-title">
+            🕒 Últimas Ações
+        </span>
+
+
+        <a
+            class="btn btn-ghost btn-sm"
+            href="{{ url_for(
+                'historico.index'
+            ) }}"
+        >
+            Ver histórico →
+        </a>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Data</th>
+                    <th>Tipo</th>
+                    <th>Ação</th>
+                    <th>Descrição</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for movimentacao in movimentacoes %}
+
+                    <tr>
+
+                        <td style="white-space:nowrap;">
+
+                            {{
+                                movimentacao.data_criacao
+                                .strftime("%d/%m/%Y %H:%M")
+                            }}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if movimentacao.tipo == "NOTINHA" %}
+                                📄 Notinha
+
+                            {% elif movimentacao.tipo == "PAGAMENTO" %}
+                                💰 Pagamento
+
+                            {% elif movimentacao.tipo == "COMISSAO" %}
+                                💵 Comissão
+
+                            {% elif movimentacao.tipo == "CLIENTE" %}
+                                👤 Cliente
+
+                            {% elif movimentacao.tipo == "PISCINEIRO" %}
+                                🏊 Piscineiro
+
+                            {% elif movimentacao.tipo == "PRODUTO" %}
+                                📦 Produto
+
+                            {% else %}
+                                {{ movimentacao.tipo }}
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+                            {{ movimentacao.acao }}
+                        </td>
+
+
+                        <td>
+
+                            {{ movimentacao.descricao }}
+
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="4"
+                            style="
+                                text-align:center;
+                                padding:30px;
+                                color:var(--text-light);
+                            "
+                        >
+
+                            Nenhuma movimentação registrada.
 
                         </td>
 
@@ -500,8 +978,11 @@ Dashboard - Hydra ERP
      CADASTROS
 ========================================================= -->
 
-<div class="section-title">
-    📌 Cadastros
+<div
+    class="section-title"
+    style="margin-top:32px;"
+>
+    📋 Cadastros
 </div>
 
 
@@ -511,35 +992,47 @@ Dashboard - Hydra ERP
     <div class="stat-card blue">
 
         <div class="stat-label">
-            Clientes Ativos
+            Clientes
         </div>
 
         <div class="stat-value sm">
             {{ clientes_ativos }}
         </div>
 
-        <div class="stat-trend">
+        <div
+            style="
+                margin-top:5px;
+                font-size:12px;
+                color:var(--text-light);
+            "
+        >
             {{ total_clientes }} cadastrados
         </div>
 
         <div class="stat-icon">
-            👥
+            👤
         </div>
 
     </div>
 
 
-    <div class="stat-card teal">
+    <div class="stat-card blue">
 
         <div class="stat-label">
-            Piscineiros Ativos
+            Piscineiros
         </div>
 
         <div class="stat-value sm">
             {{ piscineiros_ativos }}
         </div>
 
-        <div class="stat-trend">
+        <div
+            style="
+                margin-top:5px;
+                font-size:12px;
+                color:var(--text-light);
+            "
+        >
             {{ total_piscineiros }} cadastrados
         </div>
 
@@ -550,17 +1043,23 @@ Dashboard - Hydra ERP
     </div>
 
 
-    <div class="stat-card indigo">
+    <div class="stat-card blue">
 
         <div class="stat-label">
-            Produtos Ativos
+            Produtos
         </div>
 
         <div class="stat-value sm">
             {{ produtos_ativos }}
         </div>
 
-        <div class="stat-trend">
+        <div
+            style="
+                margin-top:5px;
+                font-size:12px;
+                color:var(--text-light);
+            "
+        >
             {{ total_produtos }} cadastrados
         </div>
 
@@ -581,29 +1080,19 @@ Dashboard - Hydra ERP
             {{ clientes_sem_piscineiro }}
         </div>
 
-        <div class="stat-trend">
-            Venda direta Hydra
-        </div>
-
         <div class="stat-icon">
             🏪
         </div>
 
     </div>
 
+
 </div>
 
 
 <!-- =========================================================
-     DADOS DO GRÁFICO
+     CHART.JS
 ========================================================= -->
-
-<div
-    id="dadosGraficoDashboard"
-    data-labels='{{ grafico_vendas["labels"] | tojson }}'
-    data-valores='{{ grafico_vendas["valores"] | tojson }}'
-></div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -616,8 +1105,9 @@ document.addEventListener(
 
         const canvas =
             document.getElementById(
-                "graficoVendasDashboard"
+                "graficoVendas"
             );
+
 
         const dados =
             document.getElementById(
@@ -646,7 +1136,7 @@ document.addEventListener(
             canvas,
             {
 
-                type: "line",
+                type: "bar",
 
                 data: {
 
@@ -654,21 +1144,18 @@ document.addEventListener(
 
                     datasets: [
                         {
-                            label: "Vendas",
 
-                            data: valores,
+                            label:
+                                "Vendas (R$)",
 
-                            borderColor:
-                                "rgba(0, 119, 182, 1)",
+                            data:
+                                valores,
 
-                            backgroundColor:
-                                "rgba(0, 174, 239, 0.15)",
+                            borderWidth:
+                                1,
 
-                            fill: true,
-
-                            tension: 0.3,
-
-                            borderWidth: 2
+                            borderRadius:
+                                6
                         }
                     ]
 
@@ -676,9 +1163,11 @@ document.addEventListener(
 
                 options: {
 
-                    responsive: true,
+                    responsive:
+                        true,
 
-                    maintainAspectRatio: false,
+                    maintainAspectRatio:
+                        false,
 
                     plugins: {
 
@@ -692,7 +1181,8 @@ document.addEventListener(
 
                         y: {
 
-                            beginAtZero: true,
+                            beginAtZero:
+                                true,
 
                             ticks: {
 
@@ -701,8 +1191,7 @@ document.addEventListener(
 
                                         return (
                                             "R$ "
-                                            +
-                                            Number(valor)
+                                            + Number(valor)
                                                 .toLocaleString(
                                                     "pt-BR"
                                                 )

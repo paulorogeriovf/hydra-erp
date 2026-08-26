@@ -1,6 +1,7 @@
 # Hydra ERP
 # Responsável por: consolidar os principais indicadores,
-# rankings e gráficos utilizados no Dashboard do sistema.
+# rankings, gráficos, cobranças e inteligência
+# utilizados no Dashboard principal.
 
 from collections import defaultdict
 from datetime import date, timedelta
@@ -14,16 +15,34 @@ from app.models.piscineiro import Piscineiro
 
 from app.services.notinha_service import NotinhaService
 from app.services.comissao_service import ComissaoService
+from app.services.cobranca_service import CobrancaService
+from app.services.inteligencia_vendas_service import InteligenciaVendasService
+from app.services.movimentacao_service import MovimentacaoService
 
 
 class DashboardService:
 
     # =========================================================
-    # RESUMO FINANCEIRO
+    # RESUMO PRINCIPAL
     # =========================================================
 
     @staticmethod
     def resumo():
+
+        # Inteligência de vendas
+        vendas = (
+            InteligenciaVendasService
+            .resumo_geral()
+        )
+
+        # Cobranças vencidas e próximas
+        cobrancas = (
+            CobrancaService.resumo()
+        )
+
+        # =====================================================
+        # TOTAL A RECEBER
+        # =====================================================
 
         notinhas = (
             Notinha.query
@@ -34,33 +53,9 @@ class DashboardService:
         )
 
         total_receber = Decimal("0.00")
-        total_vencido = Decimal("0.00")
-
         quantidade_pendentes = 0
-        quantidade_vencidas = 0
-
-        vendas_30_dias = Decimal("0.00")
-
-        hoje = date.today()
-
-        inicio_30_dias = (
-            hoje - timedelta(days=30)
-        )
 
         for notinha in notinhas:
-
-            valor_notinha = Decimal(
-                str(notinha.valor_total)
-            )
-
-            # Vendas recentes
-            if (
-                notinha.data_retirada
-                >= inicio_30_dias
-            ):
-                vendas_30_dias += (
-                    valor_notinha
-                )
 
             saldo = (
                 NotinhaService.saldo_pendente(
@@ -68,62 +63,122 @@ class DashboardService:
                 )
             )
 
-            situacao = (
-                NotinhaService.situacao(
-                    notinha
-                )
-            )
-
             if saldo > 0:
-
-                quantidade_pendentes += 1
 
                 total_receber += saldo
 
-            if "VENCIDA" in situacao:
+                quantidade_pendentes += 1
 
-                quantidade_vencidas += 1
+        # =====================================================
+        # COMISSÕES DISPONÍVEIS
+        # =====================================================
 
-                total_vencido += saldo
-
-
-        # Comissão disponível de todos os piscineiros
         comissoes_disponiveis = Decimal(
             "0.00"
         )
 
         piscineiros = (
             Piscineiro.query
+            .filter_by(
+                ativo=True
+            )
             .all()
         )
 
         for piscineiro in piscineiros:
 
             comissoes_disponiveis += (
-                ComissaoService.saldo_disponivel(
+                ComissaoService
+                .saldo_disponivel(
                     piscineiro.id
                 )
             )
 
+        # =====================================================
+        # OPORTUNIDADES
+        # =====================================================
+
+        oportunidades = (
+            InteligenciaVendasService
+            .oportunidades_produtos()
+        )
+
+        clientes_risco = (
+            InteligenciaVendasService
+            .clientes_em_risco()
+        )
+
+        oportunidades_alta = len([
+            item
+            for item in oportunidades
+            if item["nivel"] == "ALTA"
+        ])
+
+        clientes_risco_alta = len([
+            item
+            for item in clientes_risco
+            if item["nivel"] == "ALTA"
+        ])
+
+        # =====================================================
+        # RETORNO
+        # =====================================================
 
         return {
+
+            # VENDAS
+            "vendas_mes":
+                vendas["total_mes"],
+
+            "vendas_3_meses":
+                vendas["total_3_meses"],
+
+            "ticket_medio":
+                vendas["ticket_medio"],
+
+            "clientes_mes":
+                vendas["clientes_mes"],
+
+            # COMPATIBILIDADE COM DASHBOARD ANTIGO
+            "vendas_30_dias":
+                vendas["total_mes"],
+
+            # FINANCEIRO
             "total_receber":
                 total_receber,
-
-            "total_vencido":
-                total_vencido,
 
             "quantidade_pendentes":
                 quantidade_pendentes,
 
+            # COBRANÇAS
+            "total_vencido":
+                cobrancas["total_vencido"],
+
             "quantidade_vencidas":
-                quantidade_vencidas,
+                cobrancas["quantidade_vencidas"],
 
-            "vendas_30_dias":
-                vendas_30_dias,
+            "quantidade_proximas":
+                cobrancas["quantidade_proximas"],
 
+            "total_proximo":
+                cobrancas["total_proximo"],
+
+            # COMISSÕES
             "comissoes_disponiveis":
-                comissoes_disponiveis
+                comissoes_disponiveis,
+
+            # OPORTUNIDADES
+            "oportunidades":
+                len(oportunidades),
+
+            "oportunidades_alta":
+                oportunidades_alta,
+
+            "clientes_risco":
+                len(clientes_risco),
+
+            "clientes_risco_alta":
+                clientes_risco_alta
         }
 
 
@@ -143,7 +198,6 @@ class DashboardService:
         ano = hoje.year
         mes = hoje.month
 
-
         for _ in range(
             quantidade_meses
         ):
@@ -159,14 +213,11 @@ class DashboardService:
                 mes = 12
                 ano -= 1
 
-
         meses.reverse()
-
 
         totais = defaultdict(
             lambda: Decimal("0.00")
         )
-
 
         notinhas = (
             Notinha.query
@@ -175,7 +226,6 @@ class DashboardService:
             )
             .all()
         )
-
 
         for notinha in notinhas:
 
@@ -187,9 +237,10 @@ class DashboardService:
             if chave in meses:
 
                 totais[chave] += Decimal(
-                    str(notinha.valor_total)
+                    str(
+                        notinha.valor_total
+                    )
                 )
-
 
         nomes_meses = {
             1: "Jan",
@@ -206,10 +257,8 @@ class DashboardService:
             12: "Dez"
         }
 
-
         labels = []
         valores = []
-
 
         for ano, mes in meses:
 
@@ -225,7 +274,6 @@ class DashboardService:
                 )
             )
 
-
         return {
             "labels": labels,
             "valores": valores
@@ -233,23 +281,25 @@ class DashboardService:
 
 
     # =========================================================
-    # TOP PISCINEIROS
+    # TOP PISCINEIROS - ÚLTIMOS 90 DIAS
     # =========================================================
 
     @staticmethod
     def top_piscineiros(
-        limite=5,
+        limite=3,
         dias=90
     ):
 
         inicio = (
             date.today()
-            - timedelta(days=dias)
+            - timedelta(
+                days=dias
+            )
         )
 
-
-        resultados = (
+        return (
             db.session.query(
+
                 Piscineiro.id,
                 Piscineiro.nome,
 
@@ -287,27 +337,26 @@ class DashboardService:
         )
 
 
-        return resultados
-
-
     # =========================================================
-    # TOP PRODUTOS
+    # TOP PRODUTOS - ÚLTIMOS 90 DIAS
     # =========================================================
 
     @staticmethod
     def top_produtos(
-        limite=5,
+        limite=3,
         dias=90
     ):
 
         inicio = (
             date.today()
-            - timedelta(days=dias)
+            - timedelta(
+                days=dias
+            )
         )
 
-
-        resultados = (
+        return (
             db.session.query(
+
                 ItemNotinha.nome_produto,
 
                 db.func.sum(
@@ -349,9 +398,6 @@ class DashboardService:
         )
 
 
-        return resultados
-
-
     # =========================================================
     # PENDÊNCIAS VENCIDAS
     # =========================================================
@@ -361,54 +407,43 @@ class DashboardService:
         limite=8
     ):
 
-        notinhas = (
-            Notinha.query
-            .filter(
-                Notinha.status.notin_(
-                    [
-                        "PAGA",
-                        "CANCELADA"
-                    ]
-                )
-            )
-            .order_by(
-                Notinha.data_vencimento.asc()
-            )
-            .all()
+        vencidas = (
+            CobrancaService
+            .listar_vencidas()
         )
 
+        return vencidas[:limite]
 
-        resultado = []
+
+    # =========================================================
+    # TOP OPORTUNIDADES
+    # =========================================================
+
+    @staticmethod
+    def top_oportunidades(
+        limite=3
+    ):
+
+        oportunidades = (
+            InteligenciaVendasService
+            .oportunidades_produtos()
+        )
+
+        return oportunidades[:limite]
 
 
-        for notinha in notinhas:
+    # =========================================================
+    # MOVIMENTAÇÕES RECENTES
+    # =========================================================
 
-            situacao = (
-                NotinhaService.situacao(
-                    notinha
-                )
+    @staticmethod
+    def movimentacoes_recentes(
+        limite=3
+    ):
+
+        return (
+            MovimentacaoService
+            .listar(
+                limite=limite
             )
-
-            if "VENCIDA" not in situacao:
-                continue
-
-
-            saldo = (
-                NotinhaService.saldo_pendente(
-                    notinha
-                )
-            )
-
-
-            resultado.append({
-                "notinha": notinha,
-                "saldo": saldo,
-                "situacao": situacao
-            })
-
-
-            if len(resultado) >= limite:
-                break
-
-
-        return resultado
+        )
