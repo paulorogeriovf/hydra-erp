@@ -9,6 +9,7 @@ from app.extensions import db
 from app.models.pagamento import Pagamento
 from app.models.notinha import Notinha
 from app.services.notinha_service import NotinhaService
+from app.services.movimentacao_service import MovimentacaoService
 
 
 class PagamentoService:
@@ -131,6 +132,18 @@ class PagamentoService:
                 notinha.status = "PARCIAL"
 
             db.session.commit()
+
+            MovimentacaoService.registrar(
+    tipo="PAGAMENTO",
+    acao="CRIAR",
+    descricao=(
+        f"Pagamento de R$ {pagamento.valor:.2f} "
+        f"registrado na Notinha #{notinha.id} "
+        f"do cliente {notinha.cliente.nome}."
+    ),
+    entidade="NOTINHA",
+    entidade_id=notinha.id
+)
 
             return pagamento
 

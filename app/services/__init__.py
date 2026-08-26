@@ -14,3 +14,5 @@ from app.services.cobranca_service import CobrancaService
 
 from app.services.comissao_service import ComissaoService
 from app.services.dashboard_service import DashboardService
+
+from app.services.movimentacao_service import MovimentacaoService

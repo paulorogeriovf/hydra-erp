@@ -12,6 +12,7 @@ from app.models.piscineiro import Piscineiro
 from app.models.notinha import Notinha
 from app.models.item_notinha import ItemNotinha
 from app.models.retirada_comissao import RetiradaComissao
+from app.services.movimentacao_service import MovimentacaoService
 
 
 class ComissaoService:
@@ -239,6 +240,18 @@ class ComissaoService:
             )
 
             db.session.commit()
+
+            MovimentacaoService.registrar(
+    tipo="COMISSAO",
+    acao="RETIRADA",
+    descricao=(
+        f"Retirada de comissão de "
+        f"R$ {retirada.valor:.2f} registrada para "
+        f"{piscineiro.nome}."
+    ),
+    entidade="PISCINEIRO",
+    entidade_id=piscineiro.id
+)
 
             return retirada
 

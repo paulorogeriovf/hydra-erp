@@ -13,6 +13,7 @@ from app.models.item_notinha import ItemNotinha
 from app.models.cliente import Cliente
 from app.models.produto import Produto
 from app.models.pagamento import Pagamento
+from app.services.movimentacao_service import MovimentacaoService
 
 
 class NotinhaService:
@@ -416,6 +417,18 @@ class NotinhaService:
 
 
             db.session.commit()
+
+            MovimentacaoService.registrar(
+    tipo="NOTINHA",
+    acao="CRIAR",
+    descricao=(
+        f"Notinha #{notinha.id} criada para "
+        f"{cliente.nome}, no valor de "
+        f"R$ {notinha.valor_total:.2f}."
+    ),
+    entidade="NOTINHA",
+    entidade_id=notinha.id
+)
 
             return notinha
 

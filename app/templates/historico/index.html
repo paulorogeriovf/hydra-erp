@@ -1,0 +1,304 @@
+<!-- Hydra ERP
+     Responsável por: exibir o histórico
+     cronológico de movimentações do sistema. -->
+
+{% extends "base.html" %}
+
+
+{% block title %}
+Histórico - Hydra ERP
+{% endblock %}
+
+
+{% block header_title %}
+📜 <span>Histórico</span>
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="page-header">
+
+    <div class="page-title">
+
+        Histórico de Movimentações
+
+        <small>
+            Registro das principais ações realizadas no ERP
+        </small>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     FILTROS
+========================================================= -->
+
+<div
+    class="form-card"
+    style="margin-bottom:22px;"
+>
+
+    <div
+        style="
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        "
+    >
+
+        <a
+            class="
+                btn
+                {% if not tipo_filtro %}
+                    btn-primary
+                {% else %}
+                    btn-ghost
+                {% endif %}
+            "
+            href="{{ url_for('historico.index') }}"
+        >
+            Todos
+        </a>
+
+
+        <a
+            class="
+                btn
+                {% if tipo_filtro == 'NOTINHA' %}
+                    btn-primary
+                {% else %}
+                    btn-ghost
+                {% endif %}
+            "
+            href="{{ url_for(
+                'historico.index',
+                tipo='NOTINHA'
+            ) }}"
+        >
+            📄 Notinhas
+        </a>
+
+
+        <a
+            class="
+                btn
+                {% if tipo_filtro == 'PAGAMENTO' %}
+                    btn-primary
+                {% else %}
+                    btn-ghost
+                {% endif %}
+            "
+            href="{{ url_for(
+                'historico.index',
+                tipo='PAGAMENTO'
+            ) }}"
+        >
+            💰 Pagamentos
+        </a>
+
+
+        <a
+            class="
+                btn
+                {% if tipo_filtro == 'COMISSAO' %}
+                    btn-primary
+                {% else %}
+                    btn-ghost
+                {% endif %}
+            "
+            href="{{ url_for(
+                'historico.index',
+                tipo='COMISSAO'
+            ) }}"
+        >
+            💵 Comissões
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     MOVIMENTAÇÕES
+========================================================= -->
+
+<div class="table-wrap">
+
+    <div class="table-head">
+
+        <span class="table-head-title">
+
+            📜 Movimentações
+
+        </span>
+
+
+        <span
+            style="
+                font-size:12px;
+                color:var(--text-light);
+            "
+        >
+
+            {{ movimentacoes|length }}
+            registro(s)
+
+        </span>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Data</th>
+                    <th>Tipo</th>
+                    <th>Ação</th>
+                    <th>Descrição</th>
+                    <th>Entidade</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for movimentacao in movimentacoes %}
+
+                    <tr>
+
+                        <!-- DATA -->
+
+                        <td>
+
+                            {{
+                                movimentacao.data_criacao
+                                .strftime(
+                                    "%d/%m/%Y %H:%M"
+                                )
+                            }}
+
+                        </td>
+
+
+                        <!-- TIPO -->
+
+                        <td>
+
+                            {% if movimentacao.tipo == "NOTINHA" %}
+
+                                <span class="badge badge-open">
+                                    📄 Notinha
+                                </span>
+
+
+                            {% elif movimentacao.tipo == "PAGAMENTO" %}
+
+                                <span class="badge badge-paid">
+                                    💰 Pagamento
+                                </span>
+
+
+                            {% elif movimentacao.tipo == "COMISSAO" %}
+
+                                <span class="badge badge-active">
+                                    💵 Comissão
+                                </span>
+
+
+                            {% else %}
+
+                                <span class="badge">
+                                    {{ movimentacao.tipo }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- AÇÃO -->
+
+                        <td>
+
+                            {{ movimentacao.acao }}
+
+                        </td>
+
+
+                        <!-- DESCRIÇÃO -->
+
+                        <td>
+
+                            <strong>
+                                {{ movimentacao.descricao }}
+                            </strong>
+
+                        </td>
+
+
+                        <!-- ENTIDADE -->
+
+                        <td>
+
+                            {% if movimentacao.entidade %}
+
+                                {{ movimentacao.entidade }}
+
+                                {% if movimentacao.entidade_id %}
+
+                                    #{{ movimentacao.entidade_id }}
+
+                                {% endif %}
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="5"
+                            style="
+                                text-align:center;
+                                padding:45px;
+                                color:var(--text-light);
+                            "
+                        >
+
+                            Nenhuma movimentação encontrada.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

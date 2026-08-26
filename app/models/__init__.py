@@ -14,3 +14,5 @@ from app.models.anexo_notinha import AnexoNotinha
 from app.models.observacao_notinha import ObservacaoNotinha
 
 from app.models.retirada_comissao import RetiradaComissao
+
+from app.models.movimentacao import Movimentacao
