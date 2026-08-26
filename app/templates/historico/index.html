@@ -18,6 +18,10 @@ Histórico - Hydra ERP
 {% block content %}
 
 
+<!-- =========================================================
+     CABEÇALHO
+========================================================= -->
+
 <div class="page-header">
 
     <div class="page-title">
@@ -25,7 +29,7 @@ Histórico - Hydra ERP
         Histórico de Movimentações
 
         <small>
-            Registro das principais ações realizadas no ERP
+            Auditoria das principais ações realizadas no ERP
         </small>
 
     </div>
@@ -51,71 +55,58 @@ Histórico - Hydra ERP
     >
 
         <a
-            class="
-                btn
-                {% if not tipo_filtro %}
-                    btn-primary
-                {% else %}
-                    btn-ghost
-                {% endif %}
-            "
+            class="btn {% if not tipo_filtro %}btn-primary{% else %}btn-ghost{% endif %}"
             href="{{ url_for('historico.index') }}"
         >
-            Todos
+            📜 Todos
         </a>
 
 
         <a
-            class="
-                btn
-                {% if tipo_filtro == 'NOTINHA' %}
-                    btn-primary
-                {% else %}
-                    btn-ghost
-                {% endif %}
-            "
-            href="{{ url_for(
-                'historico.index',
-                tipo='NOTINHA'
-            ) }}"
+            class="btn {% if tipo_filtro == 'NOTINHA' %}btn-primary{% else %}btn-ghost{% endif %}"
+            href="{{ url_for('historico.index', tipo='NOTINHA') }}"
         >
             📄 Notinhas
         </a>
 
 
         <a
-            class="
-                btn
-                {% if tipo_filtro == 'PAGAMENTO' %}
-                    btn-primary
-                {% else %}
-                    btn-ghost
-                {% endif %}
-            "
-            href="{{ url_for(
-                'historico.index',
-                tipo='PAGAMENTO'
-            ) }}"
+            class="btn {% if tipo_filtro == 'PAGAMENTO' %}btn-primary{% else %}btn-ghost{% endif %}"
+            href="{{ url_for('historico.index', tipo='PAGAMENTO') }}"
         >
             💰 Pagamentos
         </a>
 
 
         <a
-            class="
-                btn
-                {% if tipo_filtro == 'COMISSAO' %}
-                    btn-primary
-                {% else %}
-                    btn-ghost
-                {% endif %}
-            "
-            href="{{ url_for(
-                'historico.index',
-                tipo='COMISSAO'
-            ) }}"
+            class="btn {% if tipo_filtro == 'COMISSAO' %}btn-primary{% else %}btn-ghost{% endif %}"
+            href="{{ url_for('historico.index', tipo='COMISSAO') }}"
         >
             💵 Comissões
+        </a>
+
+
+        <a
+            class="btn {% if tipo_filtro == 'CLIENTE' %}btn-primary{% else %}btn-ghost{% endif %}"
+            href="{{ url_for('historico.index', tipo='CLIENTE') }}"
+        >
+            👤 Clientes
+        </a>
+
+
+        <a
+            class="btn {% if tipo_filtro == 'PISCINEIRO' %}btn-primary{% else %}btn-ghost{% endif %}"
+            href="{{ url_for('historico.index', tipo='PISCINEIRO') }}"
+        >
+            🏊 Piscineiros
+        </a>
+
+
+        <a
+            class="btn {% if tipo_filtro == 'PRODUTO' %}btn-primary{% else %}btn-ghost{% endif %}"
+            href="{{ url_for('historico.index', tipo='PRODUTO') }}"
+        >
+            📦 Produtos
         </a>
 
     </div>
@@ -124,7 +115,7 @@ Histórico - Hydra ERP
 
 
 <!-- =========================================================
-     MOVIMENTAÇÕES
+     HISTÓRICO
 ========================================================= -->
 
 <div class="table-wrap">
@@ -133,7 +124,35 @@ Histórico - Hydra ERP
 
         <span class="table-head-title">
 
-            📜 Movimentações
+            {% if tipo_filtro == "NOTINHA" %}
+
+                📄 Histórico de Notinhas
+
+            {% elif tipo_filtro == "PAGAMENTO" %}
+
+                💰 Histórico de Pagamentos
+
+            {% elif tipo_filtro == "COMISSAO" %}
+
+                💵 Histórico de Comissões
+
+            {% elif tipo_filtro == "CLIENTE" %}
+
+                👤 Histórico de Clientes
+
+            {% elif tipo_filtro == "PISCINEIRO" %}
+
+                🏊 Histórico de Piscineiros
+
+            {% elif tipo_filtro == "PRODUTO" %}
+
+                📦 Histórico de Produtos
+
+            {% else %}
+
+                📜 Todas as Movimentações
+
+            {% endif %}
 
         </span>
 
@@ -160,11 +179,17 @@ Histórico - Hydra ERP
             <thead>
 
                 <tr>
+
                     <th>Data</th>
+
                     <th>Tipo</th>
+
                     <th>Ação</th>
+
                     <th>Descrição</th>
-                    <th>Entidade</th>
+
+                    <th>Referência</th>
+
                 </tr>
 
             </thead>
@@ -176,9 +201,10 @@ Histórico - Hydra ERP
 
                     <tr>
 
+
                         <!-- DATA -->
 
-                        <td>
+                        <td style="white-space:nowrap;">
 
                             {{
                                 movimentacao.data_criacao
@@ -215,10 +241,33 @@ Histórico - Hydra ERP
                                 </span>
 
 
+                            {% elif movimentacao.tipo == "CLIENTE" %}
+
+                                <span class="badge badge-open">
+                                    👤 Cliente
+                                </span>
+
+
+                            {% elif movimentacao.tipo == "PISCINEIRO" %}
+
+                                <span class="badge badge-active">
+                                    🏊 Piscineiro
+                                </span>
+
+
+                            {% elif movimentacao.tipo == "PRODUTO" %}
+
+                                <span class="badge badge-open">
+                                    📦 Produto
+                                </span>
+
+
                             {% else %}
 
                                 <span class="badge">
+
                                     {{ movimentacao.tipo }}
+
                                 </span>
 
                             {% endif %}
@@ -230,7 +279,46 @@ Histórico - Hydra ERP
 
                         <td>
 
-                            {{ movimentacao.acao }}
+                            {% if movimentacao.acao == "CRIAR" %}
+
+                                <span class="badge badge-paid">
+                                    ➕ Criado
+                                </span>
+
+
+                            {% elif movimentacao.acao == "EDITAR" %}
+
+                                <span class="badge badge-open">
+                                    ✏️ Editado
+                                </span>
+
+
+                            {% elif movimentacao.acao == "STATUS" %}
+
+                                <span class="badge badge-open">
+                                    🔄 Status
+                                </span>
+
+
+                            {% elif movimentacao.acao == "ALTERAR_PISCINEIRO" %}
+
+                                <span class="badge badge-open">
+                                    🏊 Piscineiro
+                                </span>
+
+
+                            {% elif movimentacao.acao == "RETIRADA" %}
+
+                                <span class="badge badge-open">
+                                    💸 Retirada
+                                </span>
+
+
+                            {% else %}
+
+                                {{ movimentacao.acao }}
+
+                            {% endif %}
 
                         </td>
 
@@ -240,17 +328,86 @@ Histórico - Hydra ERP
                         <td>
 
                             <strong>
+
                                 {{ movimentacao.descricao }}
+
                             </strong>
 
                         </td>
 
 
-                        <!-- ENTIDADE -->
+                        <!-- REFERÊNCIA -->
 
                         <td>
 
-                            {% if movimentacao.entidade %}
+
+                            <!-- NOTINHA -->
+
+                            {% if (
+                                movimentacao.entidade == "NOTINHA"
+                                and movimentacao.entidade_id
+                            ) %}
+
+                                <a
+                                    class="btn btn-ghost btn-sm"
+                                    href="{{ url_for(
+                                        'notinhas.detalhes',
+                                        notinha_id=movimentacao.entidade_id
+                                    ) }}"
+                                >
+                                    📄 #{{ movimentacao.entidade_id }}
+                                </a>
+
+
+                            <!-- CLIENTE -->
+
+                            {% elif (
+                                movimentacao.entidade == "CLIENTE"
+                                and movimentacao.entidade_id
+                            ) %}
+
+                                <a
+                                    class="btn btn-ghost btn-sm"
+                                    href="{{ url_for(
+                                        'clientes.detalhes',
+                                        cliente_id=movimentacao.entidade_id
+                                    ) }}"
+                                >
+                                    👤 #{{ movimentacao.entidade_id }}
+                                </a>
+
+
+                            <!-- PISCINEIRO -->
+
+                            {% elif (
+                                movimentacao.entidade == "PISCINEIRO"
+                                and movimentacao.entidade_id
+                            ) %}
+
+                                <a
+                                    class="btn btn-ghost btn-sm"
+                                    href="{{ url_for(
+                                        'piscineiros.detalhes',
+                                        piscineiro_id=movimentacao.entidade_id
+                                    ) }}"
+                                >
+                                    🏊 #{{ movimentacao.entidade_id }}
+                                </a>
+
+
+                            <!-- PRODUTO -->
+
+                            {% elif (
+                                movimentacao.entidade == "PRODUTO"
+                                and movimentacao.entidade_id
+                            ) %}
+
+                                📦 #{{ movimentacao.entidade_id }}
+
+
+                            <!-- OUTROS -->
+
+                            {% elif movimentacao.entidade %}
 
                                 {{ movimentacao.entidade }}
 
@@ -260,6 +417,7 @@ Histórico - Hydra ERP
 
                                 {% endif %}
 
+
                             {% else %}
 
                                 —
@@ -267,6 +425,7 @@ Histórico - Hydra ERP
                             {% endif %}
 
                         </td>
+
 
                     </tr>
 
@@ -284,7 +443,17 @@ Histórico - Hydra ERP
                             "
                         >
 
-                            Nenhuma movimentação encontrada.
+                            {% if tipo_filtro %}
+
+                                Nenhuma movimentação encontrada
+                                para este filtro.
+
+                            {% else %}
+
+                                Nenhuma movimentação
+                                registrada ainda.
+
+                            {% endif %}
 
                         </td>
 

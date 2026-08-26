@@ -1,23 +1,28 @@
 # Hydra ERP
-# Responsável por: concentrar as regras de negócio relacionadas aos piscineiros,
-# incluindo cadastro, edição, status e resumo financeiro.
+# Responsável por: concentrar as regras de negócio relacionadas
+# aos piscineiros, seus resultados financeiros, clientes,
+# produtos vendidos e histórico de movimentações.
 
-from datetime import date, timedelta
 from decimal import Decimal
-from collections import defaultdict
+from datetime import date
+
+from sqlalchemy import func
 
 from app.extensions import db
+
 from app.models.piscineiro import Piscineiro
 from app.models.notinha import Notinha
+from app.models.item_notinha import ItemNotinha
+
 from app.services.notinha_service import NotinhaService
 from app.services.comissao_service import ComissaoService
-from app.models.item_notinha import ItemNotinha
+from app.services.movimentacao_service import MovimentacaoService
 
 
 class PiscineiroService:
 
     # =========================================================
-    # LISTAGEM
+    # LISTAR
     # =========================================================
 
     @staticmethod
@@ -31,6 +36,10 @@ class PiscineiroService:
             .all()
         )
 
+
+    # =========================================================
+    # LISTAR ATIVOS
+    # =========================================================
 
     @staticmethod
     def listar_ativos():
@@ -48,7 +57,7 @@ class PiscineiroService:
 
 
     # =========================================================
-    # BUSCA
+    # BUSCAR
     # =========================================================
 
     @staticmethod
@@ -61,7 +70,7 @@ class PiscineiroService:
 
 
     # =========================================================
-    # CADASTRO
+    # CRIAR
     # =========================================================
 
     @staticmethod
@@ -78,14 +87,18 @@ class PiscineiroService:
             nome or ""
         ).strip()
 
+
         if not nome:
 
             raise ValueError(
                 "O nome do piscineiro é obrigatório."
             )
 
+
         piscineiro = Piscineiro(
-            nome=nome,
+
+            nome=
+                nome,
 
             telefone=(
                 telefone or ""
@@ -108,6 +121,7 @@ class PiscineiroService:
             ).strip() or None
         )
 
+
         try:
 
             db.session.add(
@@ -116,7 +130,34 @@ class PiscineiroService:
 
             db.session.commit()
 
+
+            # =================================================
+            # AUDITORIA
+            # =================================================
+
+            MovimentacaoService.registrar(
+
+                tipo=
+                    "PISCINEIRO",
+
+                acao=
+                    "CRIAR",
+
+                descricao=(
+                    f"Piscineiro "
+                    f"{piscineiro.nome} cadastrado."
+                ),
+
+                entidade=
+                    "PISCINEIRO",
+
+                entidade_id=
+                    piscineiro.id
+            )
+
+
             return piscineiro
+
 
         except Exception:
 
@@ -126,7 +167,7 @@ class PiscineiroService:
 
 
     # =========================================================
-    # EDIÇÃO
+    # EDITAR
     # =========================================================
 
     @staticmethod
@@ -146,15 +187,18 @@ class PiscineiroService:
             )
         )
 
+
         if not piscineiro:
 
             raise ValueError(
                 "Piscineiro não encontrado."
             )
 
+
         nome = (
             nome or ""
         ).strip()
+
 
         if not nome:
 
@@ -162,7 +206,43 @@ class PiscineiroService:
                 "O nome do piscineiro é obrigatório."
             )
 
-        piscineiro.nome = nome
+
+        # =====================================================
+        # VALORES ANTERIORES
+        # =====================================================
+
+        nome_anterior = (
+            piscineiro.nome
+        )
+
+        telefone_anterior = (
+            piscineiro.telefone
+        )
+
+        whatsapp_anterior = (
+            piscineiro.whatsapp
+        )
+
+        cidade_anterior = (
+            piscineiro.cidade
+        )
+
+        endereco_anterior = (
+            piscineiro.endereco
+        )
+
+        observacao_anterior = (
+            piscineiro.observacao
+        )
+
+
+        # =====================================================
+        # ALTERAR
+        # =====================================================
+
+        piscineiro.nome = (
+            nome
+        )
 
         piscineiro.telefone = (
             telefone or ""
@@ -184,11 +264,107 @@ class PiscineiroService:
             observacao or ""
         ).strip() or None
 
+
+        # =====================================================
+        # IDENTIFICAR ALTERAÇÕES
+        # =====================================================
+
+        alteracoes = []
+
+
+        if (
+            nome_anterior
+            != piscineiro.nome
+        ):
+
+            alteracoes.append(
+                f"nome: {nome_anterior} "
+                f"→ {piscineiro.nome}"
+            )
+
+
+        if (
+            telefone_anterior
+            != piscineiro.telefone
+        ):
+
+            alteracoes.append(
+                "telefone alterado"
+            )
+
+
+        if (
+            whatsapp_anterior
+            != piscineiro.whatsapp
+        ):
+
+            alteracoes.append(
+                "WhatsApp alterado"
+            )
+
+
+        if (
+            cidade_anterior
+            != piscineiro.cidade
+        ):
+
+            alteracoes.append(
+                "cidade alterada"
+            )
+
+
+        if (
+            endereco_anterior
+            != piscineiro.endereco
+        ):
+
+            alteracoes.append(
+                "endereço alterado"
+            )
+
+
+        if (
+            observacao_anterior
+            != piscineiro.observacao
+        ):
+
+            alteracoes.append(
+                "observação alterada"
+            )
+
+
         try:
 
             db.session.commit()
 
+
+            if alteracoes:
+
+                MovimentacaoService.registrar(
+
+                    tipo=
+                        "PISCINEIRO",
+
+                    acao=
+                        "EDITAR",
+
+                    descricao=(
+                        f"Piscineiro "
+                        f"{piscineiro.nome} atualizado. "
+                        f"Alterações: "
+                        f"{'; '.join(alteracoes)}."
+                    ),
+
+                    entidade=
+                        "PISCINEIRO",
+
+                    entidade_id=
+                        piscineiro.id
+                )
+
+
             return piscineiro
+
 
         except Exception:
 
@@ -198,7 +374,7 @@ class PiscineiroService:
 
 
     # =========================================================
-    # ATIVAR / INATIVAR
+    # ALTERAR STATUS
     # =========================================================
 
     @staticmethod
@@ -210,21 +386,55 @@ class PiscineiroService:
             )
         )
 
+
         if not piscineiro:
 
             raise ValueError(
                 "Piscineiro não encontrado."
             )
 
+
         piscineiro.ativo = (
             not piscineiro.ativo
         )
+
 
         try:
 
             db.session.commit()
 
+
+            status_texto = (
+                "ativado"
+                if piscineiro.ativo
+                else "inativado"
+            )
+
+
+            MovimentacaoService.registrar(
+
+                tipo=
+                    "PISCINEIRO",
+
+                acao=
+                    "STATUS",
+
+                descricao=(
+                    f"Piscineiro "
+                    f"{piscineiro.nome} "
+                    f"{status_texto}."
+                ),
+
+                entidade=
+                    "PISCINEIRO",
+
+                entidade_id=
+                    piscineiro.id
+            )
+
+
             return piscineiro
+
 
         except Exception:
 
@@ -246,31 +456,13 @@ class PiscineiroService:
             )
         )
 
+
         if not piscineiro:
 
             raise ValueError(
                 "Piscineiro não encontrado."
             )
 
-
-        # =====================================================
-        # PERÍODOS
-        # =====================================================
-
-        hoje = date.today()
-
-        inicio_30_dias = (
-            hoje - timedelta(days=30)
-        )
-
-        inicio_90_dias = (
-            hoje - timedelta(days=90)
-        )
-
-
-        # =====================================================
-        # NOTINHAS DO PISCINEIRO
-        # =====================================================
 
         notinhas = (
             Notinha.query
@@ -288,19 +480,15 @@ class PiscineiroService:
         )
 
 
-        # =====================================================
-        # TOTAIS
-        # =====================================================
-
         total_vendido = Decimal(
             "0.00"
         )
 
-        total_30_dias = Decimal(
+        total_vendido_mes = Decimal(
             "0.00"
         )
 
-        total_90_dias = Decimal(
+        total_vendido_3_meses = Decimal(
             "0.00"
         )
 
@@ -312,57 +500,77 @@ class PiscineiroService:
             "0.00"
         )
 
-        quantidade_notinhas = 0
 
+        quantidade_notinhas = 0
         quantidade_vencidas = 0
 
         dados_notinhas = []
 
 
-        # =====================================================
-        # PROCESSAR NOTINHAS
-        # =====================================================
+        hoje = date.today()
+
 
         for notinha in notinhas:
 
             quantidade_notinhas += 1
 
-            valor_notinha = Decimal(
+
+            valor = Decimal(
                 str(
                     notinha.valor_total
                 )
             )
 
 
-            # Total histórico
             total_vendido += (
-                valor_notinha
+                valor
             )
 
 
-            # Últimos 30 dias
+            # =================================================
+            # TOTAL DO MÊS ATUAL
+            # =================================================
+
             if (
-                notinha.data_retirada
-                >= inicio_30_dias
+                notinha.data_retirada.year
+                == hoje.year
+                and
+                notinha.data_retirada.month
+                == hoje.month
             ):
 
-                total_30_dias += (
-                    valor_notinha
+                total_vendido_mes += (
+                    valor
                 )
 
 
-            # Últimos 90 dias
+            # =================================================
+            # ÚLTIMOS 3 MESES
+            # =================================================
+
+            diferenca_meses = (
+                (
+                    hoje.year
+                    - notinha.data_retirada.year
+                )
+                * 12
+                +
+                (
+                    hoje.month
+                    - notinha.data_retirada.month
+                )
+            )
+
+
             if (
-                notinha.data_retirada
-                >= inicio_90_dias
+                0 <= diferenca_meses <= 2
             ):
 
-                total_90_dias += (
-                    valor_notinha
+                total_vendido_3_meses += (
+                    valor
                 )
 
 
-            # Saldo atual
             saldo = (
                 NotinhaService.saldo_pendente(
                     notinha
@@ -370,7 +578,6 @@ class PiscineiroService:
             )
 
 
-            # Situação atual
             situacao = (
                 NotinhaService.situacao(
                     notinha
@@ -383,8 +590,10 @@ class PiscineiroService:
             )
 
 
-            # Vencidas
-            if "VENCIDA" in situacao:
+            if (
+                "VENCIDA"
+                in situacao
+            ):
 
                 quantidade_vencidas += 1
 
@@ -393,17 +602,18 @@ class PiscineiroService:
                 )
 
 
-            # Dados usados no histórico
             dados_notinhas.append({
-                "notinha": notinha,
-                "saldo": saldo,
-                "situacao": situacao
+
+                "notinha":
+                    notinha,
+
+                "saldo":
+                    saldo,
+
+                "situacao":
+                    situacao
             })
 
-
-        # =====================================================
-        # COMISSÃO DISPONÍVEL
-        # =====================================================
 
         comissao_disponivel = (
             ComissaoService.saldo_disponivel(
@@ -412,19 +622,16 @@ class PiscineiroService:
         )
 
 
-        # =====================================================
-        # RETORNO
-        # =====================================================
-
         return {
+
             "total_vendido":
                 total_vendido,
 
-            "total_30_dias":
-                total_30_dias,
+            "total_vendido_mes":
+                total_vendido_mes,
 
-            "total_90_dias":
-                total_90_dias,
+            "total_vendido_3_meses":
+                total_vendido_3_meses,
 
             "total_pendente":
                 total_pendente,
@@ -445,27 +652,26 @@ class PiscineiroService:
                 dados_notinhas
         }
 
-        # =========================================================
+
+    # =========================================================
     # PRODUTOS MAIS VENDIDOS
     # =========================================================
 
     @staticmethod
-    def produtos_mais_vendidos(
-        piscineiro_id,
-        limite=10
-    ):
+    def produtos_mais_vendidos(piscineiro_id):
 
-        resultados = (
+        return (
             db.session.query(
+
                 ItemNotinha.nome_produto,
 
-                db.func.sum(
+                func.sum(
                     ItemNotinha.quantidade
                 ).label(
                     "quantidade_total"
                 ),
 
-                db.func.sum(
+                func.sum(
                     ItemNotinha.subtotal
                 ).label(
                     "valor_total"
@@ -487,21 +693,19 @@ class PiscineiroService:
                 ItemNotinha.nome_produto
             )
             .order_by(
-                db.func.sum(
+                func.sum(
                     ItemNotinha.quantidade
                 ).desc()
             )
             .limit(
-                limite
+                10
             )
             .all()
         )
 
-        return resultados
-
 
     # =========================================================
-    # VENDAS DOS ÚLTIMOS 6 MESES
+    # VENDAS DOS ÚLTIMOS MESES
     # =========================================================
 
     @staticmethod
@@ -514,78 +718,35 @@ class PiscineiroService:
 
         meses = []
 
-        ano = hoje.year
-        mes = hoje.month
 
-
-        # Cria a sequência dos últimos meses.
-        for _ in range(
-            quantidade_meses
+        for deslocamento in range(
+            quantidade_meses - 1,
+            -1,
+            -1
         ):
 
-            meses.append(
-                (ano, mes)
+            mes = (
+                hoje.month
+                - deslocamento
             )
 
-            mes -= 1
+            ano = (
+                hoje.year
+            )
 
-            if mes == 0:
-                mes = 12
+
+            while mes <= 0:
+
+                mes += 12
                 ano -= 1
 
 
-        # Coloca em ordem cronológica.
-        meses.reverse()
-
-
-        totais = defaultdict(
-            lambda: Decimal("0.00")
-        )
-
-
-        notinhas = (
-            Notinha.query
-            .filter(
-                Notinha.piscineiro_id
-                == piscineiro_id,
-
-                Notinha.status
-                != "CANCELADA"
-            )
-            .all()
-        )
-
-
-        for notinha in notinhas:
-
-            chave = (
-                notinha.data_retirada.year,
-                notinha.data_retirada.month
-            )
-
-            if chave in meses:
-
-                totais[chave] += Decimal(
-                    str(
-                        notinha.valor_total
-                    )
+            meses.append(
+                (
+                    ano,
+                    mes
                 )
-
-
-        nomes_meses = {
-            1: "Jan",
-            2: "Fev",
-            3: "Mar",
-            4: "Abr",
-            5: "Mai",
-            6: "Jun",
-            7: "Jul",
-            8: "Ago",
-            9: "Set",
-            10: "Out",
-            11: "Nov",
-            12: "Dez"
-        }
+            )
 
 
         labels = []
@@ -593,22 +754,72 @@ class PiscineiroService:
         valores = []
 
 
+        nomes_meses = [
+            "",
+            "Jan",
+            "Fev",
+            "Mar",
+            "Abr",
+            "Mai",
+            "Jun",
+            "Jul",
+            "Ago",
+            "Set",
+            "Out",
+            "Nov",
+            "Dez"
+        ]
+
+
         for ano, mes in meses:
+
+            total = (
+                db.session.query(
+                    func.coalesce(
+                        func.sum(
+                            Notinha.valor_total
+                        ),
+                        0
+                    )
+                )
+                .filter(
+                    Notinha.piscineiro_id
+                    == piscineiro_id,
+
+                    Notinha.status
+                    != "CANCELADA",
+
+                    func.year(
+                        Notinha.data_retirada
+                    )
+                    == ano,
+
+                    func.month(
+                        Notinha.data_retirada
+                    )
+                    == mes
+                )
+                .scalar()
+            )
+
 
             labels.append(
                 f"{nomes_meses[mes]}/{str(ano)[2:]}"
             )
 
+
             valores.append(
                 float(
-                    totais[
-                        (ano, mes)
-                    ]
+                    total or 0
                 )
             )
 
 
         return {
-            "labels": labels,
-            "valores": valores
+
+            "labels":
+                labels,
+
+            "valores":
+                valores
         }
