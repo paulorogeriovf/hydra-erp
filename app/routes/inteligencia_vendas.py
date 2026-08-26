@@ -27,19 +27,6 @@ inteligencia_vendas_bp = Blueprint(
 @inteligencia_vendas_bp.route("/")
 def index():
 
-    dias_sem_compra = (
-        request.args.get(
-            "dias",
-            30,
-            type=int
-        )
-    )
-
-
-    if dias_sem_compra < 1:
-        dias_sem_compra = 30
-
-
     resumo = (
         InteligenciaVendasService
         .resumo_geral()
@@ -71,16 +58,6 @@ def index():
         )
     )
 
-
-    clientes_inativos = (
-        InteligenciaVendasService
-        .clientes_sem_comprar(
-            dias_minimos=
-                dias_sem_compra
-        )
-    )
-
-
     return render_template(
         "inteligencia_vendas/index.html",
 
@@ -95,12 +72,6 @@ def index():
 
         piscineiros=
             piscineiros,
-
-        clientes_inativos=
-            clientes_inativos,
-
-        dias_sem_compra=
-            dias_sem_compra
     )
 
 
@@ -170,4 +141,69 @@ def ranking_piscineiros():
     return render_template(
         "inteligencia_vendas/piscineiros.html",
         piscineiros=piscineiros
+    )
+
+# =========================================================
+# OPORTUNIDADES DE VENDAS
+# =========================================================
+
+@inteligencia_vendas_bp.route(
+    "/oportunidades"
+)
+def oportunidades():
+
+    nivel = (
+        request.args.get(
+            "nivel",
+            ""
+        )
+        .strip()
+        .upper()
+    )
+
+
+    oportunidades_produtos = (
+        InteligenciaVendasService
+        .oportunidades_produtos()
+    )
+
+
+    clientes_risco = (
+        InteligenciaVendasService
+        .clientes_em_risco()
+    )
+
+
+    if nivel in {
+        "ALTA",
+        "ATENCAO"
+    }:
+
+        oportunidades_produtos = [
+            item
+            for item
+            in oportunidades_produtos
+            if item["nivel"] == nivel
+        ]
+
+
+        clientes_risco = [
+            item
+            for item
+            in clientes_risco
+            if item["nivel"] == nivel
+        ]
+
+
+    return render_template(
+        "inteligencia_vendas/oportunidades.html",
+
+        oportunidades=
+            oportunidades_produtos,
+
+        clientes_risco=
+            clientes_risco,
+
+        nivel_filtro=
+            nivel
     )

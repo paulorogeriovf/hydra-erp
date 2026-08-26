@@ -1,0 +1,549 @@
+<!-- Hydra ERP
+     Responsável por: exibir oportunidades comerciais
+     detectadas a partir do histórico de compras. -->
+
+{% extends "base.html" %}
+
+
+{% block title %}
+Oportunidades de Vendas - Hydra ERP
+{% endblock %}
+
+
+{% block header_title %}
+💡 <span>Oportunidades de Vendas</span>
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="page-header">
+
+    <div class="page-title">
+
+        Oportunidades de Vendas
+
+        <small>
+            Produtos que clientes compravam com frequência
+            e podem ter deixado de comprar
+        </small>
+
+    </div>
+
+
+    <a
+        class="btn btn-ghost"
+        href="{{ url_for(
+            'inteligencia_vendas.index'
+        ) }}"
+    >
+        ← Voltar
+    </a>
+
+</div>
+
+
+<!-- =========================================================
+     FILTROS
+========================================================= -->
+
+<div
+    class="form-card"
+    style="margin-bottom:22px;"
+>
+
+    <div
+        style="
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        "
+    >
+
+        <a
+            class="
+                btn
+                {% if not nivel_filtro %}
+                    btn-primary
+                {% else %}
+                    btn-ghost
+                {% endif %}
+            "
+            href="{{ url_for(
+                'inteligencia_vendas.oportunidades'
+            ) }}"
+        >
+            💡 Todas
+        </a>
+
+
+        <a
+            class="
+                btn
+                {% if nivel_filtro == 'ALTA' %}
+                    btn-primary
+                {% else %}
+                    btn-ghost
+                {% endif %}
+            "
+            href="{{ url_for(
+                'inteligencia_vendas.oportunidades',
+                nivel='ALTA'
+            ) }}"
+        >
+            🚨 Alta Atenção
+        </a>
+
+
+        <a
+            class="
+                btn
+                {% if nivel_filtro == 'ATENCAO' %}
+                    btn-primary
+                {% else %}
+                    btn-ghost
+                {% endif %}
+            "
+            href="{{ url_for(
+                'inteligencia_vendas.oportunidades',
+                nivel='ATENCAO'
+            ) }}"
+        >
+            ⚠️ Atenção
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     OPORTUNIDADES
+========================================================= -->
+
+<div class="table-wrap">
+
+    <div class="table-head">
+
+        <span class="table-head-title">
+            💡 Oportunidades Detectadas
+        </span>
+
+
+        <span
+            style="
+                font-size:12px;
+                color:var(--text-light);
+            "
+        >
+
+            {{ oportunidades|length }}
+            oportunidade(s)
+
+        </span>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Cliente</th>
+                    <th>Piscineiro</th>
+                    <th>Produto</th>
+                    <th>Compras</th>
+                    <th>Frequência Média</th>
+                    <th>Última Compra</th>
+                    <th>Sem Comprar</th>
+                    <th>Situação</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for dados in oportunidades %}
+
+                    {% set cliente = dados.cliente %}
+
+                    <tr>
+
+
+                        <td>
+
+                            <strong>
+                                {{ cliente.nome }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            {% if cliente.piscineiro %}
+
+                                {{ cliente.piscineiro.nome }}
+
+                            {% else %}
+
+                                Hydra / Direto
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ dados.produto_nome }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            {{ dados.quantidade_compras }}
+
+                        </td>
+
+
+                        <td>
+
+                            A cada
+
+                            <strong>
+                                {{ dados.media_dias }}
+                                dias
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            {{
+                                dados.ultima_compra
+                                .strftime("%d/%m/%Y")
+                            }}
+
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ dados.dias_sem_comprar }}
+                                dias
+                            </strong>
+
+
+                            <div
+                                style="
+                                    margin-top:4px;
+                                    font-size:11px;
+                                    color:var(--text-light);
+                                "
+                            >
+
+                                +{{ dados.atraso_sobre_media }}
+                                dias sobre a média
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            {% if dados.nivel == "ALTA" %}
+
+                                <span class="badge badge-late">
+                                    🚨 Alta atenção
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge badge-open">
+                                    ⚠️ Atenção
+                                </span>
+
+                            {% endif %}
+
+
+                            {% if dados.continua_comprando %}
+
+                                <div
+                                    style="
+                                        margin-top:6px;
+                                        font-size:11px;
+                                    "
+                                >
+
+                                    ✅ Continua comprando
+                                    outros produtos
+
+                                </div>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                class="btn btn-ghost btn-sm"
+                                href="{{ url_for(
+                                    'clientes.detalhes',
+                                    cliente_id=cliente.id
+                                ) }}"
+                            >
+                                👁 Ver Cliente
+                            </a>
+
+                        </td>
+
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="9"
+                            style="
+                                text-align:center;
+                                padding:45px;
+                                color:var(--text-light);
+                            "
+                        >
+
+                            ✅ Nenhuma oportunidade
+                            detectada com os critérios atuais.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- =========================================================
+     CLIENTES EM RISCO
+========================================================= -->
+
+<div class="section-title">
+    👤 Clientes em Risco
+</div>
+
+
+<div class="table-wrap">
+
+    <div class="table-head">
+
+        <span class="table-head-title">
+            📉 Clientes fora do padrão de compra
+        </span>
+
+
+        <span
+            style="
+                font-size:12px;
+                color:var(--text-light);
+            "
+        >
+
+            {{ clientes_risco|length }}
+            cliente(s)
+
+        </span>
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Cliente</th>
+                    <th>Piscineiro</th>
+                    <th>Compras</th>
+                    <th>Frequência Média</th>
+                    <th>Última Compra</th>
+                    <th>Sem Comprar</th>
+                    <th>Situação</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for dados in clientes_risco %}
+
+                    {% set cliente = dados.cliente %}
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                {{ cliente.nome }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            {% if cliente.piscineiro %}
+
+                                {{ cliente.piscineiro.nome }}
+
+                            {% else %}
+
+                                Hydra / Direto
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+                            {{ dados.quantidade_compras }}
+                        </td>
+
+
+                        <td>
+
+                            A cada
+
+                            <strong>
+                                {{ dados.media_dias }} dias
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            {{
+                                dados.ultima_compra
+                                .strftime("%d/%m/%Y")
+                            }}
+
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ dados.dias_sem_comprar }} dias
+                            </strong>
+
+                            <div
+                                style="
+                                    margin-top:4px;
+                                    font-size:11px;
+                                    color:var(--text-light);
+                                "
+                            >
+
+                                +{{ dados.atraso_sobre_media }}
+                                dias sobre a média
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            {% if dados.nivel == "ALTA" %}
+
+                                <span class="badge badge-late">
+                                    🚨 Alta atenção
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge badge-open">
+                                    ⚠️ Atenção
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                class="btn btn-ghost btn-sm"
+                                href="{{ url_for(
+                                    'clientes.detalhes',
+                                    cliente_id=cliente.id
+                                ) }}"
+                            >
+                                👁 Ver Cliente
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            style="
+                                text-align:center;
+                                padding:40px;
+                                color:var(--text-light);
+                            "
+                        >
+
+                            ✅ Nenhum cliente fora
+                            do padrão de compra.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+{% endblock %}
