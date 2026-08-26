@@ -25,12 +25,21 @@ def index():
         .agrupar_por_responsavel()
     )
 
+    proximas = (
+        CobrancaService
+        .agrupar_proximas()
+    )
+
     resumo = (
         CobrancaService.resumo()
     )
 
     return render_template(
         "cobrancas/index.html",
+
         grupos=grupos,
+
+        proximas=proximas,
+
         resumo=resumo
     )
