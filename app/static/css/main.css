@@ -8163,3 +8163,145 @@ td {
     }
 
 }
+
+/* =========================================================
+   AJUSTE FINAL DE TIPOGRAFIA
+   Melhora a leitura sem alterar o layout
+========================================================= */
+
+/* Textos auxiliares muito pequenos */
+small,
+.page-title small,
+[class*="summary"] small,
+[class*="panel"] small {
+    font-size: 11px;
+}
+
+
+/* Textos secundários */
+.produtos-summary-item span,
+.piscineiros-summary-item span,
+.inteligencia-summary-item span,
+.inteligencia-main-card > span,
+.piscineiro-financial-item span,
+.piscineiro-sales-main > span,
+.piscineiro-profile-data > div > span:first-child,
+.piscineiro-operational-summary span,
+.piscineiro-observation span,
+.produto-price span,
+.piscineiro-data span,
+.cliente-data span {
+    font-size: 10px;
+}
+
+
+/* Descrições e informações secundárias */
+.produtos-summary-item small,
+.piscineiros-summary-item small,
+.produto-main span,
+.piscineiro-main span,
+.piscineiro-client-main span,
+.piscineiro-client-contact span,
+.produto-form-section-head span,
+.piscineiro-profile-head span,
+.piscineiro-section-head span,
+.inteligencia-panel-head span,
+.inteligencia-rank-main span,
+.inteligencia-opportunity-card p,
+.produto-form-help,
+.piscineiro-observation p {
+    font-size: 11px;
+}
+
+
+/* Nomes e informações principais das linhas */
+.produto-main strong,
+.piscineiro-main strong,
+.piscineiro-client-main strong,
+.piscineiro-data strong,
+.piscineiro-client-contact strong,
+.cliente-data strong,
+.inteligencia-rank-main strong,
+.inteligencia-rank-value {
+    font-size: 12px;
+}
+
+
+/* Títulos internos dos painéis */
+.produtos-panel-head h2,
+.piscineiros-panel-head h2,
+.piscineiro-section-head h2,
+.piscineiro-profile-head h2,
+.produto-form-section-head h2,
+.inteligencia-panel-head h2 {
+    font-size: 14px;
+}
+
+
+/* Labels dos formulários */
+.form-group label {
+    font-size: 12px;
+}
+
+
+/* Campos */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    font-size: 13px;
+}
+
+
+/* Tabelas */
+table {
+    font-size: 12px;
+}
+
+table th {
+    font-size: 11px;
+}
+
+table td {
+    font-size: 12px;
+}
+
+
+/* Badges */
+.badge {
+    font-size: 10px;
+}
+
+
+/* Botões */
+.btn {
+    font-size: 12px;
+}
+
+.btn-sm {
+    font-size: 11px;
+}
+
+
+/* Menu lateral */
+.nav-item {
+    font-size: 13px;
+}
+
+.nav-label {
+    font-size: 10px;
+}
+
+
+/* Textos principais dos cards continuam destacados */
+.stat-label {
+    font-size: 11px;
+}
+
+.stat-value {
+    font-size: 24px;
+}
+
+.stat-value.sm {
+    font-size: 21px;
+}
+
