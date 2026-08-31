@@ -1,27 +1,39 @@
 <!-- Hydra ERP
-     Responsável por: exibir e gerenciar os clientes cadastrados. -->
+     Responsável por: exibir, buscar e gerenciar
+     os clientes cadastrados. -->
 
 {% extends "base.html" %}
+
 
 {% block title %}
 Clientes - Hydra ERP
 {% endblock %}
 
+
 {% block header_title %}
 👥 <span>Clientes</span>
 {% endblock %}
 
+
 {% block content %}
+
+
+<!-- =========================================================
+     CABEÇALHO
+========================================================= -->
 
 <div class="page-header">
 
     <div class="page-title">
+
         Clientes
 
         <small>
             Cadastro, vínculo e gerenciamento dos clientes
         </small>
+
     </div>
+
 
     <a
         class="btn btn-primary"
@@ -33,163 +45,411 @@ Clientes - Hydra ERP
 </div>
 
 
+<!-- =========================================================
+     INDICADORES
+========================================================= -->
+
 <div class="cards-grid">
 
-    <div class="stat-card blue">
-        <div class="stat-label">Total Clientes</div>
 
-        <div class="stat-value sm">
-            {{ clientes|length }}
+    <div class="stat-card blue">
+
+        <div class="stat-label">
+            Total Clientes
         </div>
 
-        <div class="stat-icon">👥</div>
+        <div class="stat-value sm">
+            {{ todos_clientes|length }}
+        </div>
+
+        <div class="stat-icon">
+            👥
+        </div>
+
     </div>
 
 
     <div class="stat-card green">
-        <div class="stat-label">Ativos</div>
 
-        <div class="stat-value sm">
-            {{ clientes|selectattr("ativo")|list|length }}
+        <div class="stat-label">
+            Ativos
         </div>
 
-        <div class="stat-icon">✅</div>
+        <div class="stat-value sm">
+
+            {{
+                todos_clientes
+                |selectattr("ativo")
+                |list
+                |length
+            }}
+
+        </div>
+
+        <div class="stat-icon">
+            ✅
+        </div>
+
     </div>
 
 
     <div class="stat-card teal">
-        <div class="stat-label">Com Piscineiro</div>
 
-        <div class="stat-value sm">
-            {{ clientes|selectattr("piscineiro_id")|list|length }}
+        <div class="stat-label">
+            Com Piscineiro
         </div>
 
-        <div class="stat-icon">🏊</div>
+        <div class="stat-value sm">
+
+            {{
+                todos_clientes
+                |selectattr("piscineiro_id")
+                |list
+                |length
+            }}
+
+        </div>
+
+        <div class="stat-icon">
+            🏊
+        </div>
+
     </div>
 
 
     <div class="stat-card amber">
-        <div class="stat-label">Sem Piscineiro</div>
 
-        <div class="stat-value sm">
-            {% set sem_piscineiro = namespace(valor=0) %}
-
-            {% for cliente in clientes %}
-                {% if not cliente.piscineiro_id %}
-                    {% set sem_piscineiro.valor = sem_piscineiro.valor + 1 %}
-                {% endif %}
-            {% endfor %}
-
-            {{ sem_piscineiro.valor }}
+        <div class="stat-label">
+            Sem Piscineiro
         </div>
 
-        <div class="stat-icon">🏪</div>
+
+        <div class="stat-value sm">
+
+            {% set sem_piscineiro =
+                namespace(valor=0)
+            %}
+
+
+            {% for cliente in todos_clientes %}
+
+                {% if not cliente.piscineiro_id %}
+
+                    {% set sem_piscineiro.valor =
+                        sem_piscineiro.valor + 1
+                    %}
+
+                {% endif %}
+
+            {% endfor %}
+
+
+            {{ sem_piscineiro.valor }}
+
+        </div>
+
+
+        <div class="stat-icon">
+            🏪
+        </div>
+
     </div>
 
 </div>
 
 
+<!-- =========================================================
+     BUSCA
+========================================================= -->
+
+<div
+    class="form-card"
+    style="margin-bottom:24px;"
+>
+
+    <form
+        method="GET"
+        action="{{ url_for('clientes.listar') }}"
+    >
+
+        <div
+            style="
+                display:flex;
+                gap:10px;
+                align-items:end;
+                flex-wrap:wrap;
+            "
+        >
+
+            <div
+                class="form-group"
+                style="
+                    flex:1;
+                    min-width:250px;
+                    margin-bottom:0;
+                "
+            >
+
+                <label>
+                    🔎 Buscar Cliente
+                </label>
+
+
+                <input
+                    type="text"
+                    name="busca"
+                    value="{{ busca }}"
+                    placeholder="Nome do cliente ou piscineiro..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <button
+                class="btn btn-primary"
+                type="submit"
+            >
+                🔍 Buscar
+            </button>
+
+
+            {% if busca %}
+
+                <a
+                    class="btn btn-ghost"
+                    href="{{ url_for('clientes.listar') }}"
+                >
+                    Limpar
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<!-- =========================================================
+     TABELA
+========================================================= -->
+
 <div class="table-wrap">
 
+
     <div class="table-head">
+
         <span class="table-head-title">
-            👥 Clientes cadastrados
+
+            {% if busca %}
+
+                🔎 Resultado da busca
+
+            {% else %}
+
+                👥 Clientes cadastrados
+
+            {% endif %}
+
         </span>
+
+
+        {% if busca %}
+
+            <span
+                style="
+                    font-size:13px;
+                    color:var(--text-light);
+                "
+            >
+                {{ clientes|length }}
+                resultado(s)
+            </span>
+
+        {% endif %}
+
     </div>
 
 
     <div style="overflow-x:auto;">
 
+
         <table>
 
+
             <thead>
+
                 <tr>
+
                     <th>ID</th>
-                    <th>Cliente</th>
-                    <th>Telefone</th>
-                    <th>WhatsApp</th>
-                    <th>Cidade</th>
-                    <th>Piscineiro Atual</th>
-                    <th>Status</th>
-                    <th>Ações</th>
+
+                    <th>
+                        Cliente
+                    </th>
+
+                    <th>
+                        Telefone
+                    </th>
+
+                    <th>
+                        WhatsApp
+                    </th>
+
+                    <th>
+                        Cidade
+                    </th>
+
+                    <th>
+                        Piscineiro Atual
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Ações
+                    </th>
+
                 </tr>
+
             </thead>
 
 
             <tbody>
 
+
                 {% for cliente in clientes %}
+
 
                     <tr>
 
-                        <td>{{ cliente.id }}</td>
 
                         <td>
-                            <strong>{{ cliente.nome }}</strong>
+                            {{ cliente.id }}
                         </td>
 
-                        <td>
-                            {{ cliente.telefone or '-' }}
-                        </td>
 
                         <td>
-                            {{ cliente.whatsapp or '-' }}
+
+                            <strong>
+                                {{ cliente.nome }}
+                            </strong>
+
                         </td>
 
-                        <td>
-                            {{ cliente.cidade or '-' }}
-                        </td>
 
                         <td>
+
+                            {{
+                                cliente.telefone
+                                or "-"
+                            }}
+
+                        </td>
+
+
+                        <td>
+
+                            {{
+                                cliente.whatsapp
+                                or "-"
+                            }}
+
+                        </td>
+
+
+                        <td>
+
+                            {{
+                                cliente.cidade
+                                or "-"
+                            }}
+
+                        </td>
+
+
+                        <td>
+
 
                             {% if cliente.piscineiro %}
 
+
                                 <span class="badge badge-open">
-                                    🏊 {{ cliente.piscineiro.nome }}
+
+                                    🏊
+                                    {{
+                                        cliente
+                                        .piscineiro
+                                        .nome
+                                    }}
+
                                 </span>
+
 
                             {% else %}
 
+
                                 <span class="badge badge-inactive">
+
                                     Sem piscineiro
+
                                 </span>
+
 
                             {% endif %}
 
+
                         </td>
 
+
                         <td>
+
 
                             {% if cliente.ativo %}
 
+
                                 <span class="badge badge-active">
+
                                     Ativo
+
                                 </span>
+
 
                             {% else %}
 
+
                                 <span class="badge badge-inactive">
+
                                     Inativo
+
                                 </span>
 
+
                             {% endif %}
+
 
                         </td>
 
 
                         <td>
 
+
                             <div class="action-group">
 
+
                                 <a
-    class="btn btn-primary btn-sm"
-    href="{{ url_for(
-        'clientes.detalhes',
-        cliente_id=cliente.id
-    ) }}"
->
-    👁 Ver
-</a>
+                                    class="btn btn-primary btn-sm"
+                                    href="{{ url_for(
+                                        'clientes.detalhes',
+                                        cliente_id=cliente.id
+                                    ) }}"
+                                >
+                                    👁 Ver
+                                </a>
+
 
                                 <a
                                     class="btn btn-ghost btn-sm"
@@ -221,7 +481,9 @@ Clientes - Hydra ERP
                                     ) }}"
                                 >
 
+
                                     {% if cliente.ativo %}
+
 
                                         <button
                                             class="btn btn-warning btn-sm"
@@ -230,7 +492,9 @@ Clientes - Hydra ERP
                                             ⏸ Inativar
                                         </button>
 
+
                                     {% else %}
+
 
                                         <button
                                             class="btn btn-success btn-sm"
@@ -239,19 +503,27 @@ Clientes - Hydra ERP
                                             ▶ Ativar
                                         </button>
 
+
                                     {% endif %}
+
 
                                 </form>
 
+
                             </div>
+
 
                         </td>
 
+
                     </tr>
+
 
                 {% else %}
 
+
                     <tr>
+
                         <td
                             colspan="8"
                             style="
@@ -260,18 +532,36 @@ Clientes - Hydra ERP
                                 color:var(--text-light);
                             "
                         >
-                            Nenhum cliente cadastrado.
+
+                            {% if busca %}
+
+                                Nenhum cliente encontrado
+                                para "{{ busca }}".
+
+                            {% else %}
+
+                                Nenhum cliente cadastrado.
+
+                            {% endif %}
+
                         </td>
+
                     </tr>
+
 
                 {% endfor %}
 
+
             </tbody>
+
 
         </table>
 
+
     </div>
 
+
 </div>
+
 
 {% endblock %}

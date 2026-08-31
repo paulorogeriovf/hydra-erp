@@ -1,5 +1,6 @@
 <!-- Hydra ERP
-     Responsável por: exibir e gerenciar os produtos cadastrados. -->
+     Responsável por: exibir, buscar e gerenciar
+     os produtos cadastrados. -->
 
 {% extends "base.html" %}
 
@@ -15,6 +16,11 @@ Produtos - Hydra ERP
 
 
 {% block content %}
+
+
+<!-- =========================================================
+     CABEÇALHO
+========================================================= -->
 
 <div class="page-header">
 
@@ -39,24 +45,210 @@ Produtos - Hydra ERP
 </div>
 
 
+<!-- =========================================================
+     INDICADORES
+========================================================= -->
+
+<div class="cards-grid">
+
+
+    <div class="stat-card blue">
+
+        <div class="stat-label">
+            Total Produtos
+        </div>
+
+        <div class="stat-value sm">
+            {{ todos_produtos|length }}
+        </div>
+
+        <div class="stat-icon">
+            📦
+        </div>
+
+    </div>
+
+
+    <div class="stat-card green">
+
+        <div class="stat-label">
+            Ativos
+        </div>
+
+        <div class="stat-value sm">
+
+            {{
+                todos_produtos
+                |selectattr("ativo")
+                |list
+                |length
+            }}
+
+        </div>
+
+        <div class="stat-icon">
+            ✅
+        </div>
+
+    </div>
+
+
+    <div class="stat-card teal">
+
+        <div class="stat-label">
+            Com Comissão
+        </div>
+
+        <div class="stat-value sm">
+
+            {{
+                todos_produtos
+                |selectattr("gera_comissao")
+                |list
+                |length
+            }}
+
+        </div>
+
+        <div class="stat-icon">
+            💰
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- =========================================================
+     BUSCA
+========================================================= -->
+
+<div
+    class="form-card"
+    style="margin-bottom:24px;"
+>
+
+    <form
+        method="GET"
+        action="{{ url_for('produtos.listar') }}"
+    >
+
+        <div
+            style="
+                display:flex;
+                gap:10px;
+                align-items:end;
+                flex-wrap:wrap;
+            "
+        >
+
+            <div
+                class="form-group"
+                style="
+                    flex:1;
+                    min-width:250px;
+                    margin-bottom:0;
+                "
+            >
+
+                <label>
+                    🔎 Buscar Produto
+                </label>
+
+
+                <input
+                    type="text"
+                    name="busca"
+                    value="{{ busca }}"
+                    placeholder="Digite o nome do produto ou marca..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <button
+                class="btn btn-primary"
+                type="submit"
+            >
+                🔍 Buscar
+            </button>
+
+
+            {% if busca %}
+
+                <a
+                    class="btn btn-ghost"
+                    href="{{ url_for('produtos.listar') }}"
+                >
+                    Limpar
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<!-- =========================================================
+     TABELA
+========================================================= -->
+
 <div class="table-wrap">
+
 
     <div class="table-head">
 
+
         <span class="table-head-title">
-            📦 Produtos cadastrados
+
+            {% if busca %}
+
+                🔎 Resultado da busca
+
+            {% else %}
+
+                📦 Produtos cadastrados
+
+            {% endif %}
+
         </span>
+
+
+        {% if busca %}
+
+            <span
+                style="
+                    font-size:13px;
+                    color:var(--text-light);
+                "
+            >
+
+                {{ produtos|length }}
+                resultado(s)
+
+            </span>
+
+        {% endif %}
+
 
     </div>
 
 
     <div style="overflow-x:auto;">
 
+
         <table>
+
 
             <thead>
 
                 <tr>
+
                     <th>ID</th>
                     <th>Produto</th>
                     <th>Marca</th>
@@ -66,6 +258,7 @@ Produtos - Hydra ERP
                     <th>Comissão</th>
                     <th>Status</th>
                     <th>Ações</th>
+
                 </tr>
 
             </thead>
@@ -73,37 +266,68 @@ Produtos - Hydra ERP
 
             <tbody>
 
+
                 {% for produto in produtos %}
 
+
                     <tr>
+
 
                         <td>
                             {{ produto.id }}
                         </td>
 
+
                         <td>
+
                             <strong>
                                 {{ produto.nome }}
                             </strong>
+
                         </td>
 
-                        <td>
-                            {{ produto.marca or '-' }}
-                        </td>
 
                         <td>
-                            {{ produto.categoria or '-' }}
+
+                            {{
+                                produto.marca
+                                or "-"
+                            }}
+
                         </td>
 
-                        <td>
-                            R$ {{ produto.preco_normal }}
-                        </td>
 
                         <td>
+
+                            {{
+                                produto.categoria
+                                or "-"
+                            }}
+
+                        </td>
+
+
+                        <td>
+
+                            R$ {{
+                                "%.2f"
+                                |format(produto.preco_normal)
+                                |replace(".", ",")
+                            }}
+
+                        </td>
+
+
+                        <td>
+
 
                             {% if produto.preco_atacado %}
 
-                                R$ {{ produto.preco_atacado }}
+                                R$ {{
+                                    "%.2f"
+                                    |format(produto.preco_atacado)
+                                    |replace(".", ",")
+                                }}
 
                             {% else %}
 
@@ -111,13 +335,18 @@ Produtos - Hydra ERP
 
                             {% endif %}
 
+
                         </td>
+
 
                         <td>
 
+
                             {% if produto.gera_comissao %}
 
-                                {{ produto.percentual_comissao }}%
+                                {{
+                                    produto.percentual_comissao
+                                }}%
 
                             {% else %}
 
@@ -125,9 +354,12 @@ Produtos - Hydra ERP
 
                             {% endif %}
 
+
                         </td>
 
+
                         <td>
+
 
                             {% if produto.ativo %}
 
@@ -143,12 +375,15 @@ Produtos - Hydra ERP
 
                             {% endif %}
 
+
                         </td>
 
 
                         <td>
 
+
                             <div class="action-group">
+
 
                                 <a
                                     class="btn btn-ghost btn-sm"
@@ -168,6 +403,7 @@ Produtos - Hydra ERP
                                         produto_id=produto.id
                                     ) }}"
                                 >
+
 
                                     {% if produto.ativo %}
 
@@ -189,15 +425,21 @@ Produtos - Hydra ERP
 
                                     {% endif %}
 
+
                                 </form>
+
 
                             </div>
 
+
                         </td>
+
 
                     </tr>
 
+
                 {% else %}
+
 
                     <tr>
 
@@ -210,20 +452,35 @@ Produtos - Hydra ERP
                             "
                         >
 
-                            Nenhum produto cadastrado.
+                            {% if busca %}
+
+                                Nenhum produto encontrado
+                                para "{{ busca }}".
+
+                            {% else %}
+
+                                Nenhum produto cadastrado.
+
+                            {% endif %}
 
                         </td>
 
                     </tr>
 
+
                 {% endfor %}
+
 
             </tbody>
 
+
         </table>
+
 
     </div>
 
+
 </div>
+
 
 {% endblock %}

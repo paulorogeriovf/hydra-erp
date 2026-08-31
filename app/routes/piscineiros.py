@@ -1,5 +1,6 @@
 # Hydra ERP
-# Responsável por: disponibilizar as rotas de cadastro e gerenciamento de piscineiros.
+# Responsável por: disponibilizar as rotas de cadastro,
+# busca e gerenciamento de piscineiros.
 
 from flask import (
     Blueprint,
@@ -20,40 +21,137 @@ piscineiros_bp = Blueprint(
 )
 
 
+# =========================================================
+# LISTAGEM / BUSCA
+# =========================================================
+
 @piscineiros_bp.route("/")
 def listar():
-    piscineiros = PiscineiroService.listar_piscineiros()
 
-    return render_template(
-        "piscineiros/lista.html",
-        piscineiros=piscineiros
+    busca = (
+        request.args.get(
+            "busca",
+            ""
+        )
+        .strip()
+    )
+
+    todos_piscineiros = (
+        PiscineiroService.listar_piscineiros()
     )
 
 
-@piscineiros_bp.route("/novo", methods=["GET", "POST"])
+    if busca:
+
+        busca_lower = busca.lower()
+
+        piscineiros = [
+            piscineiro
+            for piscineiro in todos_piscineiros
+
+            if (
+                piscineiro.nome
+                and busca_lower
+                in piscineiro.nome.lower()
+            )
+        ]
+
+    else:
+
+        piscineiros = todos_piscineiros
+
+
+    return render_template(
+        "piscineiros/lista.html",
+
+        piscineiros=
+            piscineiros,
+
+        todos_piscineiros=
+            todos_piscineiros,
+
+        busca=
+            busca
+    )
+
+
+# =========================================================
+# NOVO PISCINEIRO
+# =========================================================
+
+@piscineiros_bp.route(
+    "/novo",
+    methods=["GET", "POST"]
+)
 def novo():
 
     if request.method == "POST":
 
         try:
+
             PiscineiroService.criar_piscineiro(
-                nome=request.form.get("nome"),
-                telefone=request.form.get("telefone"),
-                whatsapp=request.form.get("whatsapp"),
-                cidade=request.form.get("cidade"),
-                endereco=request.form.get("endereco"),
-                observacao=request.form.get("observacao")
+
+                nome=
+                    request.form.get(
+                        "nome"
+                    ),
+
+                telefone=
+                    request.form.get(
+                        "telefone"
+                    ),
+
+                whatsapp=
+                    request.form.get(
+                        "whatsapp"
+                    ),
+
+                cidade=
+                    request.form.get(
+                        "cidade"
+                    ),
+
+                endereco=
+                    request.form.get(
+                        "endereco"
+                    ),
+
+                observacao=
+                    request.form.get(
+                        "observacao"
+                    )
             )
 
-            flash("Piscineiro cadastrado com sucesso.", "success")
 
-            return redirect(url_for("piscineiros.listar"))
+            flash(
+                "Piscineiro cadastrado com sucesso.",
+                "success"
+            )
+
+
+            return redirect(
+                url_for(
+                    "piscineiros.listar"
+                )
+            )
+
 
         except ValueError as erro:
-            flash(str(erro), "error")
 
-    return render_template("piscineiros/novo.html")
+            flash(
+                str(erro),
+                "error"
+            )
 
+
+    return render_template(
+        "piscineiros/novo.html"
+    )
+
+
+# =========================================================
+# EDITAR PISCINEIRO
+# =========================================================
 
 @piscineiros_bp.route(
     "/<int:piscineiro_id>/editar",
@@ -61,36 +159,92 @@ def novo():
 )
 def editar(piscineiro_id):
 
-    piscineiro = PiscineiroService.buscar_por_id(piscineiro_id)
+    piscineiro = (
+        PiscineiroService.buscar_por_id(
+            piscineiro_id
+        )
+    )
+
 
     if not piscineiro:
-        return "Piscineiro não encontrado.", 404
+
+        return (
+            "Piscineiro não encontrado.",
+            404
+        )
+
 
     if request.method == "POST":
 
         try:
+
             PiscineiroService.editar_piscineiro(
-                piscineiro_id=piscineiro_id,
-                nome=request.form.get("nome"),
-                telefone=request.form.get("telefone"),
-                whatsapp=request.form.get("whatsapp"),
-                cidade=request.form.get("cidade"),
-                endereco=request.form.get("endereco"),
-                observacao=request.form.get("observacao")
+
+                piscineiro_id=
+                    piscineiro_id,
+
+                nome=
+                    request.form.get(
+                        "nome"
+                    ),
+
+                telefone=
+                    request.form.get(
+                        "telefone"
+                    ),
+
+                whatsapp=
+                    request.form.get(
+                        "whatsapp"
+                    ),
+
+                cidade=
+                    request.form.get(
+                        "cidade"
+                    ),
+
+                endereco=
+                    request.form.get(
+                        "endereco"
+                    ),
+
+                observacao=
+                    request.form.get(
+                        "observacao"
+                    )
             )
 
-            flash("Piscineiro atualizado com sucesso.", "success")
 
-            return redirect(url_for("piscineiros.listar"))
+            flash(
+                "Piscineiro atualizado com sucesso.",
+                "success"
+            )
+
+
+            return redirect(
+                url_for(
+                    "piscineiros.listar"
+                )
+            )
+
 
         except ValueError as erro:
-            flash(str(erro), "error")
+
+            flash(
+                str(erro),
+                "error"
+            )
+
 
     return render_template(
         "piscineiros/editar.html",
         piscineiro=piscineiro
     )
 
+
+# =========================================================
+# ALTERAR STATUS
+# =========================================================
 
 @piscineiros_bp.route(
     "/<int:piscineiro_id>/status",
@@ -99,16 +253,40 @@ def editar(piscineiro_id):
 def alterar_status(piscineiro_id):
 
     try:
-        PiscineiroService.alternar_status(piscineiro_id)
 
-        flash("Status do piscineiro atualizado.", "success")
+        PiscineiroService.alternar_status(
+            piscineiro_id
+        )
+
+
+        flash(
+            "Status do piscineiro atualizado.",
+            "success"
+        )
+
 
     except ValueError as erro:
-        flash(str(erro), "error")
 
-    return redirect(url_for("piscineiros.listar"))
+        flash(
+            str(erro),
+            "error"
+        )
 
-@piscineiros_bp.route("/<int:piscineiro_id>")
+
+    return redirect(
+        url_for(
+            "piscineiros.listar"
+        )
+    )
+
+
+# =========================================================
+# DETALHES
+# =========================================================
+
+@piscineiros_bp.route(
+    "/<int:piscineiro_id>"
+)
 def detalhes(piscineiro_id):
 
     piscineiro = (
@@ -117,14 +295,21 @@ def detalhes(piscineiro_id):
         )
     )
 
+
     if not piscineiro:
-        return "Piscineiro não encontrado.", 404
+
+        return (
+            "Piscineiro não encontrado.",
+            404
+        )
+
 
     resumo = (
         PiscineiroService.resumo_financeiro(
             piscineiro_id
         )
     )
+
 
     produtos_mais_vendidos = (
         PiscineiroService
@@ -133,6 +318,7 @@ def detalhes(piscineiro_id):
         )
     )
 
+
     grafico_vendas = (
         PiscineiroService
         .vendas_ultimos_meses(
@@ -140,18 +326,29 @@ def detalhes(piscineiro_id):
         )
     )
 
+
     clientes_atuais = sorted(
         piscineiro.clientes,
-        key=lambda cliente: cliente.nome.lower()
+        key=lambda cliente:
+            cliente.nome.lower()
     )
+
 
     return render_template(
         "piscineiros/detalhes.html",
-        piscineiro=piscineiro,
-        clientes=clientes_atuais,
-        resumo=resumo,
-        produtos_mais_vendidos=produtos_mais_vendidos,
-        grafico_vendas=grafico_vendas
+
+        piscineiro=
+            piscineiro,
+
+        clientes=
+            clientes_atuais,
+
+        resumo=
+            resumo,
+
+        produtos_mais_vendidos=
+            produtos_mais_vendidos,
+
+        grafico_vendas=
+            grafico_vendas
     )
-
-

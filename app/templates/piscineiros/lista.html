@@ -1,27 +1,39 @@
 <!-- Hydra ERP
-     Responsável por: exibir e gerenciar os piscineiros cadastrados. -->
+     Responsável por: exibir, buscar e gerenciar
+     os piscineiros cadastrados. -->
 
 {% extends "base.html" %}
+
 
 {% block title %}
 Piscineiros - Hydra ERP
 {% endblock %}
 
+
 {% block header_title %}
 🏊 <span>Piscineiros</span>
 {% endblock %}
 
+
 {% block content %}
+
+
+<!-- =========================================================
+     CABEÇALHO
+========================================================= -->
 
 <div class="page-header">
 
     <div class="page-title">
+
         Piscineiros
 
         <small>
             Gestão dos profissionais e seus clientes vinculados
         </small>
+
     </div>
+
 
     <a
         class="btn btn-primary"
@@ -33,50 +45,76 @@ Piscineiros - Hydra ERP
 </div>
 
 
+<!-- =========================================================
+     INDICADORES
+========================================================= -->
+
 <div class="cards-grid">
 
+
     <div class="stat-card teal">
+
         <div class="stat-label">
             Total Piscineiros
         </div>
 
         <div class="stat-value sm">
-            {{ piscineiros|length }}
+            {{ todos_piscineiros|length }}
         </div>
 
         <div class="stat-icon">
             🏊
         </div>
+
     </div>
 
 
     <div class="stat-card green">
+
         <div class="stat-label">
             Ativos
         </div>
 
         <div class="stat-value sm">
-            {{ piscineiros|selectattr("ativo")|list|length }}
+
+            {{
+                todos_piscineiros
+                |selectattr("ativo")
+                |list
+                |length
+            }}
+
         </div>
 
         <div class="stat-icon">
             ✅
         </div>
+
     </div>
 
 
     <div class="stat-card blue">
+
         <div class="stat-label">
             Clientes Vinculados
         </div>
 
         <div class="stat-value sm">
 
-            {% set total_clientes = namespace(valor=0) %}
+            {% set total_clientes =
+                namespace(valor=0)
+            %}
 
-            {% for piscineiro in piscineiros %}
-                {% set total_clientes.valor = total_clientes.valor + (piscineiro.clientes|length) %}
+
+            {% for piscineiro in todos_piscineiros %}
+
+                {% set total_clientes.valor =
+                    total_clientes.valor
+                    + (piscineiro.clientes|length)
+                %}
+
             {% endfor %}
+
 
             {{ total_clientes.valor }}
 
@@ -85,37 +123,172 @@ Piscineiros - Hydra ERP
         <div class="stat-icon">
             👥
         </div>
+
     </div>
+
 
 </div>
 
 
+<!-- =========================================================
+     BUSCA
+========================================================= -->
+
+<div
+    class="form-card"
+    style="margin-bottom:24px;"
+>
+
+    <form
+        method="GET"
+        action="{{ url_for('piscineiros.listar') }}"
+    >
+
+        <div
+            style="
+                display:flex;
+                gap:10px;
+                align-items:end;
+                flex-wrap:wrap;
+            "
+        >
+
+            <div
+                class="form-group"
+                style="
+                    flex:1;
+                    min-width:250px;
+                    margin-bottom:0;
+                "
+            >
+
+                <label>
+                    🔎 Buscar Piscineiro
+                </label>
+
+
+                <input
+                    type="text"
+                    name="busca"
+                    value="{{ busca }}"
+                    placeholder="Digite o nome do piscineiro..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <button
+                class="btn btn-primary"
+                type="submit"
+            >
+                🔍 Buscar
+            </button>
+
+
+            {% if busca %}
+
+                <a
+                    class="btn btn-ghost"
+                    href="{{ url_for('piscineiros.listar') }}"
+                >
+                    Limpar
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<!-- =========================================================
+     TABELA
+========================================================= -->
+
 <div class="table-wrap">
+
 
     <div class="table-head">
 
+
         <span class="table-head-title">
-            🏊 Piscineiros cadastrados
+
+            {% if busca %}
+
+                🔎 Resultado da busca
+
+            {% else %}
+
+                🏊 Piscineiros cadastrados
+
+            {% endif %}
+
         </span>
+
+
+        {% if busca %}
+
+            <span
+                style="
+                    font-size:13px;
+                    color:var(--text-light);
+                "
+            >
+
+                {{ piscineiros|length }}
+                resultado(s)
+
+            </span>
+
+        {% endif %}
+
 
     </div>
 
 
     <div style="overflow-x:auto;">
 
+
         <table>
+
 
             <thead>
 
                 <tr>
+
                     <th>ID</th>
-                    <th>Nome</th>
-                    <th>Telefone</th>
-                    <th>WhatsApp</th>
-                    <th>Cidade</th>
-                    <th>Clientes</th>
-                    <th>Status</th>
-                    <th>Ações</th>
+
+                    <th>
+                        Nome
+                    </th>
+
+                    <th>
+                        Telefone
+                    </th>
+
+                    <th>
+                        WhatsApp
+                    </th>
+
+                    <th>
+                        Cidade
+                    </th>
+
+                    <th>
+                        Clientes
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Ações
+                    </th>
+
                 </tr>
 
             </thead>
@@ -123,68 +296,112 @@ Piscineiros - Hydra ERP
 
             <tbody>
 
+
                 {% for piscineiro in piscineiros %}
 
+
                     <tr>
+
 
                         <td>
                             {{ piscineiro.id }}
                         </td>
 
+
                         <td>
+
                             <strong>
                                 {{ piscineiro.nome }}
                             </strong>
+
                         </td>
 
-                        <td>
-                            {{ piscineiro.telefone or '-' }}
-                        </td>
 
                         <td>
-                            {{ piscineiro.whatsapp or '-' }}
+
+                            {{
+                                piscineiro.telefone
+                                or "-"
+                            }}
+
                         </td>
 
-                        <td>
-                            {{ piscineiro.cidade or '-' }}
-                        </td>
 
                         <td>
-                            {{ piscineiro.clientes|length }}
+
+                            {{
+                                piscineiro.whatsapp
+                                or "-"
+                            }}
+
                         </td>
 
+
                         <td>
+
+                            {{
+                                piscineiro.cidade
+                                or "-"
+                            }}
+
+                        </td>
+
+
+                        <td>
+
+                            {{
+                                piscineiro.clientes
+                                |length
+                            }}
+
+                        </td>
+
+
+                        <td>
+
 
                             {% if piscineiro.ativo %}
 
+
                                 <span class="badge badge-active">
+
                                     Ativo
+
                                 </span>
+
 
                             {% else %}
 
+
                                 <span class="badge badge-inactive">
+
                                     Inativo
+
                                 </span>
 
+
                             {% endif %}
+
 
                         </td>
 
 
                         <td>
 
+
                             <div class="action-group">
 
+
                                 <a
-    class="btn btn-primary btn-sm"
-    href="{{ url_for(
-        'piscineiros.detalhes',
-        piscineiro_id=piscineiro.id
-    ) }}"
->
-    👁 Ver
-</a>
+                                    class="btn btn-primary btn-sm"
+                                    href="{{ url_for(
+                                        'piscineiros.detalhes',
+                                        piscineiro_id=piscineiro.id
+                                    ) }}"
+                                >
+                                    👁 Ver
+                                </a>
+
 
                                 <a
                                     class="btn btn-ghost btn-sm"
@@ -205,7 +422,9 @@ Piscineiros - Hydra ERP
                                     ) }}"
                                 >
 
+
                                     {% if piscineiro.ativo %}
+
 
                                         <button
                                             class="btn btn-warning btn-sm"
@@ -214,7 +433,9 @@ Piscineiros - Hydra ERP
                                             ⏸ Inativar
                                         </button>
 
+
                                     {% else %}
+
 
                                         <button
                                             class="btn btn-success btn-sm"
@@ -223,17 +444,24 @@ Piscineiros - Hydra ERP
                                             ▶ Ativar
                                         </button>
 
+
                                     {% endif %}
+
 
                                 </form>
 
+
                             </div>
+
 
                         </td>
 
+
                     </tr>
 
+
                 {% else %}
+
 
                     <tr>
 
@@ -245,19 +473,36 @@ Piscineiros - Hydra ERP
                                 color:var(--text-light);
                             "
                         >
-                            Nenhum piscineiro cadastrado.
+
+                            {% if busca %}
+
+                                Nenhum piscineiro encontrado
+                                para "{{ busca }}".
+
+                            {% else %}
+
+                                Nenhum piscineiro cadastrado.
+
+                            {% endif %}
+
                         </td>
 
                     </tr>
 
+
                 {% endfor %}
+
 
             </tbody>
 
+
         </table>
+
 
     </div>
 
+
 </div>
+
 
 {% endblock %}
