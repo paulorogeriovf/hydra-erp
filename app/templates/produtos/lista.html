@@ -18,10 +18,6 @@ Produtos - Hydra ERP
 {% block content %}
 
 
-<!-- =========================================================
-     CABEÇALHO
-========================================================= -->
-
 <div class="page-header">
 
     <div class="page-title">
@@ -46,72 +42,96 @@ Produtos - Hydra ERP
 
 
 <!-- =========================================================
-     INDICADORES
+     RESUMO
 ========================================================= -->
 
-<div class="cards-grid">
+<div class="produtos-summary">
 
 
-    <div class="stat-card blue">
+    <div class="produtos-summary-item">
 
-        <div class="stat-label">
-            Total Produtos
-        </div>
-
-        <div class="stat-value sm">
-            {{ todos_produtos|length }}
-        </div>
-
-        <div class="stat-icon">
+        <div class="produtos-summary-icon">
             📦
         </div>
 
-    </div>
+        <div>
 
+            <span>
+                Total
+            </span>
 
-    <div class="stat-card green">
+            <strong>
+                {{ todos_produtos|length }}
+            </strong>
 
-        <div class="stat-label">
-            Ativos
-        </div>
+            <small>
+                produtos cadastrados
+            </small>
 
-        <div class="stat-value sm">
-
-            {{
-                todos_produtos
-                |selectattr("ativo")
-                |list
-                |length
-            }}
-
-        </div>
-
-        <div class="stat-icon">
-            ✅
         </div>
 
     </div>
 
 
-    <div class="stat-card teal">
+    <div class="produtos-summary-item success">
 
-        <div class="stat-label">
-            Com Comissão
+        <div class="produtos-summary-icon">
+            ✓
         </div>
 
-        <div class="stat-value sm">
+        <div>
 
-            {{
-                todos_produtos
-                |selectattr("gera_comissao")
-                |list
-                |length
-            }}
+            <span>
+                Ativos
+            </span>
+
+            <strong>
+
+                {{
+                    todos_produtos
+                    |selectattr("ativo")
+                    |list
+                    |length
+                }}
+
+            </strong>
+
+            <small>
+                disponíveis no sistema
+            </small>
 
         </div>
 
-        <div class="stat-icon">
+    </div>
+
+
+    <div class="produtos-summary-item commission">
+
+        <div class="produtos-summary-icon">
             💰
+        </div>
+
+        <div>
+
+            <span>
+                Com comissão
+            </span>
+
+            <strong>
+
+                {{
+                    todos_produtos
+                    |selectattr("gera_comissao")
+                    |list
+                    |length
+                }}
+
+            </strong>
+
+            <small>
+                geram comissão
+            </small>
+
         </div>
 
     </div>
@@ -124,38 +144,21 @@ Produtos - Hydra ERP
      BUSCA
 ========================================================= -->
 
-<div
-    class="form-card"
-    style="margin-bottom:24px;"
->
+<div class="produtos-search">
 
     <form
         method="GET"
         action="{{ url_for('produtos.listar') }}"
     >
 
-        <div
-            style="
-                display:flex;
-                gap:10px;
-                align-items:end;
-                flex-wrap:wrap;
-            "
-        >
+        <div class="produtos-search-inner">
 
-            <div
-                class="form-group"
-                style="
-                    flex:1;
-                    min-width:250px;
-                    margin-bottom:0;
-                "
-            >
 
-                <label>
-                    🔎 Buscar Produto
-                </label>
+            <div class="produtos-search-field">
 
+                <span class="produtos-search-icon">
+                    🔎
+                </span>
 
                 <input
                     type="text"
@@ -172,7 +175,7 @@ Produtos - Hydra ERP
                 class="btn btn-primary"
                 type="submit"
             >
-                🔍 Buscar
+                Buscar
             </button>
 
 
@@ -187,6 +190,7 @@ Produtos - Hydra ERP
 
             {% endif %}
 
+
         </div>
 
     </form>
@@ -195,119 +199,110 @@ Produtos - Hydra ERP
 
 
 <!-- =========================================================
-     TABELA
+     LISTAGEM
 ========================================================= -->
 
-<div class="table-wrap">
+<div class="produtos-panel">
 
 
-    <div class="table-head">
+    <div class="produtos-panel-head">
+
+        <div>
+
+            <h2>
+
+                {% if busca %}
+
+                    🔎 Resultado da busca
+
+                {% else %}
+
+                    📦 Produtos cadastrados
+
+                {% endif %}
+
+            </h2>
 
 
-        <span class="table-head-title">
+            <span>
 
-            {% if busca %}
+                {% if busca %}
 
-                🔎 Resultado da busca
+                    {{ produtos|length }}
+                    resultado(s) para "{{ busca }}"
 
-            {% else %}
+                {% else %}
 
-                📦 Produtos cadastrados
+                    Catálogo comercial utilizado no ERP
 
-            {% endif %}
-
-        </span>
-
-
-        {% if busca %}
-
-            <span
-                style="
-                    font-size:13px;
-                    color:var(--text-light);
-                "
-            >
-
-                {{ produtos|length }}
-                resultado(s)
+                {% endif %}
 
             </span>
 
-        {% endif %}
-
+        </div>
 
     </div>
 
 
-    <div style="overflow-x:auto;">
+    {% if produtos %}
 
 
-        <table>
+        <div class="produtos-list">
 
 
-            <thead>
-
-                <tr>
-
-                    <th>ID</th>
-                    <th>Produto</th>
-                    <th>Marca</th>
-                    <th>Categoria</th>
-                    <th>Preço Normal</th>
-                    <th>Preço Atacado</th>
-                    <th>Comissão</th>
-                    <th>Status</th>
-                    <th>Ações</th>
-
-                </tr>
-
-            </thead>
+            {% for produto in produtos %}
 
 
-            <tbody>
+                <div class="produto-row">
 
 
-                {% for produto in produtos %}
+                    <div class="produto-main">
+
+                        <div class="produto-icon">
+                            📦
+                        </div>
 
 
-                    <tr>
-
-
-                        <td>
-                            {{ produto.id }}
-                        </td>
-
-
-                        <td>
+                        <div>
 
                             <strong>
                                 {{ produto.nome }}
                             </strong>
 
-                        </td>
+
+                            <span>
+
+                                {% if produto.marca %}
+
+                                    {{ produto.marca }}
+
+                                {% else %}
+
+                                    Marca não informada
+
+                                {% endif %}
 
 
-                        <td>
+                                {% if produto.categoria %}
 
-                            {{
-                                produto.marca
-                                or "-"
-                            }}
+                                    • {{ produto.categoria }}
 
-                        </td>
+                                {% endif %}
 
+                            </span>
 
-                        <td>
+                        </div>
 
-                            {{
-                                produto.categoria
-                                or "-"
-                            }}
-
-                        </td>
+                    </div>
 
 
-                        <td>
+                    <div class="produto-price">
+
+                        <span>
+                            Preço normal
+                        </span>
+
+                        <strong>
 
                             R$ {{
                                 "%.2f"
@@ -315,11 +310,18 @@ Produtos - Hydra ERP
                                 |replace(".", ",")
                             }}
 
-                        </td>
+                        </strong>
+
+                    </div>
 
 
-                        <td>
+                    <div class="produto-price secondary">
 
+                        <span>
+                            Atacado
+                        </span>
+
+                        <strong>
 
                             {% if produto.preco_atacado %}
 
@@ -331,153 +333,152 @@ Produtos - Hydra ERP
 
                             {% else %}
 
-                                -
+                                —
 
                             {% endif %}
 
+                        </strong>
 
-                        </td>
-
-
-                        <td>
+                    </div>
 
 
-                            {% if produto.gera_comissao %}
+                    <div class="produto-commission">
 
-                                {{
-                                    produto.percentual_comissao
-                                }}%
+                        {% if produto.gera_comissao %}
 
-                            {% else %}
+                            <span class="badge badge-paid">
 
-                                Não
+                                💰
+                                {{ produto.percentual_comissao }}%
 
-                            {% endif %}
+                            </span>
+
+                        {% else %}
+
+                            <span class="produto-muted">
+                                Sem comissão
+                            </span>
+
+                        {% endif %}
+
+                    </div>
 
 
-                        </td>
+                    <div class="produto-status">
+
+                        {% if produto.ativo %}
+
+                            <span class="badge badge-active">
+                                Ativo
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge badge-inactive">
+                                Inativo
+                            </span>
+
+                        {% endif %}
+
+                    </div>
 
 
-                        <td>
+                    <div class="produto-actions">
+
+
+                        <a
+                            class="btn btn-primary btn-sm"
+                            href="{{ url_for(
+                                'produtos.editar',
+                                produto_id=produto.id
+                            ) }}"
+                        >
+                            Editar
+                        </a>
+
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'produtos.alterar_status',
+                                produto_id=produto.id
+                            ) }}"
+                        >
 
 
                             {% if produto.ativo %}
 
-                                <span class="badge badge-active">
-                                    Ativo
-                                </span>
-
-                            {% else %}
-
-                                <span class="badge badge-inactive">
-                                    Inativo
-                                </span>
-
-                            {% endif %}
-
-
-                        </td>
-
-
-                        <td>
-
-
-                            <div class="action-group">
-
-
-                                <a
+                                <button
                                     class="btn btn-ghost btn-sm"
-                                    href="{{ url_for(
-                                        'produtos.editar',
-                                        produto_id=produto.id
-                                    ) }}"
+                                    type="submit"
+                                    title="Inativar produto"
                                 >
-                                    ✏️ Editar
-                                </a>
-
-
-                                <form
-                                    method="POST"
-                                    action="{{ url_for(
-                                        'produtos.alterar_status',
-                                        produto_id=produto.id
-                                    ) }}"
-                                >
-
-
-                                    {% if produto.ativo %}
-
-                                        <button
-                                            class="btn btn-warning btn-sm"
-                                            type="submit"
-                                        >
-                                            ⏸ Inativar
-                                        </button>
-
-                                    {% else %}
-
-                                        <button
-                                            class="btn btn-success btn-sm"
-                                            type="submit"
-                                        >
-                                            ▶ Ativar
-                                        </button>
-
-                                    {% endif %}
-
-
-                                </form>
-
-
-                            </div>
-
-
-                        </td>
-
-
-                    </tr>
-
-
-                {% else %}
-
-
-                    <tr>
-
-                        <td
-                            colspan="9"
-                            style="
-                                text-align:center;
-                                padding:40px;
-                                color:var(--text-light);
-                            "
-                        >
-
-                            {% if busca %}
-
-                                Nenhum produto encontrado
-                                para "{{ busca }}".
+                                    ⏸
+                                </button>
 
                             {% else %}
 
-                                Nenhum produto cadastrado.
+                                <button
+                                    class="btn btn-success btn-sm"
+                                    type="submit"
+                                >
+                                    Ativar
+                                </button>
 
                             {% endif %}
 
-                        </td>
 
-                    </tr>
-
-
-                {% endfor %}
+                        </form>
 
 
-            </tbody>
+                    </div>
 
 
-        </table>
+                </div>
 
 
-    </div>
+            {% endfor %}
+
+
+        </div>
+
+
+    {% else %}
+
+
+        <div class="produtos-empty">
+
+            <div>
+                📦
+            </div>
+
+
+            {% if busca %}
+
+                <strong>
+                    Nenhum produto encontrado
+                </strong>
+
+                <span>
+                    Não encontramos resultados para "{{ busca }}".
+                </span>
+
+            {% else %}
+
+                <strong>
+                    Nenhum produto cadastrado
+                </strong>
+
+                <span>
+                    Cadastre o primeiro produto para começar.
+                </span>
+
+            {% endif %}
+
+        </div>
+
+
+    {% endif %}
 
 
 </div>

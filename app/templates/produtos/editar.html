@@ -18,10 +18,6 @@ Editar Produto - Hydra ERP
 {% block content %}
 
 
-<!-- =========================================================
-     CABEÇALHO
-========================================================= -->
-
 <div class="page-header">
 
     <div class="page-title">
@@ -29,7 +25,7 @@ Editar Produto - Hydra ERP
         Editar Produto
 
         <small>
-            Atualize os dados e regras comerciais do produto
+            Atualize os dados e regras comerciais de {{ produto.nome }}
         </small>
 
     </div>
@@ -45,52 +41,81 @@ Editar Produto - Hydra ERP
 </div>
 
 
-<!-- =========================================================
-     FORMULÁRIO
-========================================================= -->
-
-<div class="form-card">
+<div class="form-card produto-form-card">
 
     <form method="POST">
 
 
-        <!-- =================================================
-             IDENTIFICAÇÃO
-        ================================================== -->
+        <div class="produto-form-section first">
 
-        <div class="section-title">
-            📦 Identificação
-        </div>
+            <div class="produto-form-section-head">
+
+                <div class="produto-form-section-icon">
+                    📦
+                </div>
+
+                <div>
+
+                    <h2>
+                        Identificação
+                    </h2>
+
+                    <span>
+                        Informações principais do produto
+                    </span>
+
+                </div>
+
+            </div>
 
 
-        <div class="form-row">
+            <div class="form-row">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Nome *
+                    </label>
+
+                    <input
+                        type="text"
+                        name="nome"
+                        value="{{ produto.nome }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Marca
+                    </label>
+
+                    <input
+                        type="text"
+                        name="marca"
+                        value="{{ produto.marca or '' }}"
+                    >
+
+                </div>
+
+
+            </div>
+
 
             <div class="form-group">
 
                 <label>
-                    Nome *
+                    Categoria
                 </label>
 
                 <input
                     type="text"
-                    name="nome"
-                    value="{{ produto.nome }}"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Marca
-                </label>
-
-                <input
-                    type="text"
-                    name="marca"
-                    value="{{ produto.marca or '' }}"
+                    name="categoria"
+                    value="{{ produto.categoria or '' }}"
                 >
 
             </div>
@@ -98,199 +123,206 @@ Editar Produto - Hydra ERP
         </div>
 
 
-        <div class="form-group">
+        <div class="produto-form-section">
 
-            <label>
-                Categoria
-            </label>
+            <div class="produto-form-section-head">
 
-            <input
-                type="text"
-                name="categoria"
-                value="{{ produto.categoria or '' }}"
-            >
+                <div class="produto-form-section-icon">
+                    💰
+                </div>
 
-        </div>
+                <div>
 
+                    <h2>
+                        Preços
+                    </h2>
 
-        <!-- =================================================
-             PREÇOS
-        ================================================== -->
+                    <span>
+                        Valores utilizados nas vendas
+                    </span>
 
-        <div class="section-title">
-            💰 Preços
-        </div>
-
-
-        <div class="form-row">
-
-            <div class="form-group">
-
-                <label>
-                    Preço Normal *
-                </label>
-
-                <input
-                    type="number"
-                    name="preco_normal"
-                    step="0.01"
-                    min="0"
-                    value="{{ produto.preco_normal }}"
-                    required
-                >
+                </div>
 
             </div>
 
 
-            <div class="form-group">
+            <div class="form-row">
 
-                <label>
-                    Preço Atacado
-                </label>
 
-                <input
-                    type="number"
-                    name="preco_atacado"
-                    step="0.01"
-                    min="0"
-                    value="{{ produto.preco_atacado or '' }}"
-                >
+                <div class="form-group">
 
-                <small
-                    style="
-                        display:block;
-                        margin-top:5px;
-                        color:var(--text-light);
-                    "
-                >
-                    Campo opcional.
-                </small>
+                    <label>
+                        Preço Normal *
+                    </label>
+
+                    <input
+                        type="number"
+                        name="preco_normal"
+                        step="0.01"
+                        min="0"
+                        value="{{ produto.preco_normal }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Preço Atacado
+                    </label>
+
+                    <input
+                        type="number"
+                        name="preco_atacado"
+                        step="0.01"
+                        min="0"
+                        value="{{ produto.preco_atacado or '' }}"
+                    >
+
+                    <small class="produto-form-help">
+                        Campo opcional.
+                    </small>
+
+                </div>
+
 
             </div>
 
         </div>
 
 
-        <!-- =================================================
-             COMISSÃO
-        ================================================== -->
+        <div class="produto-form-section">
 
-        <div class="section-title">
-            💵 Comissão
-        </div>
+            <div class="produto-form-section-head">
+
+                <div class="produto-form-section-icon">
+                    💵
+                </div>
+
+                <div>
+
+                    <h2>
+                        Comissão
+                    </h2>
+
+                    <span>
+                        Regra aplicada às vendas para piscineiros
+                    </span>
+
+                </div>
+
+            </div>
 
 
-        <div class="form-group">
-
-            <label
-                style="
-                    display:flex;
-                    align-items:center;
-                    gap:8px;
-                    cursor:pointer;
-                "
-            >
+            <label class="produto-commission-toggle">
 
                 <input
                     type="checkbox"
                     name="gera_comissao"
                     id="geraComissao"
-                    style="width:auto;"
                     {% if produto.gera_comissao %}
                         checked
                     {% endif %}
                 >
 
-                Produto gera comissão para piscineiro
+                <div>
+
+                    <strong>
+                        Produto gera comissão
+                    </strong>
+
+                    <span>
+                        Ative para utilizar comissão neste produto.
+                    </span>
+
+                </div>
 
             </label>
+
+
+            <div
+                class="produto-commission-percent"
+                id="grupoPercentual"
+                style="display:none;"
+            >
+
+                <div class="form-group">
+
+                    <label>
+                        Percentual de Comissão
+                    </label>
+
+
+                    <div class="produto-percent-input">
+
+                        <input
+                            type="number"
+                            name="percentual_comissao"
+                            id="percentualComissao"
+                            step="0.01"
+                            min="0"
+                            max="100"
+                            value="{{ produto.percentual_comissao or '' }}"
+                            placeholder="5,00"
+                        >
+
+                        <span>
+                            %
+                        </span>
+
+                    </div>
+
+
+                    <small class="produto-form-help">
+                        Percentual utilizado para calcular a comissão.
+                    </small>
+
+                </div>
+
+            </div>
 
         </div>
 
 
-        <div
-            class="form-group"
-            id="grupoPercentual"
-            style="display:none;"
-        >
+        <div class="produto-form-section">
 
-            <label>
-                Percentual de Comissão
-            </label>
+            <div class="produto-form-section-head">
 
-            <div
-                style="
-                    display:flex;
-                    align-items:center;
-                    gap:8px;
-                "
-            >
+                <div class="produto-form-section-icon">
+                    📝
+                </div>
 
-                <input
-                    type="number"
-                    name="percentual_comissao"
-                    id="percentualComissao"
-                    step="0.01"
-                    min="0"
-                    max="100"
-                    value="{{ produto.percentual_comissao or '' }}"
-                    placeholder="5,00"
-                >
+                <div>
 
-                <span
-                    style="
-                        font-weight:700;
-                        color:var(--text-light);
-                    "
-                >
-                    %
-                </span>
+                    <h2>
+                        Observação
+                    </h2>
+
+                    <span>
+                        Informações adicionais
+                    </span>
+
+                </div>
 
             </div>
 
 
-            <small
-                style="
-                    display:block;
-                    margin-top:5px;
-                    color:var(--text-light);
-                "
-            >
-                Percentual utilizado para calcular
-                a comissão desse produto.
-            </small>
+            <div class="form-group">
+
+                <textarea
+                    name="observacao"
+                    placeholder="Informações adicionais sobre o produto..."
+                >{{ produto.observacao or '' }}</textarea>
+
+            </div>
 
         </div>
 
 
-        <!-- =================================================
-             OBSERVAÇÃO
-        ================================================== -->
+        <div class="produto-form-actions">
 
-        <div class="section-title">
-            📝 Observação
-        </div>
-
-
-        <div class="form-group">
-
-            <label>
-                Observação
-            </label>
-
-            <textarea
-                name="observacao"
-                placeholder="Informações adicionais sobre o produto..."
-            >{{ produto.observacao or '' }}</textarea>
-
-        </div>
-
-
-        <!-- =================================================
-             AÇÕES
-        ================================================== -->
-
-        <div class="action-group">
 
             <button
                 class="btn btn-primary"
@@ -307,16 +339,19 @@ Editar Produto - Hydra ERP
                 Cancelar
             </a>
 
+
         </div>
+
 
     </form>
 
 </div>
 
 
-<!-- =========================================================
-     JAVASCRIPT
-========================================================= -->
+{% endblock %}
+
+
+{% block scripts %}
 
 <script>
 
@@ -378,6 +413,5 @@ document.addEventListener(
 );
 
 </script>
-
 
 {% endblock %}
