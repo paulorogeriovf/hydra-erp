@@ -3052,3 +3052,778 @@ td {
     }
 
 }
+
+/* =========================================================
+   COBRANÇAS
+========================================================= */
+
+.cobrancas-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-bottom: 28px;
+}
+
+
+.cobrancas-summary-card {
+    min-height: 130px;
+
+    padding: 20px 22px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    box-shadow: var(--shadow);
+
+    display: flex;
+    align-items: center;
+
+    gap: 17px;
+
+    position: relative;
+    overflow: hidden;
+}
+
+
+.cobrancas-summary-card::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 4px;
+}
+
+
+.cobrancas-summary-card.danger::before {
+    background: var(--danger);
+}
+
+
+.cobrancas-summary-card.warning::before {
+    background: var(--warning);
+}
+
+
+.cobrancas-summary-icon {
+    width: 48px;
+    height: 48px;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 23px;
+
+    background: #f4f8fb;
+}
+
+
+.cobrancas-summary-card.danger
+.cobrancas-summary-icon {
+    background: #fef2f2;
+}
+
+
+.cobrancas-summary-card.warning
+.cobrancas-summary-icon {
+    background: #fffbeb;
+}
+
+
+.cobrancas-summary-content {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+.cobrancas-summary-content > span {
+    margin-bottom: 4px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.45px;
+
+    color: var(--text-light);
+}
+
+
+.cobrancas-summary-content > strong {
+    font-size: 25px;
+
+    color: var(--text-dark);
+}
+
+
+.cobrancas-summary-content small {
+    margin-top: 5px;
+
+    font-size: 11px;
+
+    color: var(--text-light);
+}
+
+
+
+/* =========================================================
+   SEÇÕES
+========================================================= */
+
+.cobrancas-section {
+    margin-top: 28px;
+}
+
+
+.cobrancas-section.upcoming {
+    margin-top: 40px;
+}
+
+
+.cobrancas-section-header {
+    min-height: 70px;
+
+    padding: 16px 19px;
+
+    margin-bottom: 18px;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    background: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+
+.cobrancas-section-header.danger {
+    border-left: 4px solid var(--danger);
+}
+
+
+.cobrancas-section-header.warning {
+    border-left: 4px solid var(--warning);
+}
+
+
+.cobrancas-section-header h2 {
+    margin: 0;
+
+    font-size: 16px;
+
+    color: var(--text-dark);
+}
+
+
+.cobrancas-section-header span {
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 11px;
+
+    color: var(--text-light);
+}
+
+
+.cobrancas-section-count {
+    min-width: 34px;
+    height: 34px;
+
+    padding: 0 9px;
+
+    border-radius: 9px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+
+.cobrancas-section-count.danger {
+    background: #fef2f2;
+
+    color: var(--danger);
+}
+
+
+.cobrancas-section-count.warning {
+    background: #fffbeb;
+
+    color: #b45309;
+}
+
+
+
+/* =========================================================
+   RESPONSÁVEIS
+========================================================= */
+
+.cobrancas-responsible-title {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    margin: 20px 0 12px;
+}
+
+
+.cobrancas-responsible-title.spaced {
+    margin-top: 30px;
+}
+
+
+.cobrancas-responsible-icon {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    border-radius: 9px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 17px;
+}
+
+
+.cobrancas-responsible-icon.hydra {
+    background: var(--pool-light);
+}
+
+
+.cobrancas-responsible-icon.piscineiro {
+    background: #eef2ff;
+}
+
+
+.cobrancas-responsible-title strong {
+    display: block;
+
+    font-size: 13px;
+
+    color: var(--text-dark);
+}
+
+
+.cobrancas-responsible-title span {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 10px;
+
+    color: var(--text-light);
+}
+
+
+
+/* =========================================================
+   CARDS DE CLIENTE
+========================================================= */
+
+.cobrancas-groups {
+    display: flex;
+    flex-direction: column;
+
+    gap: 13px;
+}
+
+
+.cobranca-client-card {
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    overflow: hidden;
+
+    box-shadow: var(--shadow);
+}
+
+
+.cobranca-client-card.danger {
+    border-left: 3px solid var(--danger);
+}
+
+
+.cobranca-client-card.warning {
+    border-left: 3px solid var(--warning);
+}
+
+
+.cobranca-client-head {
+    min-height: 68px;
+
+    padding: 13px 17px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    border-bottom: 1px solid var(--border);
+
+    background: #fbfdff;
+}
+
+
+.cobranca-client-head.compact {
+    background: transparent;
+}
+
+
+.cobranca-client-person {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    min-width: 0;
+}
+
+
+.cobranca-client-avatar {
+    width: 35px;
+    height: 35px;
+
+    flex-shrink: 0;
+
+    border-radius: 9px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eef6ff;
+
+    font-size: 15px;
+}
+
+
+.cobranca-client-person strong {
+    display: block;
+
+    font-size: 13px;
+
+    color: var(--text-dark);
+}
+
+
+.cobranca-client-person span {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 10px;
+
+    color: var(--text-light);
+}
+
+
+.cobranca-client-total {
+    text-align: right;
+}
+
+
+.cobranca-client-total span {
+    display: block;
+
+    margin-bottom: 2px;
+
+    font-size: 9px;
+
+    text-transform: uppercase;
+
+    color: var(--text-light);
+}
+
+
+.cobranca-client-total strong {
+    font-size: 14px;
+
+    color: var(--text-dark);
+}
+
+
+.cobranca-client-total.danger strong {
+    color: var(--danger);
+}
+
+
+
+/* =========================================================
+   NOTINHA INDIVIDUAL
+========================================================= */
+
+.cobranca-items {
+    padding: 2px 17px;
+}
+
+
+.cobranca-item {
+    min-height: 68px;
+
+    padding: 10px 0;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(180px, 1fr)
+        minmax(125px, auto)
+        auto;
+
+    align-items: center;
+
+    gap: 16px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.cobranca-item:last-child {
+    border-bottom: none;
+}
+
+
+.cobranca-item-main {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    min-width: 0;
+}
+
+
+.cobranca-item-id {
+    min-width: 48px;
+    height: 29px;
+
+    padding: 0 7px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 7px;
+
+    background: #fef2f2;
+
+    color: var(--danger);
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+.cobranca-item-id.warning {
+    background: #fffbeb;
+
+    color: #b45309;
+}
+
+
+.cobranca-item-info {
+    min-width: 0;
+}
+
+
+.cobranca-item-info strong {
+    display: block;
+
+    font-size: 12px;
+
+    color: var(--text-dark);
+}
+
+
+.cobranca-item-info span {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 10px;
+
+    color: var(--text-light);
+}
+
+
+.cobranca-item-value {
+    text-align: right;
+}
+
+
+.cobranca-item-value > strong {
+    display: block;
+
+    font-size: 13px;
+
+    color: var(--text-dark);
+}
+
+
+.cobranca-delay {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    color: var(--danger);
+}
+
+
+.cobranca-deadline {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    color: #b45309;
+}
+
+
+.cobranca-item-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    white-space: nowrap;
+}
+
+
+
+/* =========================================================
+   PISCINEIROS
+========================================================= */
+
+.cobranca-piscineiro-card {
+    margin-bottom: 14px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    box-shadow: var(--shadow);
+
+    overflow: hidden;
+}
+
+
+.cobranca-piscineiro-card.warning {
+    border-top: 2px solid var(--warning);
+}
+
+
+.cobranca-piscineiro-head {
+    padding: 14px 17px;
+
+    background: #f6f9fc;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.cobranca-piscineiro-head span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 9px;
+
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+
+    color: var(--text-light);
+}
+
+
+.cobranca-piscineiro-head strong {
+    font-size: 14px;
+
+    color: var(--text-dark);
+}
+
+
+.cobranca-piscineiro-clients {
+    padding: 0 16px;
+}
+
+
+.cobranca-client-block {
+    padding: 8px 0 12px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.cobranca-client-block:last-child {
+    border-bottom: none;
+}
+
+
+
+/* =========================================================
+   ESTADOS VAZIOS
+========================================================= */
+
+.cobrancas-empty {
+    min-height: 135px;
+
+    padding: 22px;
+
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    color: var(--text-light);
+}
+
+
+.cobrancas-empty > div {
+    font-size: 23px;
+
+    margin-bottom: 6px;
+}
+
+
+.cobrancas-empty strong {
+    font-size: 12px;
+
+    color: var(--text-mid);
+}
+
+
+.cobrancas-empty span {
+    margin-top: 4px;
+
+    font-size: 10px;
+}
+
+
+.cobrancas-empty.success {
+    background: #f8fffc;
+
+    border-color: #bbf7d0;
+}
+
+
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+@media (max-width: 800px) {
+
+    .cobrancas-summary {
+        grid-template-columns: 1fr;
+    }
+
+
+    .cobranca-item {
+        grid-template-columns:
+            minmax(0, 1fr)
+            auto;
+    }
+
+
+    .cobranca-item-actions {
+        grid-column: 1 / -1;
+
+        justify-content: flex-end;
+    }
+
+}
+
+
+@media (max-width: 520px) {
+
+    .cobrancas-summary-card {
+        min-height: 110px;
+
+        padding: 17px;
+    }
+
+
+    .cobrancas-summary-content > strong {
+        font-size: 21px;
+    }
+
+
+    .cobranca-client-head {
+        align-items: flex-start;
+    }
+
+
+    .cobranca-client-total {
+        flex-shrink: 0;
+    }
+
+
+    .cobranca-item {
+        display: flex;
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 10px;
+
+        padding: 13px 0;
+    }
+
+
+    .cobranca-item-value {
+        text-align: left;
+    }
+
+
+    .cobranca-item-actions {
+        justify-content: flex-start;
+    }
+
+
+    .cobranca-item-actions .btn {
+        flex: 1;
+    }
+
+}

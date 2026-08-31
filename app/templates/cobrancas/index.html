@@ -29,7 +29,7 @@ Cobranças - Hydra ERP
         Cobranças
 
         <small>
-            Vencidas e próximas do vencimento
+            Controle de vencimentos e lembretes
         </small>
 
     </div>
@@ -37,114 +37,111 @@ Cobranças - Hydra ERP
 </div>
 
 
+
 <!-- =========================================================
      RESUMO
 ========================================================= -->
 
-<div class="cards-grid">
+<div class="cobrancas-summary">
 
 
-    <!-- TOTAL VENCIDO -->
+    <!-- VENCIDAS -->
 
-    <div class="stat-card red">
+    <div class="cobrancas-summary-card danger">
 
-        <div class="stat-label">
-            Total Vencido
-        </div>
-
-        <div class="stat-value">
-
-            R$ {{
-                "%.2f"
-                |format(resumo.total_vencido)
-                |replace(".", ",")
-            }}
-
-        </div>
-
-        <div class="stat-icon">
-            💰
-        </div>
-
-    </div>
-
-
-    <!-- NOTINHAS VENCIDAS -->
-
-    <div class="stat-card red">
-
-        <div class="stat-label">
-            Notinhas Vencidas
-        </div>
-
-        <div class="stat-value sm">
-            {{ resumo.quantidade_vencidas }}
-        </div>
-
-        <div class="stat-icon">
+        <div class="cobrancas-summary-icon">
             🚨
         </div>
 
+
+        <div class="cobrancas-summary-content">
+
+            <span>
+                Total vencido
+            </span>
+
+            <strong>
+
+                R$ {{
+                    "%.2f"
+                    |format(resumo.total_vencido)
+                    |replace(".", ",")
+                }}
+
+            </strong>
+
+            <small>
+
+                {{ resumo.quantidade_vencidas }}
+
+                {% if resumo.quantidade_vencidas == 1 %}
+                    notinha vencida
+                {% else %}
+                    notinhas vencidas
+                {% endif %}
+
+                {% if resumo.quantidade_vencidas > 0 %}
+
+                    • maior atraso:
+                    {{ resumo.maior_atraso }}
+
+                    {% if resumo.maior_atraso == 1 %}
+                        dia
+                    {% else %}
+                        dias
+                    {% endif %}
+
+                {% endif %}
+
+            </small>
+
+        </div>
+
     </div>
+
 
 
     <!-- PRÓXIMAS -->
 
-    <div class="stat-card amber">
+    <div class="cobrancas-summary-card warning">
 
-        <div class="stat-label">
-            Próximas em {{ resumo.dias_alerta }} dias
-        </div>
-
-        <div class="stat-value sm">
-            {{ resumo.quantidade_proximas }}
-        </div>
-
-        <div
-            style="
-                margin-top:6px;
-                font-size:12px;
-                opacity:0.75;
-            "
-        >
-
-            R$ {{
-                "%.2f"
-                |format(resumo.total_proximo)
-                |replace(".", ",")
-            }}
-
-        </div>
-
-        <div class="stat-icon">
+        <div class="cobrancas-summary-icon">
             ⏳
         </div>
 
-    </div>
 
+        <div class="cobrancas-summary-content">
 
-    <!-- MAIOR ATRASO -->
+            <span>
+                Próximas do vencimento
+            </span>
 
-    <div class="stat-card blue">
+            <strong>
 
-        <div class="stat-label">
-            Maior Atraso
-        </div>
+                R$ {{
+                    "%.2f"
+                    |format(resumo.total_proximo)
+                    |replace(".", ",")
+                }}
 
-        <div class="stat-value sm">
+            </strong>
 
-            {{ resumo.maior_atraso }}
+            <small>
 
-            {% if resumo.maior_atraso == 1 %}
-                dia
-            {% else %}
+                {{ resumo.quantidade_proximas }}
+
+                {% if resumo.quantidade_proximas == 1 %}
+                    notinha
+                {% else %}
+                    notinhas
+                {% endif %}
+
+                nos próximos
+                {{ resumo.dias_alerta }}
                 dias
-            {% endif %}
 
-        </div>
+            </small>
 
-        <div class="stat-icon">
-            📅
         </div>
 
     </div>
@@ -153,125 +150,151 @@ Cobranças - Hydra ERP
 </div>
 
 
-<!-- =========================================================
-     COBRANÇAS VENCIDAS
-========================================================= -->
-
-<div class="section-title">
-    🚨 Cobranças Vencidas
-</div>
-
 
 <!-- =========================================================
-     VENCIDAS - HYDRA
+     VENCIDAS
 ========================================================= -->
 
-<div
-    style="
-        margin-bottom:10px;
-        font-weight:700;
-        color:var(--text-dark);
-    "
->
-    🏪 Responsabilidade da Hydra
-</div>
+<div class="cobrancas-section">
 
 
-{% if grupos.hydra %}
+    <div class="cobrancas-section-header danger">
+
+        <div>
+
+            <h2>
+                🚨 Cobranças vencidas
+            </h2>
+
+            <span>
+                Pendências que já passaram da data de vencimento
+            </span>
+
+        </div>
 
 
-    {% for cliente_id, notinhas in grupos.hydra.items() %}
+        {% if resumo.quantidade_vencidas > 0 %}
 
-        {% set cliente = notinhas[0].notinha.cliente %}
-
-
-        <div
-            class="table-wrap"
-            style="margin-bottom:18px;"
-        >
-
-
-            <!-- CABEÇALHO CLIENTE -->
-
-            <div class="table-head">
-
-                <span class="table-head-title">
-
-                    👤 {{ cliente.nome }}
-
-                </span>
-
-
-                <strong>
-
-                    {% set total_cliente = namespace(valor=0) %}
-
-
-                    {% for dados in notinhas %}
-
-                        {% set total_cliente.valor =
-                            total_cliente.valor
-                            + dados.saldo
-                        %}
-
-                    {% endfor %}
-
-
-                    R$ {{
-                        "%.2f"
-                        |format(total_cliente.valor)
-                        |replace(".", ",")
-                    }}
-
-                </strong>
-
+            <div class="cobrancas-section-count danger">
+                {{ resumo.quantidade_vencidas }}
             </div>
 
+        {% endif %}
 
-            <!-- TABELA -->
-
-            <div style="overflow-x:auto;">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                Notinha
-                            </th>
-
-                            <th>
-                                Piscineiro
-                            </th>
-
-                            <th>
-                                Retirada
-                            </th>
-
-                            <th>
-                                Vencimento
-                            </th>
-
-                            <th>
-                                Saldo
-                            </th>
-
-                            <th>
-                                Atraso
-                            </th>
-
-                            <th>
-                                Ações
-                            </th>
-
-                        </tr>
-
-                    </thead>
+    </div>
 
 
-                    <tbody>
+
+    <!-- =====================================================
+         RESPONSABILIDADE HYDRA
+    ====================================================== -->
+
+    <div class="cobrancas-responsible-title">
+
+        <div class="cobrancas-responsible-icon hydra">
+            🏪
+        </div>
+
+        <div>
+
+            <strong>
+                Responsabilidade da Hydra
+            </strong>
+
+            <span>
+                Cobranças realizadas diretamente pela loja
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    {% if grupos.hydra %}
+
+
+        <div class="cobrancas-groups">
+
+
+            {% for cliente_id, notinhas in grupos.hydra.items() %}
+
+                {% set cliente = notinhas[0].notinha.cliente %}
+
+                {% set total_cliente = namespace(valor=0) %}
+
+
+                {% for dados in notinhas %}
+
+                    {% set total_cliente.valor =
+                        total_cliente.valor + dados.saldo
+                    %}
+
+                {% endfor %}
+
+
+
+                <div class="cobranca-client-card danger">
+
+
+                    <!-- CLIENTE -->
+
+                    <div class="cobranca-client-head">
+
+                        <div class="cobranca-client-person">
+
+                            <div class="cobranca-client-avatar">
+                                👤
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    {{ cliente.nome }}
+                                </strong>
+
+                                <span>
+
+                                    {{ notinhas|length }}
+
+                                    {% if notinhas|length == 1 %}
+                                        notinha vencida
+                                    {% else %}
+                                        notinhas vencidas
+                                    {% endif %}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="cobranca-client-total danger">
+
+                            <span>
+                                Total pendente
+                            </span>
+
+                            <strong>
+
+                                R$ {{
+                                    "%.2f"
+                                    |format(total_cliente.valor)
+                                    |replace(".", ",")
+                                }}
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- NOTINHAS -->
+
+                    <div class="cobranca-items">
 
 
                         {% for dados in notinhas %}
@@ -279,64 +302,49 @@ Cobranças - Hydra ERP
                             {% set notinha = dados.notinha %}
 
 
-                            <tr>
+                            <div class="cobranca-item">
 
 
-                                <!-- NOTINHA -->
+                                <div class="cobranca-item-main">
 
-                                <td>
-
-                                    <strong>
+                                    <div class="cobranca-item-id">
                                         #{{ notinha.id }}
-                                    </strong>
-
-                                </td>
+                                    </div>
 
 
-                                <!-- PISCINEIRO -->
+                                    <div class="cobranca-item-info">
 
-                                <td>
+                                        <strong>
 
-                                    {% if notinha.piscineiro %}
+                                            {% if notinha.piscineiro %}
 
-                                        {{ notinha.piscineiro.nome }}
+                                                {{ notinha.piscineiro.nome }}
 
-                                    {% else %}
+                                            {% else %}
 
-                                        Hydra / Direto
+                                                Hydra / Direto
 
-                                    {% endif %}
+                                            {% endif %}
 
-                                </td>
+                                        </strong>
 
+                                        <span>
 
-                                <!-- RETIRADA -->
+                                            Venceu em
+                                            {{
+                                                notinha.data_vencimento
+                                                .strftime("%d/%m/%Y")
+                                            }}
 
-                                <td>
+                                        </span>
 
-                                    {{
-                                        notinha.data_retirada
-                                        .strftime("%d/%m/%Y")
-                                    }}
+                                    </div>
 
-                                </td>
-
-
-                                <!-- VENCIMENTO -->
-
-                                <td>
-
-                                    {{
-                                        notinha.data_vencimento
-                                        .strftime("%d/%m/%Y")
-                                    }}
-
-                                </td>
+                                </div>
 
 
-                                <!-- SALDO -->
 
-                                <td>
+                                <div class="cobranca-item-value">
 
                                     <strong>
 
@@ -348,365 +356,57 @@ Cobranças - Hydra ERP
 
                                     </strong>
 
-                                </td>
+                                    <span class="cobranca-delay">
 
-
-                                <!-- ATRASO -->
-
-                                <td>
-
-                                    <span class="badge badge-late">
-
-                                        ⚠️
                                         {{ dados.dias_atraso }}
 
                                         {% if dados.dias_atraso == 1 %}
-                                            dia
+                                            dia atrasada
                                         {% else %}
-                                            dias
+                                            dias atrasada
                                         {% endif %}
 
                                     </span>
 
-                                </td>
+                                </div>
 
 
-                                <!-- AÇÕES -->
 
-                                <td>
+                                <div class="cobranca-item-actions">
 
-                                    <div
-                                        class="action-group"
-                                        style="flex-wrap:nowrap;"
+
+                                    <a
+                                        class="btn btn-ghost btn-sm"
+                                        href="{{ url_for(
+                                            'notinhas.detalhes',
+                                            notinha_id=notinha.id
+                                        ) }}"
                                     >
+                                        Ver
+                                    </a>
 
-                                        <a
-                                            class="btn btn-ghost btn-sm"
-                                            href="{{ url_for(
-                                                'notinhas.detalhes',
-                                                notinha_id=notinha.id
-                                            ) }}"
+
+                                    {% if dados.mensagem_cobranca %}
+
+                                        <button
+                                            class="btn btn-success btn-sm btn-copiar-cobranca"
+                                            type="button"
+                                            data-mensagem="{{ dados.mensagem_cobranca | e }}"
                                         >
-                                            👁 Ver
-                                        </a>
+                                            💬 Cobrar
+                                        </button>
+
+                                    {% endif %}
 
 
-                                        {% if dados.mensagem_cobranca %}
-
-                                            <button
-                                                class="
-                                                    btn
-                                                    btn-success
-                                                    btn-sm
-                                                    btn-copiar-cobranca
-                                                "
-                                                type="button"
-                                                data-mensagem="{{
-                                                    dados.mensagem_cobranca | e
-                                                }}"
-                                            >
-                                                💬 Cobrar
-                                            </button>
-
-                                        {% endif %}
-
-                                    </div>
-
-                                </td>
+                                </div>
 
 
-                            </tr>
+                            </div>
 
 
                         {% endfor %}
 
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
-
-    {% endfor %}
-
-
-{% else %}
-
-
-    <div
-        class="form-card"
-        style="
-            text-align:center;
-            color:var(--text-light);
-            margin-bottom:24px;
-            padding:30px;
-        "
-    >
-
-        ✅ Nenhuma cobrança vencida da Hydra.
-
-    </div>
-
-
-{% endif %}
-
-
-<!-- =========================================================
-     VENCIDAS - PISCINEIROS
-========================================================= -->
-
-<div
-    style="
-        margin-top:28px;
-        margin-bottom:10px;
-        font-weight:700;
-        color:var(--text-dark);
-    "
->
-    🏊 Responsabilidade dos Piscineiros
-</div>
-
-
-{% if grupos.piscineiros %}
-
-
-    {% for piscineiro_id, grupo in grupos.piscineiros.items() %}
-
-
-        <div
-            class="form-card"
-            style="margin-bottom:22px;"
-        >
-
-
-            <!-- PISCINEIRO -->
-
-            <div
-                style="
-                    font-size:17px;
-                    font-weight:700;
-                    color:var(--text-dark);
-                    margin-bottom:18px;
-                "
-            >
-
-                🏊 {{ grupo.piscineiro.nome }}
-
-            </div>
-
-
-            <!-- CLIENTES -->
-
-            {% for cliente_id, notinhas in grupo.clientes.items() %}
-
-                {% set cliente = notinhas[0].notinha.cliente %}
-
-
-                <div
-                    class="table-wrap"
-                    style="margin-bottom:14px;"
-                >
-
-
-                    <div class="table-head">
-
-                        <span class="table-head-title">
-
-                            👤 {{ cliente.nome }}
-
-                        </span>
-
-
-                        <strong>
-
-                            {% set total_cliente = namespace(valor=0) %}
-
-
-                            {% for dados in notinhas %}
-
-                                {% set total_cliente.valor =
-                                    total_cliente.valor
-                                    + dados.saldo
-                                %}
-
-                            {% endfor %}
-
-
-                            R$ {{
-                                "%.2f"
-                                |format(total_cliente.valor)
-                                |replace(".", ",")
-                            }}
-
-                        </strong>
-
-                    </div>
-
-
-                    <div style="overflow-x:auto;">
-
-                        <table>
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>
-                                        Notinha
-                                    </th>
-
-                                    <th>
-                                        Retirada
-                                    </th>
-
-                                    <th>
-                                        Vencimento
-                                    </th>
-
-                                    <th>
-                                        Saldo
-                                    </th>
-
-                                    <th>
-                                        Atraso
-                                    </th>
-
-                                    <th>
-                                        Ações
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody>
-
-
-                                {% for dados in notinhas %}
-
-                                    {% set notinha = dados.notinha %}
-
-
-                                    <tr>
-
-
-                                        <td>
-
-                                            <strong>
-                                                #{{ notinha.id }}
-                                            </strong>
-
-                                        </td>
-
-
-                                        <td>
-
-                                            {{
-                                                notinha.data_retirada
-                                                .strftime("%d/%m/%Y")
-                                            }}
-
-                                        </td>
-
-
-                                        <td>
-
-                                            {{
-                                                notinha.data_vencimento
-                                                .strftime("%d/%m/%Y")
-                                            }}
-
-                                        </td>
-
-
-                                        <td>
-
-                                            <strong>
-
-                                                R$ {{
-                                                    "%.2f"
-                                                    |format(dados.saldo)
-                                                    |replace(".", ",")
-                                                }}
-
-                                            </strong>
-
-                                        </td>
-
-
-                                        <td>
-
-                                            <span class="badge badge-late">
-
-                                                ⚠️
-                                                {{ dados.dias_atraso }}
-
-                                                {% if dados.dias_atraso == 1 %}
-                                                    dia
-                                                {% else %}
-                                                    dias
-                                                {% endif %}
-
-                                            </span>
-
-                                        </td>
-
-
-                                        <td>
-
-                                            <div
-                                                class="action-group"
-                                                style="flex-wrap:nowrap;"
-                                            >
-
-                                                <a
-                                                    class="btn btn-ghost btn-sm"
-                                                    href="{{ url_for(
-                                                        'notinhas.detalhes',
-                                                        notinha_id=notinha.id
-                                                    ) }}"
-                                                >
-                                                    👁 Ver
-                                                </a>
-
-
-                                                {% if dados.mensagem_cobranca %}
-
-                                                    <button
-                                                        class="
-                                                            btn
-                                                            btn-success
-                                                            btn-sm
-                                                            btn-copiar-cobranca
-                                                        "
-                                                        type="button"
-                                                        data-mensagem="{{
-                                                            dados.mensagem_cobranca | e
-                                                        }}"
-                                                    >
-                                                        💬 Cobrar
-                                                    </button>
-
-                                                {% endif %}
-
-                                            </div>
-
-                                        </td>
-
-
-                                    </tr>
-
-
-                                {% endfor %}
-
-
-                            </tbody>
-
-                        </table>
 
                     </div>
 
@@ -720,133 +420,421 @@ Cobranças - Hydra ERP
         </div>
 
 
-    {% endfor %}
+    {% else %}
 
 
-{% else %}
+        <div class="cobrancas-empty success">
+
+            <div>
+                ✓
+            </div>
+
+            <strong>
+                Nenhuma cobrança vencida da Hydra
+            </strong>
+
+            <span>
+                Não existem pendências vencidas sob responsabilidade da loja.
+            </span>
+
+        </div>
 
 
-    <div
-        class="form-card"
-        style="
-            text-align:center;
-            color:var(--text-light);
-            padding:30px;
-        "
-    >
+    {% endif %}
 
-        ✅ Nenhuma cobrança vencida de piscineiro.
+
+
+    <!-- =====================================================
+         RESPONSABILIDADE PISCINEIROS
+    ====================================================== -->
+
+    <div class="cobrancas-responsible-title spaced">
+
+        <div class="cobrancas-responsible-icon piscineiro">
+            🏊
+        </div>
+
+        <div>
+
+            <strong>
+                Responsabilidade dos Piscineiros
+            </strong>
+
+            <span>
+                Pendências cuja cobrança está atribuída ao piscineiro
+            </span>
+
+        </div>
 
     </div>
 
 
-{% endif %}
+
+    {% if grupos.piscineiros %}
+
+
+        {% for piscineiro_id, grupo in grupos.piscineiros.items() %}
+
+
+            <div class="cobranca-piscineiro-card">
+
+
+                <div class="cobranca-piscineiro-head">
+
+                    <div>
+
+                        <span>
+                            Piscineiro responsável
+                        </span>
+
+                        <strong>
+                            🏊 {{ grupo.piscineiro.nome }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="cobranca-piscineiro-clients">
+
+
+                    {% for cliente_id, notinhas in grupo.clientes.items() %}
+
+                        {% set cliente = notinhas[0].notinha.cliente %}
+
+                        {% set total_cliente = namespace(valor=0) %}
+
+
+                        {% for dados in notinhas %}
+
+                            {% set total_cliente.valor =
+                                total_cliente.valor + dados.saldo
+                            %}
+
+                        {% endfor %}
+
+
+
+                        <div class="cobranca-client-block">
+
+
+                            <div class="cobranca-client-head compact">
+
+                                <div class="cobranca-client-person">
+
+                                    <div class="cobranca-client-avatar">
+                                        👤
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            {{ cliente.nome }}
+                                        </strong>
+
+                                        <span>
+
+                                            {{ notinhas|length }}
+
+                                            {% if notinhas|length == 1 %}
+                                                notinha vencida
+                                            {% else %}
+                                                notinhas vencidas
+                                            {% endif %}
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="cobranca-client-total danger">
+
+                                    <span>
+                                        Pendente
+                                    </span>
+
+                                    <strong>
+
+                                        R$ {{
+                                            "%.2f"
+                                            |format(total_cliente.valor)
+                                            |replace(".", ",")
+                                        }}
+
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="cobranca-items">
+
+
+                                {% for dados in notinhas %}
+
+                                    {% set notinha = dados.notinha %}
+
+
+                                    <div class="cobranca-item">
+
+
+                                        <div class="cobranca-item-main">
+
+                                            <div class="cobranca-item-id">
+                                                #{{ notinha.id }}
+                                            </div>
+
+
+                                            <div class="cobranca-item-info">
+
+                                                <strong>
+                                                    Notinha
+                                                </strong>
+
+                                                <span>
+
+                                                    Venceu em
+                                                    {{
+                                                        notinha.data_vencimento
+                                                        .strftime("%d/%m/%Y")
+                                                    }}
+
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+
+
+                                        <div class="cobranca-item-value">
+
+                                            <strong>
+
+                                                R$ {{
+                                                    "%.2f"
+                                                    |format(dados.saldo)
+                                                    |replace(".", ",")
+                                                }}
+
+                                            </strong>
+
+                                            <span class="cobranca-delay">
+
+                                                {{ dados.dias_atraso }}
+
+                                                {% if dados.dias_atraso == 1 %}
+                                                    dia atrasada
+                                                {% else %}
+                                                    dias atrasada
+                                                {% endif %}
+
+                                            </span>
+
+                                        </div>
+
+
+
+                                        <div class="cobranca-item-actions">
+
+
+                                            <a
+                                                class="btn btn-ghost btn-sm"
+                                                href="{{ url_for(
+                                                    'notinhas.detalhes',
+                                                    notinha_id=notinha.id
+                                                ) }}"
+                                            >
+                                                Ver
+                                            </a>
+
+
+                                            {% if dados.mensagem_cobranca %}
+
+                                                <button
+                                                    class="btn btn-success btn-sm btn-copiar-cobranca"
+                                                    type="button"
+                                                    data-mensagem="{{ dados.mensagem_cobranca | e }}"
+                                                >
+                                                    💬 Cobrar
+                                                </button>
+
+                                            {% endif %}
+
+
+                                        </div>
+
+
+                                    </div>
+
+
+                                {% endfor %}
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+
+            </div>
+
+
+        {% endfor %}
+
+
+    {% else %}
+
+
+        <div class="cobrancas-empty success">
+
+            <div>
+                ✓
+            </div>
+
+            <strong>
+                Nenhuma cobrança vencida de piscineiro
+            </strong>
+
+            <span>
+                Não existem pendências vencidas atribuídas aos piscineiros.
+            </span>
+
+        </div>
+
+
+    {% endif %}
+
+
+</div>
+
 
 
 <!-- =========================================================
      PRÓXIMAS DO VENCIMENTO
 ========================================================= -->
 
-<div
-    class="section-title"
-    style="margin-top:35px;"
->
-    ⏳ Próximas do Vencimento
-</div>
+<div class="cobrancas-section upcoming">
 
 
-<div
-    style="
-        margin-bottom:18px;
-        color:var(--text-light);
-        font-size:13px;
-    "
->
+    <div class="cobrancas-section-header warning">
 
-    Notinhas que vencem nos próximos
-    {{ resumo.dias_alerta }} dias.
+        <div>
 
-</div>
+            <h2>
+                ⏳ Próximas do vencimento
+            </h2>
 
+            <span>
 
-<!-- =========================================================
-     PRÓXIMAS - HYDRA
-========================================================= -->
+                Notinhas que vencem nos próximos
+                {{ resumo.dias_alerta }}
+                dias
 
-<div
-    style="
-        margin-bottom:10px;
-        font-weight:700;
-        color:var(--text-dark);
-    "
->
-    🏪 Responsabilidade da Hydra
-</div>
+            </span>
+
+        </div>
 
 
-{% if proximas.hydra %}
+        {% if resumo.quantidade_proximas > 0 %}
 
-
-    {% for cliente_id, notinhas in proximas.hydra.items() %}
-
-        {% set cliente = notinhas[0].notinha.cliente %}
-
-
-        <div
-            class="table-wrap"
-            style="margin-bottom:18px;"
-        >
-
-
-            <div class="table-head">
-
-                <span class="table-head-title">
-
-                    👤 {{ cliente.nome }}
-
-                </span>
-
+            <div class="cobrancas-section-count warning">
+                {{ resumo.quantidade_proximas }}
             </div>
 
+        {% endif %}
 
-            <div style="overflow-x:auto;">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                Notinha
-                            </th>
-
-                            <th>
-                                Piscineiro
-                            </th>
-
-                            <th>
-                                Vencimento
-                            </th>
-
-                            <th>
-                                Saldo
-                            </th>
-
-                            <th>
-                                Prazo
-                            </th>
-
-                            <th>
-                                Ações
-                            </th>
-
-                        </tr>
-
-                    </thead>
+    </div>
 
 
-                    <tbody>
+
+    <!-- =====================================================
+         PRÓXIMAS - HYDRA
+    ====================================================== -->
+
+    <div class="cobrancas-responsible-title">
+
+        <div class="cobrancas-responsible-icon hydra">
+            🏪
+        </div>
+
+        <div>
+
+            <strong>
+                Responsabilidade da Hydra
+            </strong>
+
+            <span>
+                Lembretes que podem ser enviados pela loja
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    {% if proximas.hydra %}
+
+
+        <div class="cobrancas-groups">
+
+
+            {% for cliente_id, notinhas in proximas.hydra.items() %}
+
+                {% set cliente = notinhas[0].notinha.cliente %}
+
+
+                <div class="cobranca-client-card warning">
+
+
+                    <div class="cobranca-client-head">
+
+                        <div class="cobranca-client-person">
+
+                            <div class="cobranca-client-avatar">
+                                👤
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    {{ cliente.nome }}
+                                </strong>
+
+                                <span>
+
+                                    {{ notinhas|length }}
+
+                                    {% if notinhas|length == 1 %}
+                                        vencimento próximo
+                                    {% else %}
+                                        vencimentos próximos
+                                    {% endif %}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="cobranca-items">
 
 
                         {% for dados in notinhas %}
@@ -854,40 +842,49 @@ Cobranças - Hydra ERP
                             {% set notinha = dados.notinha %}
 
 
-                            <tr>
+                            <div class="cobranca-item">
 
 
-                                <td>
-                                    #{{ notinha.id }}
-                                </td>
+                                <div class="cobranca-item-main">
+
+                                    <div class="cobranca-item-id warning">
+                                        #{{ notinha.id }}
+                                    </div>
 
 
-                                <td>
+                                    <div class="cobranca-item-info">
 
-                                    {% if notinha.piscineiro %}
+                                        <strong>
 
-                                        {{ notinha.piscineiro.nome }}
+                                            {% if notinha.piscineiro %}
 
-                                    {% else %}
+                                                {{ notinha.piscineiro.nome }}
 
-                                        Hydra / Direto
+                                            {% else %}
 
-                                    {% endif %}
+                                                Hydra / Direto
 
-                                </td>
+                                            {% endif %}
+
+                                        </strong>
+
+                                        <span>
+
+                                            Vencimento:
+                                            {{
+                                                notinha.data_vencimento
+                                                .strftime("%d/%m/%Y")
+                                            }}
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
 
 
-                                <td>
 
-                                    {{
-                                        notinha.data_vencimento
-                                        .strftime("%d/%m/%Y")
-                                    }}
-
-                                </td>
-
-
-                                <td>
+                                <div class="cobranca-item-value">
 
                                     <strong>
 
@@ -899,12 +896,8 @@ Cobranças - Hydra ERP
 
                                     </strong>
 
-                                </td>
 
-
-                                <td>
-
-                                    <span class="badge badge-open">
+                                    <span class="cobranca-deadline">
 
                                         {% if dados.dias_restantes == 0 %}
 
@@ -924,189 +917,181 @@ Cobranças - Hydra ERP
 
                                     </span>
 
-                                </td>
+                                </div>
 
 
-                                <td>
 
-                                    <div
-                                        class="action-group"
-                                        style="flex-wrap:nowrap;"
+                                <div class="cobranca-item-actions">
+
+
+                                    <a
+                                        class="btn btn-ghost btn-sm"
+                                        href="{{ url_for(
+                                            'notinhas.detalhes',
+                                            notinha_id=notinha.id
+                                        ) }}"
                                     >
+                                        Ver
+                                    </a>
 
-                                        <a
-                                            class="btn btn-ghost btn-sm"
-                                            href="{{ url_for(
-                                                'notinhas.detalhes',
-                                                notinha_id=notinha.id
-                                            ) }}"
+
+                                    {% if dados.mensagem_lembrete %}
+
+                                        <button
+                                            class="btn btn-primary btn-sm btn-copiar-lembrete"
+                                            type="button"
+                                            data-mensagem="{{ dados.mensagem_lembrete | e }}"
                                         >
-                                            👁 Ver
-                                        </a>
+                                            💬 Lembrete
+                                        </button>
+
+                                    {% endif %}
 
 
-                                        {% if dados.mensagem_lembrete %}
-
-                                            <button
-                                                class="
-                                                    btn
-                                                    btn-primary
-                                                    btn-sm
-                                                    btn-copiar-lembrete
-                                                "
-                                                type="button"
-                                                data-mensagem="{{
-                                                    dados.mensagem_lembrete | e
-                                                }}"
-                                            >
-                                                💬 Lembrete
-                                            </button>
-
-                                        {% endif %}
-
-                                    </div>
-
-                                </td>
+                                </div>
 
 
-                            </tr>
+                            </div>
 
 
                         {% endfor %}
 
 
-                    </tbody>
+                    </div>
 
-                </table>
 
-            </div>
+                </div>
+
+
+            {% endfor %}
 
 
         </div>
 
 
-    {% endfor %}
+    {% else %}
 
 
-{% else %}
+        <div class="cobrancas-empty">
+
+            <div>
+                ⏳
+            </div>
+
+            <strong>
+                Nenhum vencimento próximo da Hydra
+            </strong>
+
+            <span>
+                Não há lembretes da loja para os próximos dias.
+            </span>
+
+        </div>
 
 
-    <div
-        class="form-card"
-        style="
-            text-align:center;
-            color:var(--text-light);
-            padding:25px;
-            margin-bottom:20px;
-        "
-    >
+    {% endif %}
 
-        Nenhuma notinha da Hydra
-        próxima do vencimento.
+
+
+    <!-- =====================================================
+         PRÓXIMAS - PISCINEIROS
+    ====================================================== -->
+
+    <div class="cobrancas-responsible-title spaced">
+
+        <div class="cobrancas-responsible-icon piscineiro">
+            🏊
+        </div>
+
+        <div>
+
+            <strong>
+                Responsabilidade dos Piscineiros
+            </strong>
+
+            <span>
+                Próximos vencimentos atribuídos aos piscineiros
+            </span>
+
+        </div>
 
     </div>
 
 
-{% endif %}
+
+    {% if proximas.piscineiros %}
 
 
-<!-- =========================================================
-     PRÓXIMAS - PISCINEIROS
-========================================================= -->
-
-<div
-    style="
-        margin-top:25px;
-        margin-bottom:10px;
-        font-weight:700;
-        color:var(--text-dark);
-    "
->
-    🏊 Responsabilidade dos Piscineiros
-</div>
+        {% for piscineiro_id, grupo in proximas.piscineiros.items() %}
 
 
-{% if proximas.piscineiros %}
+            <div class="cobranca-piscineiro-card warning">
 
 
-    {% for piscineiro_id, grupo in proximas.piscineiros.items() %}
+                <div class="cobranca-piscineiro-head">
 
+                    <div>
 
-        <div
-            class="form-card"
-            style="margin-bottom:20px;"
-        >
-
-
-            <div
-                style="
-                    font-size:17px;
-                    font-weight:700;
-                    margin-bottom:16px;
-                "
-            >
-
-                🏊 {{ grupo.piscineiro.nome }}
-
-            </div>
-
-
-            {% for cliente_id, notinhas in grupo.clientes.items() %}
-
-                {% set cliente = notinhas[0].notinha.cliente %}
-
-
-                <div
-                    class="table-wrap"
-                    style="margin-bottom:12px;"
-                >
-
-
-                    <div class="table-head">
-
-                        <span class="table-head-title">
-
-                            👤 {{ cliente.nome }}
-
+                        <span>
+                            Piscineiro responsável
                         </span>
+
+                        <strong>
+                            🏊 {{ grupo.piscineiro.nome }}
+                        </strong>
 
                     </div>
 
-
-                    <div style="overflow-x:auto;">
-
-                        <table>
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>
-                                        Notinha
-                                    </th>
-
-                                    <th>
-                                        Vencimento
-                                    </th>
-
-                                    <th>
-                                        Saldo
-                                    </th>
-
-                                    <th>
-                                        Prazo
-                                    </th>
-
-                                    <th>
-                                        Ações
-                                    </th>
-
-                                </tr>
-
-                            </thead>
+                </div>
 
 
-                            <tbody>
+
+                <div class="cobranca-piscineiro-clients">
+
+
+                    {% for cliente_id, notinhas in grupo.clientes.items() %}
+
+                        {% set cliente = notinhas[0].notinha.cliente %}
+
+
+                        <div class="cobranca-client-block">
+
+
+                            <div class="cobranca-client-head compact">
+
+                                <div class="cobranca-client-person">
+
+                                    <div class="cobranca-client-avatar">
+                                        👤
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            {{ cliente.nome }}
+                                        </strong>
+
+                                        <span>
+
+                                            {{ notinhas|length }}
+
+                                            {% if notinhas|length == 1 %}
+                                                vencimento próximo
+                                            {% else %}
+                                                vencimentos próximos
+                                            {% endif %}
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="cobranca-items">
 
 
                                 {% for dados in notinhas %}
@@ -1114,25 +1099,39 @@ Cobranças - Hydra ERP
                                     {% set notinha = dados.notinha %}
 
 
-                                    <tr>
+                                    <div class="cobranca-item">
 
 
-                                        <td>
-                                            #{{ notinha.id }}
-                                        </td>
+                                        <div class="cobranca-item-main">
+
+                                            <div class="cobranca-item-id warning">
+                                                #{{ notinha.id }}
+                                            </div>
 
 
-                                        <td>
+                                            <div class="cobranca-item-info">
 
-                                            {{
-                                                notinha.data_vencimento
-                                                .strftime("%d/%m/%Y")
-                                            }}
+                                                <strong>
+                                                    Notinha
+                                                </strong>
 
-                                        </td>
+                                                <span>
+
+                                                    Vencimento:
+                                                    {{
+                                                        notinha.data_vencimento
+                                                        .strftime("%d/%m/%Y")
+                                                    }}
+
+                                                </span>
+
+                                            </div>
+
+                                        </div>
 
 
-                                        <td>
+
+                                        <div class="cobranca-item-value">
 
                                             <strong>
 
@@ -1144,12 +1143,8 @@ Cobranças - Hydra ERP
 
                                             </strong>
 
-                                        </td>
 
-
-                                        <td>
-
-                                            <span class="badge badge-open">
+                                            <span class="cobranca-deadline">
 
                                                 {% if dados.dias_restantes == 0 %}
 
@@ -1169,100 +1164,96 @@ Cobranças - Hydra ERP
 
                                             </span>
 
-                                        </td>
+                                        </div>
 
 
-                                        <td>
 
-                                            <div
-                                                class="action-group"
-                                                style="flex-wrap:nowrap;"
+                                        <div class="cobranca-item-actions">
+
+
+                                            <a
+                                                class="btn btn-ghost btn-sm"
+                                                href="{{ url_for(
+                                                    'notinhas.detalhes',
+                                                    notinha_id=notinha.id
+                                                ) }}"
                                             >
+                                                Ver
+                                            </a>
 
-                                                <a
-                                                    class="btn btn-ghost btn-sm"
-                                                    href="{{ url_for(
-                                                        'notinhas.detalhes',
-                                                        notinha_id=notinha.id
-                                                    ) }}"
+
+                                            {% if dados.mensagem_lembrete %}
+
+                                                <button
+                                                    class="btn btn-primary btn-sm btn-copiar-lembrete"
+                                                    type="button"
+                                                    data-mensagem="{{ dados.mensagem_lembrete | e }}"
                                                 >
-                                                    👁 Ver
-                                                </a>
+                                                    💬 Lembrete
+                                                </button>
+
+                                            {% endif %}
 
 
-                                                {% if dados.mensagem_lembrete %}
-
-                                                    <button
-                                                        class="
-                                                            btn
-                                                            btn-primary
-                                                            btn-sm
-                                                            btn-copiar-lembrete
-                                                        "
-                                                        type="button"
-                                                        data-mensagem="{{
-                                                            dados.mensagem_lembrete | e
-                                                        }}"
-                                                    >
-                                                        💬 Lembrete
-                                                    </button>
-
-                                                {% endif %}
-
-                                            </div>
-
-                                        </td>
+                                        </div>
 
 
-                                    </tr>
+                                    </div>
 
 
                                 {% endfor %}
 
 
-                            </tbody>
+                            </div>
 
-                        </table>
 
-                    </div>
+                        </div>
+
+
+                    {% endfor %}
 
 
                 </div>
 
 
-            {% endfor %}
+            </div>
 
+
+        {% endfor %}
+
+
+    {% else %}
+
+
+        <div class="cobrancas-empty">
+
+            <div>
+                ⏳
+            </div>
+
+            <strong>
+                Nenhum vencimento próximo de piscineiro
+            </strong>
+
+            <span>
+                Não existem lembretes atribuídos aos piscineiros.
+            </span>
 
         </div>
 
 
-    {% endfor %}
+    {% endif %}
 
 
-{% else %}
+</div>
 
 
-    <div
-        class="form-card"
-        style="
-            text-align:center;
-            color:var(--text-light);
-            padding:25px;
-        "
-    >
-
-        Nenhuma notinha de piscineiro
-        próxima do vencimento.
-
-    </div>
+{% endblock %}
 
 
-{% endif %}
 
+{% block scripts %}
 
-<!-- =========================================================
-     JAVASCRIPT - COPIAR COBRANÇA
-========================================================= -->
 
 <script>
 
@@ -1270,191 +1261,94 @@ document.addEventListener(
     "DOMContentLoaded",
     function () {
 
-        const botoes =
-            document.querySelectorAll(
-                ".btn-copiar-cobranca"
-            );
+
+        async function copiarMensagem(botao) {
+
+            const mensagem =
+                botao.dataset.mensagem;
 
 
-        botoes.forEach(
-            function (botao) {
-
-                botao.addEventListener(
-                    "click",
-                    async function () {
-
-                        const mensagem =
-                            this.dataset.mensagem;
+            if (!mensagem) {
+                return;
+            }
 
 
-                        if (!mensagem) {
-                            return;
-                        }
+            const textoOriginal =
+                botao.innerHTML;
 
 
-                        const textoOriginal =
-                            this.innerHTML;
+            try {
 
-
-                        try {
-
-                            await navigator.clipboard
-                                .writeText(
-                                    mensagem
-                                );
-
-                        }
-
-                        catch (erro) {
-
-                            const textarea =
-                                document.createElement(
-                                    "textarea"
-                                );
-
-
-                            textarea.value =
-                                mensagem;
-
-
-                            document.body.appendChild(
-                                textarea
-                            );
-
-
-                            textarea.select();
-
-
-                            document.execCommand(
-                                "copy"
-                            );
-
-
-                            textarea.remove();
-
-                        }
-
-
-                        this.innerHTML =
-                            "✅ Copiado";
-
-
-                        setTimeout(
-                            () => {
-
-                                this.innerHTML =
-                                    textoOriginal;
-
-                            },
-                            1800
-                        );
-
-                    }
-                );
+                await navigator.clipboard
+                    .writeText(mensagem);
 
             }
-        );
 
-    }
-);
+            catch (erro) {
 
-</script>
-
-
-<!-- =========================================================
-     JAVASCRIPT - COPIAR LEMBRETE
-========================================================= -->
-
-<script>
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        const botoes =
-            document.querySelectorAll(
-                ".btn-copiar-lembrete"
-            );
+                const textarea =
+                    document.createElement("textarea");
 
 
-        botoes.forEach(
-            function (botao) {
-
-                botao.addEventListener(
-                    "click",
-                    async function () {
-
-                        const mensagem =
-                            this.dataset.mensagem;
+                textarea.value =
+                    mensagem;
 
 
-                        if (!mensagem) {
-                            return;
-                        }
-
-
-                        const textoOriginal =
-                            this.innerHTML;
-
-
-                        try {
-
-                            await navigator.clipboard
-                                .writeText(
-                                    mensagem
-                                );
-
-                        }
-
-                        catch (erro) {
-
-                            const textarea =
-                                document.createElement(
-                                    "textarea"
-                                );
-
-
-                            textarea.value =
-                                mensagem;
-
-
-                            document.body.appendChild(
-                                textarea
-                            );
-
-
-                            textarea.select();
-
-
-                            document.execCommand(
-                                "copy"
-                            );
-
-
-                            textarea.remove();
-
-                        }
-
-
-                        this.innerHTML =
-                            "✅ Copiado";
-
-
-                        setTimeout(
-                            () => {
-
-                                this.innerHTML =
-                                    textoOriginal;
-
-                            },
-                            1800
-                        );
-
-                    }
+                document.body.appendChild(
+                    textarea
                 );
 
+
+                textarea.select();
+
+
+                document.execCommand(
+                    "copy"
+                );
+
+
+                textarea.remove();
+
             }
-        );
+
+
+            botao.innerHTML =
+                "✓ Copiado";
+
+
+            setTimeout(
+                function () {
+
+                    botao.innerHTML =
+                        textoOriginal;
+
+                },
+                1800
+            );
+
+        }
+
+
+
+        document
+            .querySelectorAll(
+                ".btn-copiar-cobranca, .btn-copiar-lembrete"
+            )
+            .forEach(
+                function (botao) {
+
+                    botao.addEventListener(
+                        "click",
+                        function () {
+
+                            copiarMensagem(this);
+
+                        }
+                    );
+
+                }
+            );
+
 
     }
 );
