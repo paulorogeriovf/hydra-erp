@@ -1,0 +1,675 @@
+<!-- Hydra ERP
+     Responsável por: exibir a ficha cadastral
+     e informações gerais da empresa. -->
+
+{% extends "base.html" %}
+
+
+{% block title %}
+Configurações - Hydra ERP
+{% endblock %}
+
+
+{% block header_title %}
+⚙️ <span>Configurações</span>
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="page-header">
+
+    <div class="page-title">
+
+        Configurações
+
+        <small>
+            Dados cadastrais e informações da Hydra
+        </small>
+
+    </div>
+
+
+    <a
+        class="btn btn-primary"
+        href="{{ url_for('configuracoes.editar') }}"
+    >
+        ✏️ Editar Informações
+    </a>
+
+</div>
+
+
+<!-- =========================================================
+     IDENTIFICAÇÃO
+========================================================= -->
+
+<div class="config-section">
+
+    <div class="config-section-head">
+
+        <div>
+
+            <h2>
+                🏢 Dados da Empresa
+            </h2>
+
+            <span>
+                Informações cadastrais da Hydra
+            </span>
+
+        </div>
+
+
+        <button
+            class="btn btn-ghost btn-sm"
+            type="button"
+            onclick="copiarFichaCompleta()"
+        >
+            📋 Copiar ficha completa
+        </button>
+
+    </div>
+
+
+    <div class="config-grid">
+
+
+        <div class="config-item">
+
+            <span>
+                Nome Fantasia
+            </span>
+
+            <strong id="nome_fantasia">
+                {{ empresa.nome_fantasia or "—" }}
+            </strong>
+
+            <button
+                type="button"
+                onclick="copiarCampo('nome_fantasia')"
+            >
+                📋
+            </button>
+
+        </div>
+
+
+        <div class="config-item">
+
+            <span>
+                Razão Social
+            </span>
+
+            <strong id="razao_social">
+                {{ empresa.razao_social or "—" }}
+            </strong>
+
+            <button
+                type="button"
+                onclick="copiarCampo('razao_social')"
+            >
+                📋
+            </button>
+
+        </div>
+
+
+        <div class="config-item">
+
+            <span>
+                CNPJ
+            </span>
+
+            <strong id="cnpj">
+                {{ empresa.cnpj or "—" }}
+            </strong>
+
+            <button
+                type="button"
+                onclick="copiarCampo('cnpj')"
+            >
+                📋
+            </button>
+
+        </div>
+
+
+        <div class="config-item">
+
+            <span>
+                Inscrição Estadual
+            </span>
+
+            <strong id="inscricao_estadual">
+                {{ empresa.inscricao_estadual or "—" }}
+            </strong>
+
+            <button
+                type="button"
+                onclick="copiarCampo('inscricao_estadual')"
+            >
+                📋
+            </button>
+
+        </div>
+
+
+        <div class="config-item">
+
+            <span>
+                Inscrição Municipal
+            </span>
+
+            <strong id="inscricao_municipal">
+                {{ empresa.inscricao_municipal or "—" }}
+            </strong>
+
+            <button
+                type="button"
+                onclick="copiarCampo('inscricao_municipal')"
+            >
+                📋
+            </button>
+
+        </div>
+
+
+        <div class="config-item">
+
+            <span>
+                Responsável
+            </span>
+
+            <strong id="responsavel">
+                {{ empresa.responsavel or "—" }}
+            </strong>
+
+            <button
+                type="button"
+                onclick="copiarCampo('responsavel')"
+            >
+                📋
+            </button>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CONTATO
+========================================================= -->
+
+<div class="config-section">
+
+    <div class="config-section-head">
+
+        <div>
+
+            <h2>
+                📞 Contato
+            </h2>
+
+            <span>
+                Telefones e canais de atendimento
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="config-grid">
+
+
+        <div class="config-item">
+
+            <span>
+                Telefone
+            </span>
+
+            <strong id="telefone">
+                {{ empresa.telefone or "—" }}
+            </strong>
+
+            <button
+                type="button"
+                onclick="copiarCampo('telefone')"
+            >
+                📋
+            </button>
+
+        </div>
+
+
+        <div class="config-item">
+
+            <span>
+                WhatsApp
+            </span>
+
+            <strong id="whatsapp">
+                {{ empresa.whatsapp or "—" }}
+            </strong>
+
+            <button
+                type="button"
+                onclick="copiarCampo('whatsapp')"
+            >
+                📋
+            </button>
+
+        </div>
+
+
+        <div class="config-item">
+
+            <span>
+                E-mail
+            </span>
+
+            <strong id="email">
+                {{ empresa.email or "—" }}
+            </strong>
+
+            <button
+                type="button"
+                onclick="copiarCampo('email')"
+            >
+                📋
+            </button>
+
+        </div>
+
+
+        <div class="config-item">
+
+            <span>
+                Site
+            </span>
+
+            <strong id="site">
+                {{ empresa.site or "—" }}
+            </strong>
+
+            <button
+                type="button"
+                onclick="copiarCampo('site')"
+            >
+                📋
+            </button>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     ENDEREÇO
+========================================================= -->
+
+<div class="config-section">
+
+    <div class="config-section-head">
+
+        <div>
+
+            <h2>
+                📍 Endereço
+            </h2>
+
+            <span>
+                Endereço cadastral da empresa
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="config-address">
+
+        <strong id="endereco_completo">
+
+            {% if empresa.endereco %}
+
+                {{ empresa.endereco }}
+
+                {% if empresa.numero %}
+                    , {{ empresa.numero }}
+                {% endif %}
+
+                {% if empresa.complemento %}
+                    - {{ empresa.complemento }}
+                {% endif %}
+
+                {% if empresa.bairro %}
+                    - {{ empresa.bairro }}
+                {% endif %}
+
+                {% if empresa.cidade %}
+                    - {{ empresa.cidade }}
+                {% endif %}
+
+                {% if empresa.estado %}
+                    /{{ empresa.estado }}
+                {% endif %}
+
+                {% if empresa.cep %}
+                    - CEP {{ empresa.cep }}
+                {% endif %}
+
+            {% else %}
+
+                Endereço não informado.
+
+            {% endif %}
+
+        </strong>
+
+
+        <button
+            class="btn btn-ghost btn-sm"
+            type="button"
+            onclick="copiarCampo('endereco_completo')"
+        >
+            📋 Copiar endereço
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     DADOS FINANCEIROS
+========================================================= -->
+
+<div class="config-section">
+
+    <div class="config-section-head">
+
+        <div>
+
+            <h2>
+                💳 Dados Financeiros
+            </h2>
+
+            <span>
+                Informações utilizadas para pagamentos
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="config-grid">
+
+
+        <div class="config-item">
+
+            <span>
+                Chave PIX
+            </span>
+
+            <strong id="chave_pix">
+                {{ empresa.chave_pix or "—" }}
+            </strong>
+
+            <button
+                type="button"
+                onclick="copiarCampo('chave_pix')"
+            >
+                📋
+            </button>
+
+        </div>
+
+
+        <div class="config-item">
+
+            <span>
+                Banco
+            </span>
+
+            <strong id="banco">
+                {{ empresa.banco or "—" }}
+            </strong>
+
+            <button
+                type="button"
+                onclick="copiarCampo('banco')"
+            >
+                📋
+            </button>
+
+        </div>
+
+
+        <div class="config-item">
+
+            <span>
+                Agência
+            </span>
+
+            <strong id="agencia">
+                {{ empresa.agencia or "—" }}
+            </strong>
+
+            <button
+                type="button"
+                onclick="copiarCampo('agencia')"
+            >
+                📋
+            </button>
+
+        </div>
+
+
+        <div class="config-item">
+
+            <span>
+                Conta
+            </span>
+
+            <strong id="conta">
+                {{ empresa.conta or "—" }}
+            </strong>
+
+            <button
+                type="button"
+                onclick="copiarCampo('conta')"
+            >
+                📋
+            </button>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+{% if empresa.observacao %}
+
+<div class="config-section">
+
+    <div class="config-section-head">
+
+        <div>
+
+            <h2>
+                📝 Observações
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <div class="config-observation">
+        {{ empresa.observacao }}
+    </div>
+
+</div>
+
+{% endif %}
+
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script>
+
+function copiarCampo(id) {
+
+    const elemento =
+        document.getElementById(id);
+
+    if (!elemento) {
+        return;
+    }
+
+    const texto =
+        elemento.innerText.trim();
+
+    if (
+        !texto ||
+        texto === "—" ||
+        texto === "Endereço não informado."
+    ) {
+        return;
+    }
+
+    navigator.clipboard.writeText(texto);
+
+}
+
+
+function copiarFichaCompleta() {
+
+    const linhas = [];
+
+
+    const adicionar = function (
+        titulo,
+        id
+    ) {
+
+        const elemento =
+            document.getElementById(id);
+
+        if (!elemento) {
+            return;
+        }
+
+        const valor =
+            elemento.innerText.trim();
+
+        if (
+            valor &&
+            valor !== "—" &&
+            valor !== "Endereço não informado."
+        ) {
+
+            linhas.push(
+                titulo + ": " + valor
+            );
+
+        }
+
+    };
+
+
+    adicionar(
+        "Nome Fantasia",
+        "nome_fantasia"
+    );
+
+    adicionar(
+        "Razão Social",
+        "razao_social"
+    );
+
+    adicionar(
+        "CNPJ",
+        "cnpj"
+    );
+
+    adicionar(
+        "Inscrição Estadual",
+        "inscricao_estadual"
+    );
+
+    adicionar(
+        "Inscrição Municipal",
+        "inscricao_municipal"
+    );
+
+    adicionar(
+        "Telefone",
+        "telefone"
+    );
+
+    adicionar(
+        "WhatsApp",
+        "whatsapp"
+    );
+
+    adicionar(
+        "E-mail",
+        "email"
+    );
+
+    adicionar(
+        "Endereço",
+        "endereco_completo"
+    );
+
+    adicionar(
+        "Chave PIX",
+        "chave_pix"
+    );
+
+    adicionar(
+        "Banco",
+        "banco"
+    );
+
+    adicionar(
+        "Agência",
+        "agencia"
+    );
+
+    adicionar(
+        "Conta",
+        "conta"
+    );
+
+    adicionar(
+        "Site",
+        "site"
+    );
+
+
+    navigator.clipboard.writeText(
+        linhas.join("\n")
+    );
+
+}
+
+</script>
+
+{% endblock %}

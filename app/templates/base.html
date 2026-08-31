@@ -340,6 +340,23 @@
 
             </a>
 
+            <div class="nav-label nav-label-section">
+    Sistema
+</div>
+
+<a
+    class="nav-item {% if request.blueprint == 'configuracoes' %}active{% endif %}"
+    href="{{ url_for('configuracoes.index') }}"
+>
+    <span class="nav-icon">
+        ⚙️
+    </span>
+
+    <span>
+        Configurações
+    </span>
+</a>
+
 
         </nav>
 

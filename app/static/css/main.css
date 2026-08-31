@@ -8305,3 +8305,207 @@ table td {
     font-size: 21px;
 }
 
+/* =========================================================
+   CONFIGURAÇÕES
+========================================================= */
+
+.config-section {
+    margin-bottom: 18px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.config-section-head {
+    min-height: 64px;
+
+    padding: 14px 17px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    border-bottom: 1px solid var(--border);
+
+    background: #fbfdff;
+}
+
+
+.config-section-head h2 {
+    margin: 0;
+
+    font-size: 15px;
+
+    color: var(--text-dark);
+}
+
+
+.config-section-head span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 11px;
+
+    color: var(--text-light);
+}
+
+
+.config-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+}
+
+
+.config-item {
+    min-height: 70px;
+
+    padding: 13px 16px;
+
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.config-item:nth-child(odd) {
+    border-right: 1px solid var(--border);
+}
+
+
+.config-item span {
+    margin-bottom: 4px;
+
+    font-size: 11px;
+
+    color: var(--text-light);
+}
+
+
+.config-item strong {
+    padding-right: 35px;
+
+    font-size: 13px;
+
+    color: var(--text-dark);
+
+    word-break: break-word;
+}
+
+
+.config-item button {
+    width: 28px;
+    height: 28px;
+
+    position: absolute;
+
+    right: 12px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    background: transparent;
+
+    border: 1px solid var(--border);
+    border-radius: 7px;
+
+    font-size: 11px;
+}
+
+
+.config-item button:hover {
+    background: var(--pool-light);
+}
+
+
+.config-address {
+    padding: 17px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+
+.config-address strong {
+    font-size: 13px;
+    line-height: 1.5;
+
+    color: var(--text-dark);
+}
+
+
+.config-observation {
+    padding: 17px;
+
+    font-size: 13px;
+    line-height: 1.6;
+
+    color: var(--text-mid);
+}
+
+
+.config-form {
+    max-width: 950px;
+}
+
+
+
+/* =========================================================
+   CONFIGURAÇÕES - RESPONSIVO
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .config-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .config-item:nth-child(odd) {
+        border-right: none;
+    }
+
+
+    .config-section-head {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+    .config-address {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+    .config-address .btn {
+        width: 100%;
+
+        text-align: center;
+    }
+
+}

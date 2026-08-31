@@ -1,0 +1,462 @@
+<!-- Hydra ERP
+     Responsável por: permitir a edição
+     dos dados cadastrais da empresa. -->
+
+{% extends "base.html" %}
+
+
+{% block title %}
+Editar Configurações - Hydra ERP
+{% endblock %}
+
+
+{% block header_title %}
+⚙️ <span>Editar Configurações</span>
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="page-header">
+
+    <div class="page-title">
+
+        Editar Dados da Empresa
+
+        <small>
+            Atualize as informações cadastrais da Hydra
+        </small>
+
+    </div>
+
+
+    <a
+        class="btn btn-ghost"
+        href="{{ url_for('configuracoes.index') }}"
+    >
+        ← Voltar
+    </a>
+
+</div>
+
+
+<div class="form-card config-form">
+
+    <form method="POST">
+
+
+        <div class="section-title">
+            🏢 Identificação
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>
+                    Nome Fantasia
+                </label>
+
+                <input
+                    type="text"
+                    name="nome_fantasia"
+                    value="{{ empresa.nome_fantasia or '' }}"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Razão Social
+                </label>
+
+                <input
+                    type="text"
+                    name="razao_social"
+                    value="{{ empresa.razao_social or '' }}"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>
+                    CNPJ
+                </label>
+
+                <input
+                    type="text"
+                    name="cnpj"
+                    value="{{ empresa.cnpj or '' }}"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Inscrição Estadual
+                </label>
+
+                <input
+                    type="text"
+                    name="inscricao_estadual"
+                    value="{{ empresa.inscricao_estadual or '' }}"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>
+                    Inscrição Municipal
+                </label>
+
+                <input
+                    type="text"
+                    name="inscricao_municipal"
+                    value="{{ empresa.inscricao_municipal or '' }}"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Responsável
+                </label>
+
+                <input
+                    type="text"
+                    name="responsavel"
+                    value="{{ empresa.responsavel or '' }}"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="section-title">
+            📞 Contato
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>
+                    Telefone
+                </label>
+
+                <input
+                    type="text"
+                    name="telefone"
+                    value="{{ empresa.telefone or '' }}"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    WhatsApp
+                </label>
+
+                <input
+                    type="text"
+                    name="whatsapp"
+                    value="{{ empresa.whatsapp or '' }}"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>
+                    E-mail
+                </label>
+
+                <input
+                    type="email"
+                    name="email"
+                    value="{{ empresa.email or '' }}"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Site
+                </label>
+
+                <input
+                    type="text"
+                    name="site"
+                    value="{{ empresa.site or '' }}"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="section-title">
+            📍 Endereço
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>
+                    CEP
+                </label>
+
+                <input
+                    type="text"
+                    name="cep"
+                    value="{{ empresa.cep or '' }}"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Endereço
+                </label>
+
+                <input
+                    type="text"
+                    name="endereco"
+                    value="{{ empresa.endereco or '' }}"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>
+                    Número
+                </label>
+
+                <input
+                    type="text"
+                    name="numero"
+                    value="{{ empresa.numero or '' }}"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Complemento
+                </label>
+
+                <input
+                    type="text"
+                    name="complemento"
+                    value="{{ empresa.complemento or '' }}"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>
+                    Bairro
+                </label>
+
+                <input
+                    type="text"
+                    name="bairro"
+                    value="{{ empresa.bairro or '' }}"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Cidade
+                </label>
+
+                <input
+                    type="text"
+                    name="cidade"
+                    value="{{ empresa.cidade or '' }}"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Estado
+            </label>
+
+            <input
+                type="text"
+                name="estado"
+                maxlength="2"
+                placeholder="SP"
+                value="{{ empresa.estado or '' }}"
+            >
+
+        </div>
+
+
+        <div class="section-title">
+            💳 Dados Financeiros
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Chave PIX
+            </label>
+
+            <input
+                type="text"
+                name="chave_pix"
+                value="{{ empresa.chave_pix or '' }}"
+            >
+
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>
+                    Banco
+                </label>
+
+                <input
+                    type="text"
+                    name="banco"
+                    value="{{ empresa.banco or '' }}"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Agência
+                </label>
+
+                <input
+                    type="text"
+                    name="agencia"
+                    value="{{ empresa.agencia or '' }}"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Conta
+            </label>
+
+            <input
+                type="text"
+                name="conta"
+                value="{{ empresa.conta or '' }}"
+            >
+
+        </div>
+
+
+        <div class="section-title">
+            📝 Observação
+        </div>
+
+
+        <div class="form-group">
+
+            <textarea
+                name="observacao"
+                placeholder="Informações adicionais..."
+            >{{ empresa.observacao or '' }}</textarea>
+
+        </div>
+
+
+        <div class="action-group">
+
+            <button
+                class="btn btn-primary"
+                type="submit"
+            >
+                💾 Salvar Alterações
+            </button>
+
+
+            <a
+                class="btn btn-ghost"
+                href="{{ url_for('configuracoes.index') }}"
+            >
+                Cancelar
+            </a>
+
+        </div>
+
+
+    </form>
+
+</div>
+
+
+{% endblock %}

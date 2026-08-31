@@ -16,3 +16,5 @@ from app.models.observacao_notinha import ObservacaoNotinha
 from app.models.retirada_comissao import RetiradaComissao
 
 from app.models.movimentacao import Movimentacao
+
+from app.models.configuracao_empresa import ConfiguracaoEmpresa
