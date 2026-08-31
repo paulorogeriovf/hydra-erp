@@ -18,6 +18,10 @@ Notinhas - Hydra ERP
 {% block content %}
 
 
+<!-- =========================================================
+     CABEÇALHO
+========================================================= -->
+
 <div class="page-header">
 
     <div class="page-title">
@@ -25,7 +29,7 @@ Notinhas - Hydra ERP
         Notinhas
 
         <small>
-            Arquivo e histórico de notinhas da Hydra
+            Arquivo e histórico financeiro da Hydra
         </small>
 
     </div>
@@ -41,45 +45,31 @@ Notinhas - Hydra ERP
 </div>
 
 
-<!-- BUSCA -->
 
-<div
-    class="form-card"
-    style="margin-bottom:24px;"
->
+<!-- =========================================================
+     BUSCA
+========================================================= -->
+
+<div class="notinhas-search">
 
     <form
         method="GET"
         action="{{ url_for('notinhas.listar') }}"
     >
 
-        <div
-            style="
-                display:flex;
-                gap:10px;
-                align-items:end;
-                flex-wrap:wrap;
-            "
-        >
+        <div class="notinhas-search-inner">
 
-            <div
-                class="form-group"
-                style="
-                    flex:1;
-                    min-width:240px;
-                    margin-bottom:0;
-                "
-            >
+            <div class="notinhas-search-field">
 
-                <label>
-                    🔎 Buscar Notinha
-                </label>
+                <span class="notinhas-search-icon">
+                    🔎
+                </span>
 
                 <input
                     type="text"
                     name="busca"
                     value="{{ busca }}"
-                    placeholder="Cliente ou piscineiro ..."
+                    placeholder="Digite o nome do cliente ou piscineiro..."
                 >
 
             </div>
@@ -89,7 +79,7 @@ Notinhas - Hydra ERP
                 class="btn btn-primary"
                 type="submit"
             >
-                🔍 Buscar
+                Buscar
             </button>
 
 
@@ -111,16 +101,33 @@ Notinhas - Hydra ERP
 </div>
 
 
+
 {% if busca %}
 
-    <!-- RESULTADOS DA BUSCA -->
+<!-- =========================================================
+     RESULTADOS
+========================================================= -->
 
-    <div class="section-title">
-        🔎 Resultados da Busca
+<div class="notinhas-section-head">
+
+    <div>
+
+        <h2>
+            Resultados da busca
+        </h2>
+
+        <span>
+            Notinhas encontradas para "{{ busca }}"
+        </span>
+
     </div>
 
+</div>
 
-    <div class="table-wrap">
+
+<div class="table-wrap">
+
+    <div style="overflow-x:auto;">
 
         <table>
 
@@ -134,7 +141,7 @@ Notinhas - Hydra ERP
                     <th>Valor</th>
                     <th>Saldo</th>
                     <th>Situação</th>
-                    <th>Ações</th>
+                    <th></th>
                 </tr>
 
             </thead>
@@ -149,12 +156,20 @@ Notinhas - Hydra ERP
                     <tr>
 
                         <td>
-                            #{{ notinha.id }}
+                            <strong>
+                                #{{ notinha.id }}
+                            </strong>
                         </td>
 
+
                         <td>
-                            {{ notinha.cliente.nome }}
+
+                            <strong>
+                                {{ notinha.cliente.nome }}
+                            </strong>
+
                         </td>
+
 
                         <td>
 
@@ -164,18 +179,24 @@ Notinhas - Hydra ERP
 
                             {% else %}
 
-                                Hydra / Direto
+                                <span class="badge badge-open">
+                                    Hydra / Direto
+                                </span>
 
                             {% endif %}
 
                         </td>
 
+
                         <td>
+
                             {{
                                 notinha.data_retirada
                                 .strftime("%d/%m/%Y")
                             }}
+
                         </td>
+
 
                         <td>
 
@@ -187,19 +208,52 @@ Notinhas - Hydra ERP
 
                         </td>
 
+
                         <td>
 
-                            R$ {{
-                                "%.2f"
-                                |format(dados.saldo)
-                                |replace(".", ",")
-                            }}
+                            <strong>
+
+                                R$ {{
+                                    "%.2f"
+                                    |format(dados.saldo)
+                                    |replace(".", ",")
+                                }}
+
+                            </strong>
 
                         </td>
 
+
                         <td>
-                            {{ dados.situacao }}
+
+                            {% if dados.situacao == "PAGA" %}
+
+                                <span class="badge badge-paid">
+                                    ✓ Paga
+                                </span>
+
+                            {% elif "VENCIDA" in dados.situacao %}
+
+                                <span class="badge badge-late">
+                                    ⚠ Vencida
+                                </span>
+
+                            {% elif dados.situacao == "CANCELADA" %}
+
+                                <span class="badge badge-cancel">
+                                    Cancelada
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge badge-open">
+                                    {{ dados.situacao }}
+                                </span>
+
+                            {% endif %}
+
                         </td>
+
 
                         <td>
 
@@ -210,7 +264,7 @@ Notinhas - Hydra ERP
                                     notinha_id=notinha.id
                                 ) }}"
                             >
-                                👁 Ver
+                                Ver →
                             </a>
 
                         </td>
@@ -222,15 +276,24 @@ Notinhas - Hydra ERP
 
                     <tr>
 
-                        <td
-                            colspan="8"
-                            style="
-                                text-align:center;
-                                padding:35px;
-                                color:var(--text-light);
-                            "
-                        >
-                            Nenhuma notinha encontrada.
+                        <td colspan="8">
+
+                            <div class="notinhas-empty">
+
+                                <div>
+                                    🔎
+                                </div>
+
+                                <strong>
+                                    Nenhuma notinha encontrada
+                                </strong>
+
+                                <span>
+                                    Tente buscar por outro cliente ou piscineiro.
+                                </span>
+
+                            </div>
+
                         </td>
 
                     </tr>
@@ -243,162 +306,167 @@ Notinhas - Hydra ERP
 
     </div>
 
+</div>
+
+
 
 {% else %}
 
-    <!-- PASTAS -->
+<!-- =========================================================
+     PASTAS
+========================================================= -->
 
-    <div class="section-title">
-        📁 Pastas
+<div class="notinhas-section-head">
+
+    <div>
+
+        <h2>
+            Pastas
+        </h2>
+
+        <span>
+            Notinhas organizadas por piscineiro
+        </span>
+
     </div>
 
-
-    <div
-        style="
-            display:grid;
-            grid-template-columns:
-                repeat(
-                    auto-fill,
-                    minmax(250px, 1fr)
-                );
-            gap:16px;
-        "
-    >
+</div>
 
 
-        {% for pasta in pastas %}
+<div class="notinhas-folders">
 
-            <div class="form-card">
 
-                <div
-                    style="
-                        font-size:30px;
-                        margin-bottom:12px;
-                    "
-                >
+    {% for pasta in pastas %}
+
+        <a
+            class="notinha-folder"
+            href="{{ url_for(
+                'notinhas.pasta_piscineiro',
+                piscineiro_id=pasta.piscineiro.id
+            ) }}"
+        >
+
+            <div class="notinha-folder-top">
+
+                <div class="notinha-folder-icon">
                     📁
                 </div>
 
-
-                <div
-                    style="
-                        font-size:18px;
-                        font-weight:700;
-                        color:var(--text-dark);
-                    "
-                >
-
-                    {{ pasta.piscineiro.nome }}
-
-                </div>
-
-
-                <div
-                    style="
-                        margin-top:10px;
-                        font-size:13px;
-                        color:var(--text-light);
-                    "
-                >
-
-                    {{ pasta.quantidade_notinhas }}
-                    notinha(s)
-
-                </div>
-
-
-                <div
-                    style="
-                        margin-top:4px;
-                        font-size:13px;
-                        color:var(--text-light);
-                    "
-                >
-
-                    {{ pasta.clientes|length }}
-                    cliente(s)
-
-                </div>
-
-
-                <div
-                    style="margin-top:18px;"
-                >
-
-                    <a
-                        class="btn btn-primary btn-sm"
-                        href="{{ url_for(
-                            'notinhas.pasta_piscineiro',
-                            piscineiro_id=pasta.piscineiro.id
-                        ) }}"
-                    >
-                        📂 Abrir Pasta
-                    </a>
-
+                <div class="notinha-folder-arrow">
+                    →
                 </div>
 
             </div>
 
-        {% endfor %}
+
+            <div class="notinha-folder-name">
+                {{ pasta.piscineiro.nome }}
+            </div>
 
 
-        <!-- HYDRA / DIRETO -->
+            <div class="notinha-folder-meta">
 
-        <div class="form-card">
+                <span>
 
-            <div
-                style="
-                    font-size:30px;
-                    margin-bottom:12px;
-                "
-            >
+                    <strong>
+                        {{ pasta.quantidade_notinhas }}
+                    </strong>
+
+                    {% if pasta.quantidade_notinhas == 1 %}
+                        notinha
+                    {% else %}
+                        notinhas
+                    {% endif %}
+
+                </span>
+
+
+                <span class="notinha-folder-dot">
+                    •
+                </span>
+
+
+                <span>
+
+                    <strong>
+                        {{ pasta.clientes|length }}
+                    </strong>
+
+                    {% if pasta.clientes|length == 1 %}
+                        cliente
+                    {% else %}
+                        clientes
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+        </a>
+
+    {% endfor %}
+
+
+
+    <!-- HYDRA / DIRETO -->
+
+    <a
+        class="notinha-folder notinha-folder-hydra"
+        href="{{ url_for('notinhas.pasta_diretas') }}"
+    >
+
+        <div class="notinha-folder-top">
+
+            <div class="notinha-folder-icon">
                 🏪
             </div>
 
-
-            <div
-                style="
-                    font-size:18px;
-                    font-weight:700;
-                    color:var(--text-dark);
-                "
-            >
-                Hydra / Direto
-            </div>
-
-
-            <div
-                style="
-                    margin-top:10px;
-                    font-size:13px;
-                    color:var(--text-light);
-                "
-            >
-
-                {{ quantidade_diretas }}
-                notinha(s)
-
-            </div>
-
-
-            <div style="margin-top:18px;">
-
-                <a
-                    class="btn btn-primary btn-sm"
-                    href="{{ url_for(
-                        'notinhas.pasta_diretas'
-                    ) }}"
-                >
-                    📂 Abrir Pasta
-                </a>
-
+            <div class="notinha-folder-arrow">
+                →
             </div>
 
         </div>
 
-    </div>
+
+        <div class="notinha-folder-name">
+            Hydra / Direto
+        </div>
+
+
+        <div class="notinha-folder-meta">
+
+            <span>
+
+                <strong>
+                    {{ quantidade_diretas }}
+                </strong>
+
+                {% if quantidade_diretas == 1 %}
+                    notinha
+                {% else %}
+                    notinhas
+                {% endif %}
+
+            </span>
+
+
+            <span class="notinha-folder-dot">
+                •
+            </span>
+
+
+            <span>
+                Clientes diretos
+            </span>
+
+        </div>
+
+    </a>
+
+
+</div>
 
 {% endif %}
 
 
-{% endblock %}  
+{% endblock %}

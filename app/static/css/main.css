@@ -1914,3 +1914,1141 @@ td {
     }
 
 }
+
+/* =========================================================
+   NOTINHAS - LISTAGEM
+========================================================= */
+
+.notinhas-search {
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    padding: 14px;
+
+    margin-bottom: 26px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.notinhas-search-inner {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+.notinhas-search-field {
+    position: relative;
+
+    flex: 1;
+}
+
+
+.notinhas-search-field input {
+    width: 100%;
+
+    height: 42px;
+
+    padding: 0 15px 0 42px;
+
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+
+    background: #f8fbff;
+
+    color: var(--text-dark);
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.15s,
+        box-shadow 0.15s,
+        background 0.15s;
+}
+
+
+.notinhas-search-field input:focus {
+    background: #ffffff;
+
+    border-color: var(--pool);
+
+    box-shadow:
+        0 0 0 3px rgba(0, 174, 239, 0.10);
+}
+
+
+.notinhas-search-icon {
+    position: absolute;
+
+    left: 14px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    font-size: 15px;
+
+    pointer-events: none;
+}
+
+
+
+/* CABEÇALHO */
+
+.notinhas-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 14px;
+}
+
+
+.notinhas-section-head h2 {
+    font-size: 16px;
+    font-weight: 700;
+
+    color: var(--text-dark);
+}
+
+
+.notinhas-section-head span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 12px;
+
+    color: var(--text-light);
+}
+
+
+
+/* PASTAS */
+
+.notinhas-folders {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(230px, 1fr)
+        );
+
+    gap: 15px;
+}
+
+
+.notinha-folder {
+    min-height: 155px;
+
+    padding: 19px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    box-shadow: var(--shadow);
+
+    text-decoration: none;
+
+    display: flex;
+    flex-direction: column;
+
+    transition:
+        transform 0.18s,
+        box-shadow 0.18s,
+        border-color 0.18s;
+}
+
+
+.notinha-folder:hover {
+    transform: translateY(-3px);
+
+    border-color: var(--pool-mid);
+
+    box-shadow: var(--shadow-md);
+}
+
+
+.notinha-folder-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 18px;
+}
+
+
+.notinha-folder-icon {
+    width: 46px;
+    height: 46px;
+
+    border-radius: 11px;
+
+    background: var(--pool-light);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 23px;
+}
+
+
+.notinha-folder-arrow {
+    width: 29px;
+    height: 29px;
+
+    border-radius: 50%;
+
+    background: #f0f7ff;
+
+    color: var(--pool-dark);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 14px;
+
+    transition:
+        background 0.15s,
+        transform 0.15s;
+}
+
+
+.notinha-folder:hover .notinha-folder-arrow {
+    background: var(--pool);
+
+    color: #ffffff;
+
+    transform: translateX(2px);
+}
+
+
+.notinha-folder-name {
+    font-size: 16px;
+    font-weight: 700;
+
+    color: var(--text-dark);
+
+    margin-bottom: 7px;
+}
+
+
+.notinha-folder-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    font-size: 11px;
+
+    color: var(--text-light);
+
+    margin-top: auto;
+}
+
+
+.notinha-folder-meta strong {
+    color: var(--text-mid);
+}
+
+
+.notinha-folder-dot {
+    opacity: 0.55;
+}
+
+
+
+/* PASTA HYDRA */
+
+.notinha-folder-hydra {
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #f3fbff
+        );
+
+    border-color: var(--pool-light);
+}
+
+
+.notinha-folder-hydra .notinha-folder-icon {
+    background:
+        linear-gradient(
+            135deg,
+            var(--pool-light),
+            #e6faff
+        );
+}
+
+
+
+/* VAZIO */
+
+.notinhas-empty {
+    min-height: 170px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    color: var(--text-light);
+}
+
+
+.notinhas-empty > div {
+    font-size: 27px;
+
+    margin-bottom: 8px;
+}
+
+
+.notinhas-empty strong {
+    color: var(--text-mid);
+
+    font-size: 13px;
+}
+
+
+.notinhas-empty span {
+    margin-top: 4px;
+
+    font-size: 11px;
+}
+
+
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 700px) {
+
+    .notinhas-search-inner {
+        flex-wrap: wrap;
+    }
+
+
+    .notinhas-search-field {
+        width: 100%;
+        flex-basis: 100%;
+    }
+
+
+    .notinhas-search-inner .btn {
+        flex: 1;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .notinhas-folders {
+        grid-template-columns: 1fr;
+    }
+
+
+    .notinha-folder {
+        min-height: 135px;
+    }
+
+}
+
+/* =========================================================
+   NOTINHA - DETALHES
+========================================================= */
+
+.notinha-detail-top {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(320px, 0.9fr);
+
+    gap: 18px;
+
+    margin-bottom: 18px;
+}
+
+
+
+/* =========================================================
+   FINANCEIRO
+========================================================= */
+
+.notinha-financial-card,
+.notinha-info-card {
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    box-shadow: var(--shadow);
+
+    padding: 22px;
+}
+
+
+.notinha-financial-card {
+    border-top: 3px solid var(--pool);
+}
+
+
+.notinha-financial-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+
+.notinha-financial-label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    color: var(--text-light);
+}
+
+
+.notinha-financial-total {
+    font-size: 31px;
+    font-weight: 750;
+
+    line-height: 1.1;
+
+    color: var(--text-dark);
+}
+
+
+.notinha-financial-breakdown {
+    margin-top: 23px;
+
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+
+.notinha-financial-row {
+    min-height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    font-size: 13px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.notinha-financial-row:last-child {
+    border-bottom: none;
+}
+
+
+.notinha-financial-row span {
+    color: var(--text-mid);
+}
+
+
+.notinha-financial-row strong {
+    color: var(--text-dark);
+}
+
+
+.notinha-financial-row strong.success {
+    color: var(--success);
+}
+
+
+.notinha-financial-row strong.warning {
+    color: #b45309;
+}
+
+
+
+/* PROGRESSO */
+
+.notinha-progress {
+    margin-top: 19px;
+}
+
+
+.notinha-progress-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 8px;
+
+    font-size: 11px;
+
+    color: var(--text-light);
+}
+
+
+.notinha-progress-head strong {
+    color: var(--text-mid);
+}
+
+
+.notinha-progress-track {
+    height: 8px;
+
+    background: #e8eef5;
+
+    border-radius: 999px;
+
+    overflow: hidden;
+}
+
+
+.notinha-progress-bar {
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--pool-dark),
+            var(--pool)
+        );
+
+    border-radius: inherit;
+}
+
+
+
+/* =========================================================
+   INFORMAÇÕES
+========================================================= */
+
+.notinha-detail-title {
+    font-size: 15px;
+    font-weight: 700;
+
+    color: var(--text-dark);
+
+    padding-bottom: 14px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.notinha-info-list {
+    margin-top: 4px;
+}
+
+
+.notinha-info-row {
+    min-height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    border-bottom: 1px solid var(--border);
+
+    font-size: 12px;
+}
+
+
+.notinha-info-row:last-child {
+    border-bottom: none;
+}
+
+
+.notinha-info-row span {
+    color: var(--text-light);
+}
+
+
+.notinha-info-row strong {
+    color: var(--text-dark);
+
+    text-align: right;
+}
+
+
+.notinha-info-row strong.danger {
+    color: var(--danger);
+}
+
+
+
+/* =========================================================
+   OBSERVAÇÃO INICIAL
+========================================================= */
+
+.notinha-note {
+    display: flex;
+
+    gap: 13px;
+
+    padding: 15px 18px;
+
+    margin-bottom: 25px;
+
+    background: #fffdf4;
+
+    border: 1px solid #fde9a5;
+    border-radius: 12px;
+
+    color: var(--text-mid);
+}
+
+
+.notinha-note-icon {
+    flex-shrink: 0;
+
+    font-size: 19px;
+}
+
+
+.notinha-note strong {
+    font-size: 12px;
+
+    color: var(--text-dark);
+}
+
+
+.notinha-note p {
+    margin-top: 4px;
+
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+
+/* =========================================================
+   SEÇÕES
+========================================================= */
+
+.notinha-section {
+    margin-top: 27px;
+}
+
+
+.notinha-section-head {
+    min-height: 50px;
+
+    margin-bottom: 12px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 18px;
+}
+
+
+.notinha-section-head h2 {
+    margin: 0;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    color: var(--text-dark);
+}
+
+
+.notinha-section-head span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 11px;
+
+    color: var(--text-light);
+}
+
+
+.notinha-section-balance {
+    font-size: 12px;
+
+    color: var(--text-light);
+}
+
+
+.notinha-section-balance strong {
+    margin-left: 4px;
+
+    color: #b45309;
+
+    font-size: 14px;
+}
+
+
+
+/* =========================================================
+   PRODUTOS / PAGAMENTOS
+========================================================= */
+
+.notinha-commission {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 4px 8px;
+
+    border-radius: 7px;
+
+    background: #ecfdf5;
+
+    color: #047857;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+.notinha-commission small {
+    font-size: 10px;
+    font-weight: 500;
+}
+
+
+.notinha-muted {
+    color: var(--text-light);
+}
+
+
+.notinha-payment-value {
+    color: var(--success);
+}
+
+
+.notinha-payment-method {
+    display: inline-block;
+
+    padding: 4px 7px;
+
+    border-radius: 6px;
+
+    background: #f1f5f9;
+
+    color: var(--text-mid);
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+.notinha-payment-form {
+    border-left: 3px solid var(--success);
+}
+
+
+
+/* =========================================================
+   OBSERVAÇÕES
+========================================================= */
+
+.notinha-history-layout {
+    display: grid;
+
+    grid-template-columns:
+        minmax(300px, 0.75fr)
+        minmax(0, 1.25fr);
+
+    gap: 18px;
+
+    align-items: start;
+}
+
+
+.notinha-timeline {
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    box-shadow: var(--shadow);
+
+    padding: 10px 20px;
+}
+
+
+.notinha-timeline-item {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns: 12px 1fr;
+
+    gap: 12px;
+
+    padding: 16px 0;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.notinha-timeline-item:last-child {
+    border-bottom: none;
+}
+
+
+.notinha-timeline-marker {
+    width: 9px;
+    height: 9px;
+
+    margin-top: 5px;
+
+    border-radius: 50%;
+
+    background: var(--pool);
+
+    box-shadow:
+        0 0 0 4px rgba(0, 174, 239, 0.12);
+}
+
+
+.notinha-timeline-date {
+    margin-bottom: 5px;
+
+    font-size: 10px;
+
+    color: var(--text-light);
+}
+
+
+.notinha-timeline-text {
+    font-size: 12px;
+    line-height: 1.55;
+
+    color: var(--text-mid);
+}
+
+
+.notinha-history-empty {
+    min-height: 180px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    font-size: 24px;
+
+    color: var(--text-light);
+}
+
+
+.notinha-history-empty strong {
+    margin-top: 8px;
+
+    font-size: 12px;
+
+    color: var(--text-mid);
+}
+
+
+.notinha-history-empty span {
+    margin-top: 4px;
+
+    font-size: 11px;
+}
+
+
+
+/* =========================================================
+   ANEXOS
+========================================================= */
+
+.notinha-attachments {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(230px, 1fr)
+        );
+
+    gap: 15px;
+
+    margin-top: 16px;
+}
+
+
+.notinha-attachment-card {
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    box-shadow: var(--shadow);
+
+    transition:
+        transform 0.16s,
+        box-shadow 0.16s;
+}
+
+
+.notinha-attachment-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow: var(--shadow-md);
+}
+
+
+.notinha-attachment-head {
+    min-height: 48px;
+
+    padding: 11px 13px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 8px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.notinha-attachment-head strong {
+    font-size: 11px;
+
+    color: var(--text-dark);
+}
+
+
+.notinha-attachment-head span {
+    font-size: 9px;
+
+    color: var(--text-light);
+
+    white-space: nowrap;
+}
+
+
+.notinha-attachment-image {
+    display: block;
+
+    height: 175px;
+
+    overflow: hidden;
+
+    background: #eef3f8;
+}
+
+
+.notinha-attachment-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition: transform 0.2s;
+}
+
+
+.notinha-attachment-image:hover img {
+    transform: scale(1.025);
+}
+
+
+.notinha-attachment-file {
+    height: 175px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f4f8fb;
+
+    font-size: 38px;
+}
+
+
+.notinha-attachment-body {
+    padding: 13px;
+}
+
+
+.notinha-attachment-name {
+    margin-bottom: 8px;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    color: var(--text-dark);
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.notinha-attachment-note {
+    margin-bottom: 10px;
+
+    font-size: 10px;
+    line-height: 1.45;
+
+    color: var(--text-light);
+}
+
+
+.notinha-no-attachments {
+    min-height: 150px;
+
+    margin-top: 16px;
+
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    color: var(--text-light);
+
+    font-size: 24px;
+}
+
+
+.notinha-no-attachments strong {
+    margin-top: 7px;
+
+    font-size: 12px;
+
+    color: var(--text-mid);
+}
+
+
+.notinha-no-attachments span {
+    margin-top: 4px;
+
+    font-size: 10px;
+}
+
+
+
+/* =========================================================
+   ESTADO VAZIO DE TABELA
+========================================================= */
+
+.notinha-table-empty {
+    min-height: 130px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    font-size: 22px;
+
+    color: var(--text-light);
+}
+
+
+.notinha-table-empty strong {
+    font-size: 12px;
+
+    color: var(--text-mid);
+}
+
+
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+@media (max-width: 950px) {
+
+    .notinha-detail-top {
+        grid-template-columns: 1fr;
+    }
+
+
+    .notinha-history-layout {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .notinha-financial-card,
+    .notinha-info-card {
+        padding: 18px;
+    }
+
+
+    .notinha-financial-total {
+        font-size: 26px;
+    }
+
+
+    .notinha-info-row {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 4px;
+
+        padding: 11px 0;
+    }
+
+
+    .notinha-info-row strong {
+        text-align: left;
+    }
+
+
+    .notinha-section-head {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 7px;
+    }
+
+
+    .notinha-attachments {
+        grid-template-columns: 1fr;
+    }
+
+}

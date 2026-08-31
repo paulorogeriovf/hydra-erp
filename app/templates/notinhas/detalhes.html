@@ -4,15 +4,23 @@
 
 {% extends "base.html" %}
 
+
 {% block title %}
 Notinha #{{ notinha.id }} - Hydra ERP
 {% endblock %}
+
 
 {% block header_title %}
 📄 <span>Notinha #{{ notinha.id }}</span>
 {% endblock %}
 
+
 {% block content %}
+
+
+<!-- =========================================================
+     CABEÇALHO
+========================================================= -->
 
 <div class="page-header">
 
@@ -37,813 +45,1210 @@ Notinha #{{ notinha.id }} - Hydra ERP
 </div>
 
 
-<div class="cards-grid">
 
-    <div class="stat-card blue">
+<!-- =========================================================
+     RESUMO FINANCEIRO + INFORMAÇÕES
+========================================================= -->
 
-        <div class="stat-label">
-            Valor Original
+<div class="notinha-detail-top">
+
+
+    <!-- RESUMO FINANCEIRO -->
+
+    <div class="notinha-financial-card">
+
+
+        <div class="notinha-financial-head">
+
+            <div>
+
+                <span class="notinha-financial-label">
+                    Valor original
+                </span>
+
+                <div class="notinha-financial-total">
+
+                    R$ {{
+                        "%.2f"
+                        |format(notinha.valor_total)
+                        |replace(".", ",")
+                    }}
+
+                </div>
+
+            </div>
+
+
+            <div>
+
+                {% if situacao == "PAGA" %}
+
+                    <span class="badge badge-paid">
+                        ✓ Paga
+                    </span>
+
+                {% elif "VENCIDA" in situacao %}
+
+                    <span class="badge badge-late">
+                        ⚠ Vencida
+                    </span>
+
+                {% elif situacao == "CANCELADA" %}
+
+                    <span class="badge badge-cancel">
+                        Cancelada
+                    </span>
+
+                {% else %}
+
+                    <span class="badge badge-open">
+                        {{ situacao }}
+                    </span>
+
+                {% endif %}
+
+            </div>
+
         </div>
 
-        <div class="stat-value">
-            R$ {{ "%.2f"|format(notinha.valor_total)|replace(".", ",") }}
+
+        <div class="notinha-financial-breakdown">
+
+
+            <div class="notinha-financial-row">
+
+                <span>
+                    Total pago
+                </span>
+
+                <strong class="success">
+
+                    R$ {{
+                        "%.2f"
+                        |format(total_pago)
+                        |replace(".", ",")
+                    }}
+
+                </strong>
+
+            </div>
+
+
+            <div class="notinha-financial-row">
+
+                <span>
+                    Saldo pendente
+                </span>
+
+                <strong
+                    class="
+                        {% if saldo > 0 %}
+                            warning
+                        {% else %}
+                            success
+                        {% endif %}
+                    "
+                >
+
+                    R$ {{
+                        "%.2f"
+                        |format(saldo)
+                        |replace(".", ",")
+                    }}
+
+                </strong>
+
+            </div>
+
+
         </div>
+
 
     </div>
 
 
-    <div class="stat-card green">
 
-        <div class="stat-label">
-            Total Pago
+    <!-- INFORMAÇÕES -->
+
+    <div class="notinha-info-card">
+
+
+        <div class="notinha-detail-title">
+            Informações da notinha
         </div>
 
-        <div class="stat-value">
-            R$ {{ "%.2f"|format(total_pago)|replace(".", ",") }}
+
+        <div class="notinha-info-list">
+
+
+            <div class="notinha-info-row">
+
+                <span>
+                    Cliente
+                </span>
+
+                <strong>
+                    {{ notinha.cliente.nome }}
+                </strong>
+
+            </div>
+
+
+            <div class="notinha-info-row">
+
+                <span>
+                    Piscineiro da venda
+                </span>
+
+                <strong>
+
+                    {% if notinha.piscineiro %}
+
+                        {{ notinha.piscineiro.nome }}
+
+                    {% else %}
+
+                        Hydra / Direto
+
+                    {% endif %}
+
+                </strong>
+
+            </div>
+
+
+            <div class="notinha-info-row">
+
+                <span>
+                    Data da retirada
+                </span>
+
+                <strong>
+                    {{ notinha.data_retirada.strftime("%d/%m/%Y") }}
+                </strong>
+
+            </div>
+
+
+            <div class="notinha-info-row">
+
+                <span>
+                    Vencimento
+                </span>
+
+                <strong
+                    {% if "VENCIDA" in situacao %}
+                        class="danger"
+                    {% endif %}
+                >
+                    {{ notinha.data_vencimento.strftime("%d/%m/%Y") }}
+                </strong>
+
+            </div>
+
+
+            <div class="notinha-info-row">
+
+                <span>
+                    Responsável pela cobrança
+                </span>
+
+                <strong>
+                    {{ notinha.responsavel_cobranca }}
+                </strong>
+
+            </div>
+
+
         </div>
+
 
     </div>
 
-
-    <div class="stat-card amber">
-
-        <div class="stat-label">
-            Saldo Pendente
-        </div>
-
-        <div class="stat-value">
-            R$ {{ "%.2f"|format(saldo)|replace(".", ",") }}
-        </div>
-
-    </div>
-
-
-    <div class="stat-card {% if 'VENCIDA' in situacao %}red{% else %}teal{% endif %}">
-
-        <div class="stat-label">
-            Situação
-        </div>
-
-        <div class="stat-value sm">
-            {{ situacao }}
-        </div>
-
-    </div>
 
 </div>
 
 
-<div class="two-col">
 
-    <div class="form-card">
+<!-- =========================================================
+     OBSERVAÇÃO INICIAL
+========================================================= -->
 
-        <div class="section-title">
-            👤 Informações
-        </div>
+{% if notinha.observacao %}
 
-        <div class="fin-row">
-            <span class="fin-label">
-                Cliente
-            </span>
+<div class="notinha-note">
 
-            <span class="fin-val">
-                {{ notinha.cliente.nome }}
-            </span>
-        </div>
-
-
-        <div class="fin-row">
-            <span class="fin-label">
-                Piscineiro da venda
-            </span>
-
-            <span class="fin-val">
-
-                {% if notinha.piscineiro %}
-                    {{ notinha.piscineiro.nome }}
-                {% else %}
-                    Sem piscineiro
-                {% endif %}
-
-            </span>
-        </div>
-
-
-        <div class="fin-row">
-            <span class="fin-label">
-                Retirada
-            </span>
-
-            <span class="fin-val">
-                {{ notinha.data_retirada.strftime("%d/%m/%Y") }}
-            </span>
-        </div>
-
-
-        <div class="fin-row">
-            <span class="fin-label">
-                Vencimento
-            </span>
-
-            <span class="fin-val">
-                {{ notinha.data_vencimento.strftime("%d/%m/%Y") }}
-            </span>
-        </div>
-
-
-        <div class="fin-row">
-            <span class="fin-label">
-                Responsável cobrança
-            </span>
-
-            <span class="fin-val">
-                {{ notinha.responsavel_cobranca }}
-            </span>
-        </div>
-
+    <div class="notinha-note-icon">
+        📝
     </div>
 
 
-    <div class="form-card">
+    <div>
 
-        <div class="section-title">
-            📝 Observação inicial
-        </div>
+        <strong>
+            Observação inicial
+        </strong>
 
-        <p
-            style="
-                color:var(--text-mid);
-                line-height:1.6;
-            "
-        >
-
-            {{ notinha.observacao or "Nenhuma observação." }}
-
+        <p>
+            {{ notinha.observacao }}
         </p>
 
     </div>
-
-</div>
-
-
-<div class="section-title">
-    📦 Produtos
-</div>
-
-
-<div class="table-wrap">
-
-    <div style="overflow-x:auto;">
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>Produto</th>
-                    <th>Marca</th>
-                    <th>Qtd.</th>
-                    <th>Valor Unit.</th>
-                    <th>Subtotal</th>
-                    <th>Comissão</th>
-                </tr>
-
-            </thead>
-
-
-            <tbody>
-
-                {% for item in notinha.itens %}
-
-                    <tr>
-
-                        <td>
-                            <strong>
-                                {{ item.nome_produto }}
-                            </strong>
-                        </td>
-
-                        <td>
-                            {{ item.marca_produto or "-" }}
-                        </td>
-
-                        <td>
-                            {{ item.quantidade }}
-                        </td>
-
-                        <td>
-                            R$ {{ "%.2f"|format(item.preco_unitario)|replace(".", ",") }}
-                        </td>
-
-                        <td>
-                            R$ {{ "%.2f"|format(item.subtotal)|replace(".", ",") }}
-                        </td>
-
-                        <td>
-
-                            {% if item.valor_comissao > 0 %}
-
-                                {{ item.percentual_comissao }}%
-                                —
-                                R$ {{ "%.2f"|format(item.valor_comissao)|replace(".", ",") }}
-
-                            {% else %}
-
-                                —
-
-                            {% endif %}
-
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</div>
-
-{% if situacao != "PAGA" and situacao != "CANCELADA" %}
-
-<div class="section-title">
-    💵 Registrar Pagamento
-</div>
-
-
-<div class="form-card">
-
-    <form
-        method="POST"
-        action="{{ url_for(
-            'notinhas.registrar_pagamento',
-            notinha_id=notinha.id
-        ) }}"
-    >
-
-        <div class="form-row">
-
-            <div class="form-group">
-
-                <label>
-                    Valor *
-                </label>
-
-                <input
-                    type="number"
-                    name="valor"
-                    step="0.01"
-                    min="0.01"
-                    max="{{ saldo }}"
-                    required
-                >
-
-                <small
-                    style="
-                        display:block;
-                        margin-top:5px;
-                        color:var(--text-light);
-                    "
-                >
-                    Saldo atual:
-                    R$ {{ "%.2f"|format(saldo)|replace(".", ",") }}
-                </small>
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Data do pagamento *
-                </label>
-
-                <input
-                    type="date"
-                    name="data_pagamento"
-                    value="{{ hoje }}"
-                    required
-                >
-
-            </div>
-
-        </div>
-
-
-        <div class="form-row">
-
-            <div class="form-group">
-
-                <label>
-                    Pago por
-                </label>
-
-                <select name="pago_por">
-
-                    <option value="CLIENTE">
-                        Cliente
-                    </option>
-
-                    <option value="PISCINEIRO">
-                        Piscineiro
-                    </option>
-
-                    <option value="OUTRO">
-                        Outro
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Forma de pagamento
-                </label>
-
-                <select name="forma_pagamento">
-
-                    <option value="">
-                        Não informado
-                    </option>
-
-                    <option value="PIX">
-                        PIX
-                    </option>
-
-                    <option value="DINHEIRO">
-                        Dinheiro
-                    </option>
-
-                    <option value="CARTAO">
-                        Cartão
-                    </option>
-
-                    <option value="TRANSFERENCIA">
-                        Transferência
-                    </option>
-
-                </select>
-
-            </div>
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>
-                Observação
-            </label>
-
-            <textarea
-                name="observacao"
-                placeholder="Ex.: Cliente realizou pagamento parcial."
-            ></textarea>
-
-        </div>
-
-
-        <button
-            class="btn btn-success"
-            type="submit"
-        >
-            💰 Registrar Pagamento
-        </button>
-
-    </form>
 
 </div>
 
 {% endif %}
 
 
-<div class="section-title">
-    💰 Pagamentos
-</div>
+
+<!-- =========================================================
+     PRODUTOS
+========================================================= -->
+
+<div class="notinha-section">
 
 
-<div class="table-wrap">
+    <div class="notinha-section-head">
 
-    <div style="overflow-x:auto;">
+        <div>
 
-        <table>
+            <h2>
+                📦 Produtos
+            </h2>
 
-            <thead>
+            <span>
+                Itens registrados nesta notinha
+            </span>
 
-                <tr>
-                    <th>Data</th>
-                    <th>Valor</th>
-                    <th>Pago por</th>
-                    <th>Forma</th>
-                    <th>Observação</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                {% for pagamento in notinha.pagamentos %}
-
-                    <tr>
-
-                        <td>
-                            {{ pagamento.data_pagamento.strftime("%d/%m/%Y") }}
-                        </td>
-
-                        <td>
-                            R$ {{ "%.2f"|format(pagamento.valor)|replace(".", ",") }}
-                        </td>
-
-                        <td>
-                            {{ pagamento.pago_por }}
-                        </td>
-
-                        <td>
-                            {{ pagamento.forma_pagamento or "-" }}
-                        </td>
-
-                        <td>
-                            {{ pagamento.observacao or "-" }}
-                        </td>
-
-                    </tr>
-
-                {% else %}
-
-                    <tr>
-
-                        <td
-                            colspan="5"
-                            style="
-                                text-align:center;
-                                padding:30px;
-                                color:var(--text-light);
-                            "
-                        >
-                            Nenhum pagamento registrado.
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
+        </div>
 
     </div>
 
-</div>
 
-<div class="section-title">
-    📝 Histórico de Observações
-</div>
+    <div class="table-wrap">
 
+        <div style="overflow-x:auto;">
 
-<div class="form-card">
+            <table>
 
-    <form
-        method="POST"
-        action="{{ url_for(
-            'notinhas.adicionar_observacao',
-            notinha_id=notinha.id
-        ) }}"
-    >
+                <thead>
 
-        <div class="form-group">
+                    <tr>
 
-            <label>
-                Nova observação
-            </label>
+                        <th>Produto</th>
+                        <th>Marca</th>
+                        <th>Qtd.</th>
+                        <th>Valor Unit.</th>
+                        <th>Subtotal</th>
+                        <th>Comissão</th>
 
-            <textarea
-                name="texto"
-                required
-                placeholder="Ex.: Cliente informou que realizará o pagamento na sexta-feira."
-            ></textarea>
+                    </tr>
 
-        </div>
+                </thead>
 
 
-        <button
-            class="btn btn-primary"
-            type="submit"
-        >
-            📝 Adicionar Observação
-        </button>
-
-    </form>
+                <tbody>
 
 
-    {% if notinha.observacoes %}
+                    {% for item in notinha.itens %}
 
-        <div style="margin-top:25px;">
+                        <tr>
 
-            {% for observacao in notinha.observacoes|sort(attribute="data_criacao", reverse=true) %}
+                            <td>
 
-                <div
-                    style="
-                        padding:14px 0;
-                        border-bottom:1px solid var(--border);
-                    "
-                >
+                                <strong>
+                                    {{ item.nome_produto }}
+                                </strong>
 
-                    <div
-                        style="
-                            font-size:12px;
-                            color:var(--text-light);
-                            margin-bottom:5px;
-                        "
-                    >
-                        {{ observacao.data_criacao.strftime("%d/%m/%Y às %H:%M") }}
-                    </div>
-
-                    <div>
-                        {{ observacao.texto }}
-                    </div>
-
-                </div>
-
-            {% endfor %}
-
-        </div>
-
-    {% else %}
-
-        <p
-            style="
-                margin-top:20px;
-                color:var(--text-light);
-            "
-        >
-            Nenhuma observação registrada no histórico.
-        </p>
-
-    {% endif %}
-
-</div>
-
-<div class="section-title">
-    📎 Fotos e Comprovantes
-</div>
+                            </td>
 
 
-<div class="form-card">
-
-    <form
-        method="POST"
-        enctype="multipart/form-data"
-        action="{{ url_for(
-            'notinhas.adicionar_anexo',
-            notinha_id=notinha.id
-        ) }}"
-    >
-
-        <div class="form-row">
-
-            <div class="form-group">
-
-                <label>
-                    Arquivo *
-                </label>
-
-                <input
-                    type="file"
-                    name="arquivo"
-                    accept=".jpg,.jpeg,.png,.pdf"
-                    required
-                >
-
-            </div>
+                            <td>
+                                {{ item.marca_produto or "-" }}
+                            </td>
 
 
-            <div class="form-group">
-
-                <label>
-                    Tipo
-                </label>
-
-                <select name="tipo">
-
-                    <option value="ORIGINAL">
-                        Foto da notinha
-                    </option>
-
-                    <option value="ATUALIZACAO">
-                        Foto atualizada
-                    </option>
-
-                    <option value="COMPROVANTE">
-                        Comprovante de pagamento
-                    </option>
-
-                    <option value="OUTRO">
-                        Outro
-                    </option>
-
-                </select>
-
-            </div>
-
-        </div>
+                            <td>
+                                {{ item.quantidade }}
+                            </td>
 
 
-        {% if notinha.pagamentos %}
+                            <td>
 
-            <div class="form-group">
+                                R$ {{
+                                    "%.2f"
+                                    |format(item.preco_unitario)
+                                    |replace(".", ",")
+                                }}
 
-                <label>
-                    Relacionar a pagamento
-                </label>
+                            </td>
 
-                <select name="pagamento_id">
 
-                    <option value="">
-                        Nenhum
-                    </option>
+                            <td>
 
-                    {% for pagamento in notinha.pagamentos %}
+                                <strong>
 
-                        <option value="{{ pagamento.id }}">
+                                    R$ {{
+                                        "%.2f"
+                                        |format(item.subtotal)
+                                        |replace(".", ",")
+                                    }}
 
-                            {{ pagamento.data_pagamento.strftime("%d/%m/%Y") }}
+                                </strong>
 
-                            —
+                            </td>
 
-                            R$ {{ "%.2f"|format(pagamento.valor)|replace(".", ",") }}
 
-                        </option>
+                            <td>
+
+                                {% if item.valor_comissao > 0 %}
+
+                                    <span class="notinha-commission">
+
+                                        {{ item.percentual_comissao }}%
+
+                                        <small>
+
+                                            R$ {{
+                                                "%.2f"
+                                                |format(item.valor_comissao)
+                                                |replace(".", ",")
+                                            }}
+
+                                        </small>
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="notinha-muted">
+                                        —
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
 
                     {% endfor %}
 
-                </select>
 
-            </div>
+                </tbody>
 
-        {% endif %}
+            </table>
+
+        </div>
+
+    </div>
 
 
-        <div class="form-group">
+</div>
 
-            <label>
-                Observação do arquivo
-            </label>
 
-            <input
-                type="text"
-                name="observacao"
-                placeholder="Ex.: Foto atualizada após pagamento parcial."
-            >
+
+<!-- =========================================================
+     REGISTRAR PAGAMENTO
+========================================================= -->
+
+{% if situacao != "PAGA" and situacao != "CANCELADA" %}
+
+<div class="notinha-section">
+
+
+    <div class="notinha-section-head">
+
+        <div>
+
+            <h2>
+                💵 Registrar pagamento
+            </h2>
+
+            <span>
+                Informe um pagamento total ou parcial
+            </span>
 
         </div>
 
 
-        <button
-            class="btn btn-primary"
-            type="submit"
-        >
-            📎 Anexar Arquivo
-        </button>
+        <div class="notinha-section-balance">
 
-    </form>
+            Saldo:
+
+            <strong>
+
+                R$ {{
+                    "%.2f"
+                    |format(saldo)
+                    |replace(".", ",")
+                }}
+
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="form-card notinha-payment-form">
+
+
+        <form
+            method="POST"
+            action="{{ url_for(
+                'notinhas.registrar_pagamento',
+                notinha_id=notinha.id
+            ) }}"
+        >
+
+
+            <div class="form-row">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Valor *
+                    </label>
+
+                    <input
+                        type="number"
+                        name="valor"
+                        step="0.01"
+                        min="0.01"
+                        max="{{ saldo }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Data do pagamento *
+                    </label>
+
+                    <input
+                        type="date"
+                        name="data_pagamento"
+                        value="{{ hoje }}"
+                        required
+                    >
+
+                </div>
+
+
+            </div>
+
+
+            <div class="form-row">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Pago por
+                    </label>
+
+                    <select name="pago_por">
+
+                        <option value="CLIENTE">
+                            Cliente
+                        </option>
+
+                        <option value="PISCINEIRO">
+                            Piscineiro
+                        </option>
+
+                        <option value="OUTRO">
+                            Outro
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Forma de pagamento
+                    </label>
+
+                    <select name="forma_pagamento">
+
+                        <option value="">
+                            Não informado
+                        </option>
+
+                        <option value="PIX">
+                            PIX
+                        </option>
+
+                        <option value="DINHEIRO">
+                            Dinheiro
+                        </option>
+
+                        <option value="CARTAO">
+                            Cartão
+                        </option>
+
+                        <option value="TRANSFERENCIA">
+                            Transferência
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Observação
+                </label>
+
+                <textarea
+                    name="observacao"
+                    placeholder="Ex.: Cliente realizou pagamento parcial."
+                ></textarea>
+
+            </div>
+
+
+            <button
+                class="btn btn-success"
+                type="submit"
+            >
+                💰 Registrar Pagamento
+            </button>
+
+
+        </form>
+
+
+    </div>
+
 
 </div>
 
-{% if notinha.anexos %}
+{% endif %}
 
-<div
-    style="
-        display:grid;
-        grid-template-columns:repeat(
-            auto-fill,
-            minmax(220px, 1fr)
-        );
-        gap:16px;
-        margin-top:18px;
-    "
->
 
-    {% for anexo in notinha.anexos|sort(attribute="data_upload", reverse=true) %}
+
+<!-- =========================================================
+     HISTÓRICO DE PAGAMENTOS
+========================================================= -->
+
+<div class="notinha-section">
+
+
+    <div class="notinha-section-head">
+
+        <div>
+
+            <h2>
+                💰 Histórico de pagamentos
+            </h2>
+
+            <span>
+                Pagamentos registrados nesta notinha
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="table-wrap">
+
+        <div style="overflow-x:auto;">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Data</th>
+                        <th>Valor</th>
+                        <th>Pago por</th>
+                        <th>Forma</th>
+                        <th>Observação</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    {% for pagamento in notinha.pagamentos %}
+
+                        <tr>
+
+                            <td>
+
+                                {{
+                                    pagamento.data_pagamento
+                                    .strftime("%d/%m/%Y")
+                                }}
+
+                            </td>
+
+
+                            <td>
+
+                                <strong class="notinha-payment-value">
+
+                                    R$ {{
+                                        "%.2f"
+                                        |format(pagamento.valor)
+                                        |replace(".", ",")
+                                    }}
+
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+                                {{ pagamento.pago_por }}
+                            </td>
+
+
+                            <td>
+
+                                {% if pagamento.forma_pagamento %}
+
+                                    <span class="notinha-payment-method">
+                                        {{ pagamento.forma_pagamento }}
+                                    </span>
+
+                                {% else %}
+
+                                    —
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+                                {{ pagamento.observacao or "-" }}
+                            </td>
+
+                        </tr>
+
+
+                    {% else %}
+
+                        <tr>
+
+                            <td colspan="5">
+
+                                <div class="notinha-table-empty">
+
+                                    💰
+
+                                    <strong>
+                                        Nenhum pagamento registrado
+                                    </strong>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     OBSERVAÇÕES
+========================================================= -->
+
+<div class="notinha-section">
+
+
+    <div class="notinha-section-head">
+
+        <div>
+
+            <h2>
+                📝 Observações
+            </h2>
+
+            <span>
+                Histórico de contatos e informações importantes
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="notinha-history-layout">
+
+
+        <!-- FORMULÁRIO -->
 
         <div class="form-card">
 
-            <div
-                style="
-                    font-weight:700;
-                    margin-bottom:8px;
-                "
+
+            <form
+                method="POST"
+                action="{{ url_for(
+                    'notinhas.adicionar_observacao',
+                    notinha_id=notinha.id
+                ) }}"
             >
 
-                {% if anexo.tipo == "ORIGINAL" %}
 
-                    📄 Foto da Notinha
+                <div class="form-group">
 
-                {% elif anexo.tipo == "ATUALIZACAO" %}
+                    <label>
+                        Nova observação
+                    </label>
 
-                    🔄 Atualização
+                    <textarea
+                        name="texto"
+                        required
+                        placeholder="Ex.: Cliente informou que realizará o pagamento na sexta-feira."
+                    ></textarea>
 
-                {% elif anexo.tipo == "COMPROVANTE" %}
-
-                    💰 Comprovante
-
-                {% else %}
-
-                    📎 Arquivo
-
-                {% endif %}
-
-            </div>
+                </div>
 
 
-            <div
-                style="
-                    font-size:13px;
-                    color:var(--text-light);
-                    margin-bottom:10px;
-                "
-            >
-                {{ anexo.data_upload.strftime("%d/%m/%Y às %H:%M") }}
-            </div>
-
-
-            {% if anexo.caminho.lower().endswith((".jpg", ".jpeg", ".png")) %}
-
-                <a
-                    href="{{ url_for(
-                        'notinhas.visualizar_anexo',
-                        caminho=anexo.caminho
-                    ) }}"
-                    target="_blank"
+                <button
+                    class="btn btn-primary"
+                    type="submit"
                 >
+                    📝 Adicionar
+                </button>
 
-                    <img
-                        src="{{ url_for(
-                            'notinhas.visualizar_anexo',
-                            caminho=anexo.caminho
-                        ) }}"
-                        alt="Anexo da notinha"
-                        style="
-                            width:100%;
-                            height:180px;
-                            object-fit:cover;
-                            border-radius:8px;
-                            margin-bottom:10px;
-                        "
-                    >
 
-                </a>
+            </form>
+
+
+        </div>
+
+
+
+        <!-- HISTÓRICO -->
+
+        <div class="notinha-timeline">
+
+
+            {% if notinha.observacoes %}
+
+
+                {% for observacao in notinha.observacoes|sort(attribute="data_criacao", reverse=true) %}
+
+
+                    <div class="notinha-timeline-item">
+
+
+                        <div class="notinha-timeline-marker">
+                        </div>
+
+
+                        <div>
+
+                            <div class="notinha-timeline-date">
+
+                                {{
+                                    observacao.data_criacao
+                                    .strftime("%d/%m/%Y às %H:%M")
+                                }}
+
+                            </div>
+
+
+                            <div class="notinha-timeline-text">
+                                {{ observacao.texto }}
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                {% endfor %}
+
+
+            {% else %}
+
+
+                <div class="notinha-history-empty">
+
+                    📝
+
+                    <strong>
+                        Nenhuma observação registrada
+                    </strong>
+
+                    <span>
+                        As novas observações aparecerão aqui.
+                    </span>
+
+                </div>
+
 
             {% endif %}
 
 
-            <div
-                style="
-                    font-size:13px;
-                    margin-bottom:8px;
-                "
-            >
-                {{ anexo.nome_original }}
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     FOTOS E COMPROVANTES
+========================================================= -->
+
+<div class="notinha-section">
+
+
+    <div class="notinha-section-head">
+
+        <div>
+
+            <h2>
+                📎 Fotos e comprovantes
+            </h2>
+
+            <span>
+                Fotos da notinha, atualizações e comprovantes
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- FORMULÁRIO DE ANEXO -->
+
+    <div class="form-card">
+
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+            action="{{ url_for(
+                'notinhas.adicionar_anexo',
+                notinha_id=notinha.id
+            ) }}"
+        >
+
+
+            <div class="form-row">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Arquivo *
+                    </label>
+
+                    <input
+                        type="file"
+                        name="arquivo"
+                        accept=".jpg,.jpeg,.png,.pdf"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Tipo
+                    </label>
+
+                    <select name="tipo">
+
+                        <option value="ORIGINAL">
+                            Foto da notinha
+                        </option>
+
+                        <option value="ATUALIZACAO">
+                            Foto atualizada
+                        </option>
+
+                        <option value="COMPROVANTE">
+                            Comprovante de pagamento
+                        </option>
+
+                        <option value="OUTRO">
+                            Outro
+                        </option>
+
+                    </select>
+
+                </div>
+
+
             </div>
 
 
-            {% if anexo.observacao %}
 
-                <div
-                    style="
-                        font-size:13px;
-                        color:var(--text-mid);
-                        margin-bottom:10px;
-                    "
-                >
-                    {{ anexo.observacao }}
+            {% if notinha.pagamentos %}
+
+                <div class="form-group">
+
+                    <label>
+                        Relacionar a pagamento
+                    </label>
+
+                    <select name="pagamento_id">
+
+                        <option value="">
+                            Nenhum
+                        </option>
+
+
+                        {% for pagamento in notinha.pagamentos %}
+
+                            <option value="{{ pagamento.id }}">
+
+                                {{
+                                    pagamento.data_pagamento
+                                    .strftime("%d/%m/%Y")
+                                }}
+
+                                —
+
+                                R$ {{
+                                    "%.2f"
+                                    |format(pagamento.valor)
+                                    |replace(".", ",")
+                                }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
                 </div>
 
             {% endif %}
 
 
-            <a
-                class="btn btn-ghost btn-sm"
-                href="{{ url_for(
-                    'notinhas.visualizar_anexo',
-                    caminho=anexo.caminho
-                ) }}"
-                target="_blank"
+
+            <div class="form-group">
+
+                <label>
+                    Observação do arquivo
+                </label>
+
+                <input
+                    type="text"
+                    name="observacao"
+                    placeholder="Ex.: Foto atualizada após pagamento parcial."
+                >
+
+            </div>
+
+
+            <button
+                class="btn btn-primary"
+                type="submit"
             >
-                👁 Abrir
-            </a>
+                📎 Anexar Arquivo
+            </button>
+
+
+        </form>
+
+
+    </div>
+
+
+
+    <!-- ARQUIVOS -->
+
+    {% if notinha.anexos %}
+
+
+        <div class="notinha-attachments">
+
+
+            {% for anexo in notinha.anexos|sort(attribute="data_upload", reverse=true) %}
+
+
+                <div class="notinha-attachment-card">
+
+
+                    <div class="notinha-attachment-head">
+
+
+                        <strong>
+
+                            {% if anexo.tipo == "ORIGINAL" %}
+
+                                📄 Foto da Notinha
+
+                            {% elif anexo.tipo == "ATUALIZACAO" %}
+
+                                🔄 Atualização
+
+                            {% elif anexo.tipo == "COMPROVANTE" %}
+
+                                💰 Comprovante
+
+                            {% else %}
+
+                                📎 Arquivo
+
+                            {% endif %}
+
+                        </strong>
+
+
+                        <span>
+
+                            {{
+                                anexo.data_upload
+                                .strftime("%d/%m/%Y")
+                            }}
+
+                        </span>
+
+
+                    </div>
+
+
+
+                    {% if anexo.caminho.lower().endswith((".jpg", ".jpeg", ".png")) %}
+
+
+                        <a
+                            class="notinha-attachment-image"
+                            href="{{ url_for(
+                                'notinhas.visualizar_anexo',
+                                caminho=anexo.caminho
+                            ) }}"
+                            target="_blank"
+                        >
+
+                            <img
+                                src="{{ url_for(
+                                    'notinhas.visualizar_anexo',
+                                    caminho=anexo.caminho
+                                ) }}"
+                                alt="Anexo da notinha"
+                            >
+
+                        </a>
+
+
+                    {% else %}
+
+
+                        <div class="notinha-attachment-file">
+                            📄
+                        </div>
+
+
+                    {% endif %}
+
+
+
+                    <div class="notinha-attachment-body">
+
+
+                        <div class="notinha-attachment-name">
+
+                            {{ anexo.nome_original }}
+
+                        </div>
+
+
+                        {% if anexo.observacao %}
+
+                            <div class="notinha-attachment-note">
+
+                                {{ anexo.observacao }}
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <a
+                            class="btn btn-ghost btn-sm"
+                            href="{{ url_for(
+                                'notinhas.visualizar_anexo',
+                                caminho=anexo.caminho
+                            ) }}"
+                            target="_blank"
+                        >
+                            👁 Abrir arquivo
+                        </a>
+
+
+                    </div>
+
+
+                </div>
+
+
+            {% endfor %}
+
 
         </div>
 
-    {% endfor %}
+
+    {% else %}
+
+
+        <div class="notinha-no-attachments">
+
+            📎
+
+            <strong>
+                Nenhum arquivo anexado
+            </strong>
+
+            <span>
+                Fotos e comprovantes aparecerão nesta área.
+            </span>
+
+        </div>
+
+
+    {% endif %}
+
 
 </div>
 
-{% endif %}
 
 {% endblock %}
