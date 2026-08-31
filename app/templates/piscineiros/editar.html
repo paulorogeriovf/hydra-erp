@@ -3,34 +3,67 @@
 
 {% extends "base.html" %}
 
+
 {% block title %}
 Editar Piscineiro - Hydra ERP
 {% endblock %}
+
 
 {% block header_title %}
 ✏️ <span>Editar Piscineiro</span>
 {% endblock %}
 
+
 {% block content %}
+
 
 <div class="page-header">
 
     <div class="page-title">
+
         Editar Piscineiro
 
         <small>
-            Atualize os dados do profissional
+            Atualize os dados de {{ piscineiro.nome }}
         </small>
+
     </div>
+
+
+    <a
+        class="btn btn-ghost"
+        href="{{ url_for(
+            'piscineiros.detalhes',
+            piscineiro_id=piscineiro.id
+        ) }}"
+    >
+        ← Voltar
+    </a>
 
 </div>
 
 
-<div class="form-card">
+<div class="form-card piscineiro-form-card">
+
+
+    <div class="piscineiro-form-head">
+
+        <h2>
+            ✏️ Dados cadastrais
+        </h2>
+
+        <span>
+            Altere somente as informações necessárias
+        </span>
+
+    </div>
+
 
     <form method="POST">
 
+
         <div class="form-row">
+
 
             <div class="form-group">
 
@@ -62,10 +95,12 @@ Editar Piscineiro - Hydra ERP
 
             </div>
 
+
         </div>
 
 
         <div class="form-row">
+
 
             <div class="form-group">
 
@@ -95,6 +130,7 @@ Editar Piscineiro - Hydra ERP
                 >
 
             </div>
+
 
         </div>
 
@@ -127,7 +163,8 @@ Editar Piscineiro - Hydra ERP
         </div>
 
 
-        <div class="action-group">
+        <div class="piscineiro-form-actions">
+
 
             <button
                 class="btn btn-primary"
@@ -139,15 +176,22 @@ Editar Piscineiro - Hydra ERP
 
             <a
                 class="btn btn-ghost"
-                href="{{ url_for('piscineiros.listar') }}"
+                href="{{ url_for(
+                    'piscineiros.detalhes',
+                    piscineiro_id=piscineiro.id
+                ) }}"
             >
                 Cancelar
             </a>
 
+
         </div>
+
 
     </form>
 
+
 </div>
+
 
 {% endblock %}

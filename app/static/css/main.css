@@ -5925,3 +5925,1100 @@ td {
     }
 
 }
+
+/* =========================================================
+   PISCINEIROS - RESUMO
+========================================================= */
+
+.piscineiros-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 13px;
+
+    margin-bottom: 20px;
+}
+
+
+.piscineiros-summary-item {
+    min-height: 85px;
+
+    padding: 14px 16px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.piscineiros-summary-icon {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: var(--pool-light);
+
+    font-size: 17px;
+}
+
+
+.piscineiros-summary-item.success
+.piscineiros-summary-icon {
+    background: #ecfdf5;
+}
+
+
+.piscineiros-summary-item span {
+    display: block;
+
+    font-size: 9px;
+
+    text-transform: uppercase;
+    letter-spacing: 0.35px;
+
+    color: var(--text-light);
+}
+
+
+.piscineiros-summary-item strong {
+    display: block;
+
+    margin-top: 1px;
+
+    font-size: 20px;
+
+    color: var(--text-dark);
+}
+
+
+.piscineiros-summary-item small {
+    display: block;
+
+    margin-top: 1px;
+
+    font-size: 9px;
+
+    color: var(--text-light);
+}
+
+
+
+/* =========================================================
+   PISCINEIROS - BUSCA
+========================================================= */
+
+.piscineiros-search {
+    margin-bottom: 18px;
+    padding: 12px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.piscineiros-search-inner {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+}
+
+
+.piscineiros-search-field {
+    position: relative;
+
+    flex: 1;
+}
+
+
+.piscineiros-search-icon {
+    position: absolute;
+
+    left: 12px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    font-size: 13px;
+
+    opacity: 0.6;
+}
+
+
+.piscineiros-search-field input {
+    width: 100%;
+
+    padding-left: 36px;
+}
+
+
+
+/* =========================================================
+   PISCINEIROS - LISTAGEM
+========================================================= */
+
+.piscineiros-panel {
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.piscineiros-panel-head {
+    padding: 15px 18px;
+
+    border-bottom: 1px solid var(--border);
+
+    background: #fbfdff;
+}
+
+
+.piscineiros-panel-head h2 {
+    margin: 0;
+
+    font-size: 14px;
+
+    color: var(--text-dark);
+}
+
+
+.piscineiros-panel-head span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 10px;
+
+    color: var(--text-light);
+}
+
+
+.piscineiro-row {
+    min-height: 76px;
+
+    padding: 12px 17px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(190px, 1.4fr)
+        minmax(140px, 0.8fr)
+        minmax(90px, 0.5fr)
+        auto
+        auto;
+
+    gap: 13px;
+
+    align-items: center;
+
+    border-bottom: 1px solid var(--border);
+
+    transition: background 0.15s ease;
+}
+
+
+.piscineiro-row:last-child {
+    border-bottom: none;
+}
+
+
+.piscineiro-row:hover {
+    background: #fbfdff;
+}
+
+
+.piscineiro-main {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+.piscineiro-avatar {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: var(--pool-light);
+
+    font-size: 14px;
+    font-weight: 800;
+
+    color: var(--pool-dark);
+}
+
+
+.piscineiro-main strong {
+    display: block;
+
+    font-size: 12px;
+
+    color: var(--text-dark);
+}
+
+
+.piscineiro-main span {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 9px;
+
+    color: var(--text-light);
+}
+
+
+.piscineiro-data span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+
+    color: var(--text-light);
+}
+
+
+.piscineiro-data strong {
+    font-size: 10px;
+
+    color: var(--text-mid);
+}
+
+
+.piscineiro-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+
+    white-space: nowrap;
+}
+
+
+.piscineiro-actions form {
+    margin: 0;
+}
+
+
+.piscineiros-empty {
+    min-height: 160px;
+
+    padding: 25px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    color: var(--text-light);
+}
+
+
+.piscineiros-empty.compact {
+    min-height: 115px;
+
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+}
+
+
+.piscineiros-empty > div {
+    margin-bottom: 6px;
+
+    font-size: 23px;
+}
+
+
+.piscineiros-empty strong {
+    font-size: 11px;
+
+    color: var(--text-mid);
+}
+
+
+.piscineiros-empty span {
+    margin-top: 3px;
+
+    font-size: 9px;
+}
+
+
+
+/* =========================================================
+   FORMULÁRIOS
+========================================================= */
+
+.piscineiro-form-card {
+    max-width: 920px;
+
+    padding: 20px;
+}
+
+
+.piscineiro-form-head {
+    margin-bottom: 20px;
+    padding-bottom: 13px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.piscineiro-form-head h2 {
+    margin: 0;
+
+    font-size: 14px;
+
+    color: var(--text-dark);
+}
+
+
+.piscineiro-form-head span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 9px;
+
+    color: var(--text-light);
+}
+
+
+.piscineiro-form-actions {
+    margin-top: 5px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+}
+
+
+
+/* =========================================================
+   DETALHES - RESUMO FINANCEIRO
+========================================================= */
+
+.piscineiro-detail-summary {
+    display: grid;
+
+    grid-template-columns:
+        minmax(300px, 1.2fr)
+        minmax(0, 1.8fr);
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+
+.piscineiro-sales-main {
+    min-height: 145px;
+
+    padding: 19px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--pool);
+
+    border-radius: 13px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.piscineiro-sales-main > span {
+    display: block;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    color: var(--text-light);
+}
+
+
+.piscineiro-sales-main > strong {
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 27px;
+
+    color: var(--text-dark);
+}
+
+
+.piscineiro-sales-history {
+    margin-top: 17px;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 10px;
+}
+
+
+.piscineiro-sales-history div {
+    padding-top: 9px;
+
+    border-top: 1px solid var(--border);
+}
+
+
+.piscineiro-sales-history span {
+    display: block;
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+
+    color: var(--text-light);
+}
+
+
+.piscineiro-sales-history strong {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 11px;
+
+    color: var(--text-mid);
+}
+
+
+.piscineiro-financial-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 10px;
+}
+
+
+.piscineiro-financial-item {
+    padding: 15px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.piscineiro-financial-item span {
+    font-size: 8px;
+
+    text-transform: uppercase;
+
+    color: var(--text-light);
+}
+
+
+.piscineiro-financial-item strong {
+    margin-top: 5px;
+
+    font-size: 15px;
+
+    color: var(--text-dark);
+}
+
+
+.piscineiro-financial-item.warning strong {
+    color: #b45309;
+}
+
+
+.piscineiro-financial-item.danger strong {
+    color: var(--danger);
+}
+
+
+.piscineiro-financial-item.success strong {
+    color: var(--success);
+}
+
+
+
+/* =========================================================
+   PERFIL
+========================================================= */
+
+.piscineiro-profile-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+}
+
+
+.piscineiro-profile-card {
+    padding: 17px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.piscineiro-profile-head {
+    margin-bottom: 14px;
+    padding-bottom: 11px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.piscineiro-profile-head h2 {
+    margin: 0;
+
+    font-size: 13px;
+
+    color: var(--text-dark);
+}
+
+
+.piscineiro-profile-head span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 9px;
+
+    color: var(--text-light);
+}
+
+
+.piscineiro-profile-data {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+
+.piscineiro-profile-data > div > span:first-child {
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+
+    color: var(--text-light);
+}
+
+
+.piscineiro-profile-data strong {
+    font-size: 10px;
+
+    color: var(--text-mid);
+}
+
+
+.piscineiro-operational-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 8px;
+}
+
+
+.piscineiro-operational-summary > div {
+    padding: 10px;
+
+    border-radius: 9px;
+
+    background: #f8fafc;
+}
+
+
+.piscineiro-operational-summary span {
+    display: block;
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+
+    color: var(--text-light);
+}
+
+
+.piscineiro-operational-summary strong {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 17px;
+
+    color: var(--text-dark);
+}
+
+
+.piscineiro-operational-summary strong.danger {
+    color: var(--danger);
+}
+
+
+.piscineiro-observation {
+    margin-top: 13px;
+    padding-top: 11px;
+
+    border-top: 1px solid var(--border);
+}
+
+
+.piscineiro-observation span {
+    font-size: 8px;
+
+    text-transform: uppercase;
+
+    color: var(--text-light);
+}
+
+
+.piscineiro-observation p {
+    margin: 5px 0 0;
+
+    font-size: 9px;
+    line-height: 1.5;
+
+    color: var(--text-mid);
+}
+
+
+
+/* =========================================================
+   SEÇÕES
+========================================================= */
+
+.piscineiro-section {
+    margin-top: 26px;
+}
+
+
+.piscineiro-section-head {
+    min-height: 48px;
+
+    margin-bottom: 9px;
+
+    display: flex;
+    align-items: center;
+}
+
+
+.piscineiro-section-head h2 {
+    margin: 0;
+
+    font-size: 14px;
+
+    color: var(--text-dark);
+}
+
+
+.piscineiro-section-head span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 9px;
+
+    color: var(--text-light);
+}
+
+
+
+/* =========================================================
+   CLIENTES DO PISCINEIRO
+========================================================= */
+
+.piscineiro-client-list {
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.piscineiro-client-row {
+    min-height: 66px;
+
+    padding: 10px 14px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(190px, 1fr)
+        minmax(140px, 0.8fr)
+        auto
+        auto;
+
+    align-items: center;
+
+    gap: 12px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.piscineiro-client-row:last-child {
+    border-bottom: none;
+}
+
+
+.piscineiro-client-main {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+}
+
+
+.piscineiro-client-avatar {
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: var(--pool-light);
+
+    font-size: 12px;
+    font-weight: 700;
+
+    color: var(--pool-dark);
+}
+
+
+.piscineiro-client-main strong {
+    display: block;
+
+    font-size: 10px;
+
+    color: var(--text-dark);
+}
+
+
+.piscineiro-client-main span {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 8px;
+
+    color: var(--text-light);
+}
+
+
+.piscineiro-client-contact span {
+    display: block;
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+
+    color: var(--text-light);
+}
+
+
+.piscineiro-client-contact strong {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 9px;
+
+    color: var(--text-mid);
+}
+
+
+
+/* =========================================================
+   GRÁFICO
+========================================================= */
+
+.piscineiro-chart-box {
+    padding-bottom: 15px;
+}
+
+
+.piscineiro-chart-canvas {
+    position: relative;
+
+    height: 280px;
+}
+
+
+
+/* =========================================================
+   TABELAS / EMPTY
+========================================================= */
+
+.piscineiro-table-empty {
+    min-height: 95px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    color: var(--text-light);
+}
+
+
+.piscineiro-table-empty strong {
+    margin-top: 5px;
+
+    font-size: 10px;
+}
+
+
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+@media (max-width: 1050px) {
+
+    .piscineiro-row {
+        grid-template-columns:
+            minmax(180px, 1fr)
+            minmax(130px, 0.8fr)
+            minmax(80px, 0.5fr)
+            auto;
+    }
+
+
+    .piscineiro-status {
+        display: none;
+    }
+
+
+    .piscineiro-detail-summary {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .piscineiros-summary {
+        grid-template-columns: 1fr 1fr;
+    }
+
+
+    .piscineiros-summary-item:last-child {
+        grid-column: 1 / -1;
+    }
+
+
+    .piscineiro-profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .piscineiro-financial-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+
+    .piscineiro-client-row {
+        grid-template-columns:
+            minmax(0, 1fr)
+            auto
+            auto;
+    }
+
+
+    .piscineiro-client-contact {
+        display: none;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .piscineiro-row {
+        grid-template-columns:
+            minmax(0, 1fr)
+            auto;
+
+        padding: 14px;
+    }
+
+
+    .piscineiro-main {
+        grid-column: 1 / -1;
+    }
+
+
+    .piscineiro-data:nth-of-type(2) {
+        display: none;
+    }
+
+
+    .piscineiro-actions {
+        justify-content: flex-end;
+    }
+
+
+    .piscineiro-financial-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .piscineiro-profile-data {
+        grid-template-columns: 1fr;
+    }
+
+
+    .piscineiro-operational-summary {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+
+@media (max-width: 520px) {
+
+    .piscineiros-summary {
+        grid-template-columns: 1fr 1fr;
+
+        gap: 8px;
+    }
+
+
+    .piscineiros-summary-item {
+        min-height: 74px;
+
+        padding: 11px;
+    }
+
+
+    .piscineiros-summary-item:last-child {
+        grid-column: 1 / -1;
+    }
+
+
+    .piscineiros-summary-item small {
+        display: none;
+    }
+
+
+    .piscineiros-search-inner {
+        flex-wrap: wrap;
+    }
+
+
+    .piscineiros-search-field {
+        flex-basis: 100%;
+    }
+
+
+    .piscineiros-search-inner .btn {
+        flex: 1;
+    }
+
+
+    .piscineiro-sales-main > strong {
+        font-size: 23px;
+    }
+
+
+    .piscineiro-sales-history {
+        grid-template-columns: 1fr 1fr;
+    }
+
+
+    .piscineiro-operational-summary {
+        grid-template-columns: 1fr;
+    }
+
+
+    .piscineiro-client-row {
+        grid-template-columns:
+            minmax(0, 1fr)
+            auto;
+    }
+
+
+    .piscineiro-client-row > div:nth-of-type(3) {
+        display: none;
+    }
+
+
+    .piscineiro-chart-canvas {
+        height: 230px;
+    }
+
+}

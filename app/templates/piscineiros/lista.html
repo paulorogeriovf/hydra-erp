@@ -18,10 +18,6 @@ Piscineiros - Hydra ERP
 {% block content %}
 
 
-<!-- =========================================================
-     CABEÇALHO
-========================================================= -->
-
 <div class="page-header">
 
     <div class="page-title">
@@ -49,79 +45,97 @@ Piscineiros - Hydra ERP
      INDICADORES
 ========================================================= -->
 
-<div class="cards-grid">
+{% set total_clientes = namespace(valor=0) %}
+
+{% for piscineiro in todos_piscineiros %}
+
+    {% set total_clientes.valor =
+        total_clientes.valor + (piscineiro.clientes|length)
+    %}
+
+{% endfor %}
 
 
-    <div class="stat-card teal">
+<div class="piscineiros-summary">
 
-        <div class="stat-label">
-            Total Piscineiros
-        </div>
 
-        <div class="stat-value sm">
-            {{ todos_piscineiros|length }}
-        </div>
+    <div class="piscineiros-summary-item">
 
-        <div class="stat-icon">
+        <div class="piscineiros-summary-icon">
             🏊
         </div>
 
-    </div>
+        <div>
 
+            <span>
+                Total
+            </span>
 
-    <div class="stat-card green">
+            <strong>
+                {{ todos_piscineiros|length }}
+            </strong>
 
-        <div class="stat-label">
-            Ativos
-        </div>
+            <small>
+                piscineiros cadastrados
+            </small>
 
-        <div class="stat-value sm">
-
-            {{
-                todos_piscineiros
-                |selectattr("ativo")
-                |list
-                |length
-            }}
-
-        </div>
-
-        <div class="stat-icon">
-            ✅
         </div>
 
     </div>
 
 
-    <div class="stat-card blue">
+    <div class="piscineiros-summary-item success">
 
-        <div class="stat-label">
-            Clientes Vinculados
+        <div class="piscineiros-summary-icon">
+            ✓
         </div>
 
-        <div class="stat-value sm">
+        <div>
 
-            {% set total_clientes =
-                namespace(valor=0)
-            %}
+            <span>
+                Ativos
+            </span>
 
+            <strong>
 
-            {% for piscineiro in todos_piscineiros %}
+                {{
+                    todos_piscineiros
+                    |selectattr("ativo")
+                    |list
+                    |length
+                }}
 
-                {% set total_clientes.valor =
-                    total_clientes.valor
-                    + (piscineiro.clientes|length)
-                %}
+            </strong>
 
-            {% endfor %}
-
-
-            {{ total_clientes.valor }}
+            <small>
+                profissionais ativos
+            </small>
 
         </div>
 
-        <div class="stat-icon">
+    </div>
+
+
+    <div class="piscineiros-summary-item">
+
+        <div class="piscineiros-summary-icon">
             👥
+        </div>
+
+        <div>
+
+            <span>
+                Clientes vinculados
+            </span>
+
+            <strong>
+                {{ total_clientes.valor }}
+            </strong>
+
+            <small>
+                vínculos atuais
+            </small>
+
         </div>
 
     </div>
@@ -134,38 +148,21 @@ Piscineiros - Hydra ERP
      BUSCA
 ========================================================= -->
 
-<div
-    class="form-card"
-    style="margin-bottom:24px;"
->
+<div class="piscineiros-search">
 
     <form
         method="GET"
         action="{{ url_for('piscineiros.listar') }}"
     >
 
-        <div
-            style="
-                display:flex;
-                gap:10px;
-                align-items:end;
-                flex-wrap:wrap;
-            "
-        >
+        <div class="piscineiros-search-inner">
 
-            <div
-                class="form-group"
-                style="
-                    flex:1;
-                    min-width:250px;
-                    margin-bottom:0;
-                "
-            >
 
-                <label>
-                    🔎 Buscar Piscineiro
-                </label>
+            <div class="piscineiros-search-field">
 
+                <span class="piscineiros-search-icon">
+                    🔎
+                </span>
 
                 <input
                     type="text"
@@ -182,7 +179,7 @@ Piscineiros - Hydra ERP
                 class="btn btn-primary"
                 type="submit"
             >
-                🔍 Buscar
+                Buscar
             </button>
 
 
@@ -197,6 +194,7 @@ Piscineiros - Hydra ERP
 
             {% endif %}
 
+
         </div>
 
     </form>
@@ -205,301 +203,261 @@ Piscineiros - Hydra ERP
 
 
 <!-- =========================================================
-     TABELA
+     LISTAGEM
 ========================================================= -->
 
-<div class="table-wrap">
+<div class="piscineiros-panel">
 
 
-    <div class="table-head">
+    <div class="piscineiros-panel-head">
 
+        <div>
 
-        <span class="table-head-title">
+            <h2>
 
-            {% if busca %}
+                {% if busca %}
 
-                🔎 Resultado da busca
+                    🔎 Resultado da busca
 
-            {% else %}
+                {% else %}
 
-                🏊 Piscineiros cadastrados
+                    🏊 Piscineiros cadastrados
 
-            {% endif %}
+                {% endif %}
 
-        </span>
+            </h2>
 
+            <span>
 
-        {% if busca %}
+                {% if busca %}
 
-            <span
-                style="
-                    font-size:13px;
-                    color:var(--text-light);
-                "
-            >
+                    {{ piscineiros|length }}
+                    resultado(s) para "{{ busca }}"
 
-                {{ piscineiros|length }}
-                resultado(s)
+                {% else %}
+
+                    Profissionais parceiros da Hydra
+
+                {% endif %}
 
             </span>
 
-        {% endif %}
-
+        </div>
 
     </div>
 
 
-    <div style="overflow-x:auto;">
+    {% if piscineiros %}
 
 
-        <table>
+        <div class="piscineiros-list">
 
 
-            <thead>
-
-                <tr>
-
-                    <th>ID</th>
-
-                    <th>
-                        Nome
-                    </th>
-
-                    <th>
-                        Telefone
-                    </th>
-
-                    <th>
-                        WhatsApp
-                    </th>
-
-                    <th>
-                        Cidade
-                    </th>
-
-                    <th>
-                        Clientes
-                    </th>
-
-                    <th>
-                        Status
-                    </th>
-
-                    <th>
-                        Ações
-                    </th>
-
-                </tr>
-
-            </thead>
+            {% for piscineiro in piscineiros %}
 
 
-            <tbody>
+                <div class="piscineiro-row">
 
 
-                {% for piscineiro in piscineiros %}
+                    <div class="piscineiro-main">
+
+                        <div class="piscineiro-avatar">
+
+                            {{ piscineiro.nome[0]|upper }}
+
+                        </div>
 
 
-                    <tr>
-
-
-                        <td>
-                            {{ piscineiro.id }}
-                        </td>
-
-
-                        <td>
+                        <div>
 
                             <strong>
                                 {{ piscineiro.nome }}
                             </strong>
 
-                        </td>
+                            <span>
+
+                                {% if piscineiro.cidade %}
+
+                                    {{ piscineiro.cidade }}
+
+                                {% else %}
+
+                                    Cidade não informada
+
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+                    </div>
 
 
-                        <td>
+                    <div class="piscineiro-data">
 
-                            {{
-                                piscineiro.telefone
-                                or "-"
-                            }}
+                        <span>
+                            Contato
+                        </span>
 
-                        </td>
+                        <strong>
 
+                            {% if piscineiro.whatsapp %}
 
-                        <td>
+                                {{ piscineiro.whatsapp }}
 
-                            {{
-                                piscineiro.whatsapp
-                                or "-"
-                            }}
+                            {% elif piscineiro.telefone %}
 
-                        </td>
+                                {{ piscineiro.telefone }}
 
+                            {% else %}
 
-                        <td>
+                                Não informado
 
-                            {{
-                                piscineiro.cidade
-                                or "-"
-                            }}
+                            {% endif %}
 
-                        </td>
+                        </strong>
+
+                    </div>
 
 
-                        <td>
+                    <div class="piscineiro-data">
 
-                            {{
-                                piscineiro.clientes
-                                |length
-                            }}
+                        <span>
+                            Clientes
+                        </span>
 
-                        </td>
+                        <strong>
+                            👥 {{ piscineiro.clientes|length }}
+                        </strong>
+
+                    </div>
 
 
-                        <td>
+                    <div class="piscineiro-status">
 
+                        {% if piscineiro.ativo %}
+
+                            <span class="badge badge-active">
+                                Ativo
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge badge-inactive">
+                                Inativo
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="piscineiro-actions">
+
+
+                        <a
+                            class="btn btn-primary btn-sm"
+                            href="{{ url_for(
+                                'piscineiros.detalhes',
+                                piscineiro_id=piscineiro.id
+                            ) }}"
+                        >
+                            Ver
+                        </a>
+
+
+                        <a
+                            class="btn btn-ghost btn-sm"
+                            href="{{ url_for(
+                                'piscineiros.editar',
+                                piscineiro_id=piscineiro.id
+                            ) }}"
+                            title="Editar piscineiro"
+                        >
+                            ✏️
+                        </a>
+
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'piscineiros.alterar_status',
+                                piscineiro_id=piscineiro.id
+                            ) }}"
+                        >
 
                             {% if piscineiro.ativo %}
 
-
-                                <span class="badge badge-active">
-
-                                    Ativo
-
-                                </span>
-
-
-                            {% else %}
-
-
-                                <span class="badge badge-inactive">
-
-                                    Inativo
-
-                                </span>
-
-
-                            {% endif %}
-
-
-                        </td>
-
-
-                        <td>
-
-
-                            <div class="action-group">
-
-
-                                <a
-                                    class="btn btn-primary btn-sm"
-                                    href="{{ url_for(
-                                        'piscineiros.detalhes',
-                                        piscineiro_id=piscineiro.id
-                                    ) }}"
-                                >
-                                    👁 Ver
-                                </a>
-
-
-                                <a
+                                <button
                                     class="btn btn-ghost btn-sm"
-                                    href="{{ url_for(
-                                        'piscineiros.editar',
-                                        piscineiro_id=piscineiro.id
-                                    ) }}"
+                                    type="submit"
+                                    title="Inativar piscineiro"
                                 >
-                                    ✏️ Editar
-                                </a>
-
-
-                                <form
-                                    method="POST"
-                                    action="{{ url_for(
-                                        'piscineiros.alterar_status',
-                                        piscineiro_id=piscineiro.id
-                                    ) }}"
-                                >
-
-
-                                    {% if piscineiro.ativo %}
-
-
-                                        <button
-                                            class="btn btn-warning btn-sm"
-                                            type="submit"
-                                        >
-                                            ⏸ Inativar
-                                        </button>
-
-
-                                    {% else %}
-
-
-                                        <button
-                                            class="btn btn-success btn-sm"
-                                            type="submit"
-                                        >
-                                            ▶ Ativar
-                                        </button>
-
-
-                                    {% endif %}
-
-
-                                </form>
-
-
-                            </div>
-
-
-                        </td>
-
-
-                    </tr>
-
-
-                {% else %}
-
-
-                    <tr>
-
-                        <td
-                            colspan="8"
-                            style="
-                                text-align:center;
-                                padding:40px;
-                                color:var(--text-light);
-                            "
-                        >
-
-                            {% if busca %}
-
-                                Nenhum piscineiro encontrado
-                                para "{{ busca }}".
+                                    ⏸
+                                </button>
 
                             {% else %}
 
-                                Nenhum piscineiro cadastrado.
+                                <button
+                                    class="btn btn-success btn-sm"
+                                    type="submit"
+                                >
+                                    Ativar
+                                </button>
 
                             {% endif %}
 
-                        </td>
-
-                    </tr>
+                        </form>
 
 
-                {% endfor %}
+                    </div>
 
 
-            </tbody>
+                </div>
 
 
-        </table>
+            {% endfor %}
 
 
-    </div>
+        </div>
+
+
+    {% else %}
+
+
+        <div class="piscineiros-empty">
+
+            <div>
+                🏊
+            </div>
+
+
+            {% if busca %}
+
+                <strong>
+                    Nenhum piscineiro encontrado
+                </strong>
+
+                <span>
+                    Não encontramos resultados para "{{ busca }}".
+                </span>
+
+            {% else %}
+
+                <strong>
+                    Nenhum piscineiro cadastrado
+                </strong>
+
+                <span>
+                    Cadastre o primeiro profissional para começar.
+                </span>
+
+            {% endif %}
+
+        </div>
+
+
+    {% endif %}
 
 
 </div>

@@ -3,34 +3,64 @@
 
 {% extends "base.html" %}
 
+
 {% block title %}
 Novo Piscineiro - Hydra ERP
 {% endblock %}
+
 
 {% block header_title %}
 🏊 <span>Novo Piscineiro</span>
 {% endblock %}
 
+
 {% block content %}
+
 
 <div class="page-header">
 
     <div class="page-title">
+
         Novo Piscineiro
 
         <small>
             Cadastre um novo profissional
         </small>
+
     </div>
+
+
+    <a
+        class="btn btn-ghost"
+        href="{{ url_for('piscineiros.listar') }}"
+    >
+        ← Voltar
+    </a>
 
 </div>
 
 
-<div class="form-card">
+<div class="form-card piscineiro-form-card">
+
+
+    <div class="piscineiro-form-head">
+
+        <h2>
+            🏊 Dados do piscineiro
+        </h2>
+
+        <span>
+            Informações utilizadas no cadastro e atendimento
+        </span>
+
+    </div>
+
 
     <form method="POST">
 
+
         <div class="form-row">
+
 
             <div class="form-group">
 
@@ -60,10 +90,12 @@ Novo Piscineiro - Hydra ERP
 
             </div>
 
+
         </div>
 
 
         <div class="form-row">
+
 
             <div class="form-group">
 
@@ -92,6 +124,7 @@ Novo Piscineiro - Hydra ERP
 
             </div>
 
+
         </div>
 
 
@@ -117,12 +150,14 @@ Novo Piscineiro - Hydra ERP
 
             <textarea
                 name="observacao"
+                placeholder="Informações adicionais sobre o piscineiro."
             ></textarea>
 
         </div>
 
 
-        <div class="action-group">
+        <div class="piscineiro-form-actions">
+
 
             <button
                 class="btn btn-primary"
@@ -139,10 +174,14 @@ Novo Piscineiro - Hydra ERP
                 Cancelar
             </a>
 
+
         </div>
+
 
     </form>
 
+
 </div>
+
 
 {% endblock %}
