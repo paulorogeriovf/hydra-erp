@@ -2,9 +2,11 @@
      Responsável por: definir a estrutura visual base utilizada pelas páginas do sistema. -->
 
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -20,249 +22,526 @@
         rel="stylesheet"
         href="{{ url_for('static', filename='css/main.css') }}"
     >
+
+    <link
+    rel="icon"
+    type="image/png"
+    href="{{ url_for('static', filename='img/logo.jpg') }}"
+>
+
 </head>
+
 
 <body>
 
-    <div id="overlay" onclick="closeSidebar()"></div>
+
+    <!-- =========================================================
+         OVERLAY MOBILE
+    ========================================================== -->
+
+    <div
+        id="overlay"
+        onclick="closeSidebar()"
+    ></div>
 
 
-    <!-- SIDEBAR -->
+
+    <!-- =========================================================
+         SIDEBAR
+    ========================================================== -->
+
     <aside id="sidebar">
+
+
+        <!-- LOGO -->
 
         <div class="sidebar-logo">
 
-            <div class="logo-mark">
-                🌊
-            </div>
+            <div class="logo-mark logo-mark-image">
 
-            <div class="logo-text">
-                HYDRA
-            </div>
+    <img
+        src="{{ url_for('static', filename='img/logo.jpg') }}"
+        alt="Hydra Piscinas"
+    >
+
+</div>
 
             <div class="logo-sub">
-                Gestão
-            </div>
+        Sistema de Gestão
+    </div>
 
         </div>
 
 
+
+        <!-- NAVEGAÇÃO -->
+
         <nav class="nav-section">
 
+
             <!-- PRINCIPAL -->
+
             <div class="nav-label">
                 Principal
             </div>
 
-            <a
-    class="nav-item {% if request.blueprint == 'dashboard' %}active{% endif %}"
-    href="{{ url_for('dashboard.index') }}"
->
-    <span class="nav-icon">🏠</span>
-    Dashboard
-</a>
 
             <a
-                class="nav-item {% if request.blueprint == 'piscineiros' %}active{% endif %}"
+                class="
+                    nav-item
+                    {% if request.blueprint == 'dashboard' %}
+                        active
+                    {% endif %}
+                "
+                href="{{ url_for('dashboard.index') }}"
+            >
+
+                <span class="nav-icon">
+                    🏠
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                class="
+                    nav-item
+                    {% if request.blueprint == 'piscineiros' %}
+                        active
+                    {% endif %}
+                "
                 href="{{ url_for('piscineiros.listar') }}"
             >
-                <span class="nav-icon">🏊</span>
-                Piscineiros
+
+                <span class="nav-icon">
+                    🏊
+                </span>
+
+                <span>
+                    Piscineiros
+                </span>
+
             </a>
 
+
             <a
-                class="nav-item {% if request.blueprint == 'clientes' %}active{% endif %}"
+                class="
+                    nav-item
+                    {% if request.blueprint == 'clientes' %}
+                        active
+                    {% endif %}
+                "
                 href="{{ url_for('clientes.listar') }}"
             >
-                <span class="nav-icon">👥</span>
-                Clientes
+
+                <span class="nav-icon">
+                    👥
+                </span>
+
+                <span>
+                    Clientes
+                </span>
+
             </a>
+
 
 
             <!-- OPERACIONAL -->
-            <div
-                class="nav-label"
-                style="margin-top:6px;"
-            >
+
+            <div class="nav-label nav-label-section">
                 Operacional
             </div>
 
-            <a
-    class="nav-item {% if request.blueprint == 'produtos' %}active{% endif %}"
-    href="{{ url_for('produtos.listar') }}"
->
-    <span class="nav-icon">📦</span>
-    Produtos
-</a>
 
-<a
-    class="nav-item {% if request.blueprint == 'orcamentos' %}active{% endif %}"
-    href="{{ url_for('orcamentos.index') }}"
->
-    <span class="nav-icon">🧾</span>
-    Orçamentos
-</a>
+            <a
+                class="
+                    nav-item
+                    {% if request.blueprint == 'produtos' %}
+                        active
+                    {% endif %}
+                "
+                href="{{ url_for('produtos.listar') }}"
+            >
+
+                <span class="nav-icon">
+                    📦
+                </span>
+
+                <span>
+                    Produtos
+                </span>
+
+            </a>
+
+
+            <a
+                class="
+                    nav-item
+                    {% if request.blueprint == 'orcamentos' %}
+                        active
+                    {% endif %}
+                "
+                href="{{ url_for('orcamentos.index') }}"
+            >
+
+                <span class="nav-icon">
+                    🧾
+                </span>
+
+                <span>
+                    Orçamentos
+                </span>
+
+            </a>
+
 
 
             <!-- FINANCEIRO -->
-            <div
-                class="nav-label"
-                style="margin-top:6px;"
-            >
+
+            <div class="nav-label nav-label-section">
                 Financeiro
             </div>
 
-            <a
-    class="nav-item {% if request.blueprint == 'notinhas' %}active{% endif %}"
-    href="{{ url_for('notinhas.listar') }}"
->
-    <span class="nav-icon">📄</span>
-    Notinhas
-</a>
 
             <a
-    class="nav-item {% if request.blueprint == 'comissoes' %}active{% endif %}"
-    href="{{ url_for('comissoes.index') }}"
->
-    <span class="nav-icon">💰</span>
-    Comissões
-</a>
+                class="
+                    nav-item
+                    {% if request.blueprint == 'notinhas' %}
+                        active
+                    {% endif %}
+                "
+                href="{{ url_for('notinhas.listar') }}"
+            >
+
+                <span class="nav-icon">
+                    📄
+                </span>
+
+                <span>
+                    Notinhas
+                </span>
+
+            </a>
+
 
             <a
-    class="nav-item {% if request.blueprint == 'cobrancas' %}active{% endif %}"
-    href="{{ url_for('cobrancas.index') }}"
->
-    <span class="nav-icon">📅</span>
-    Cobranças
-</a>
+                class="
+                    nav-item
+                    {% if request.blueprint == 'comissoes' %}
+                        active
+                    {% endif %}
+                "
+                href="{{ url_for('comissoes.index') }}"
+            >
 
-<a
-    class="nav-item"
-    href="{{ url_for('historico.index') }}"
->
-    <span class="nav-icon">📜</span>
-    Histórico
-</a>
+                <span class="nav-icon">
+                    💰
+                </span>
 
-<div
-    class="nav-label"
-    style="margin-top:6px;"
->
-    Inteligência
-</div>
+                <span>
+                    Comissões
+                </span>
 
-<a
-    class="nav-item"
-    href="{{ url_for('inteligencia_vendas.index') }}"
->
-    <span class="nav-icon">📊</span>
-    Inteligência de Vendas
-</a>
+            </a>
 
-<a
-    class="nav-item"
-    href="{{ url_for('inteligencia_vendas.oportunidades') }}"
->
-    <span class="nav-icon">💡</span>
-     Ver Oportunidades
-</a>
+
+            <a
+                class="
+                    nav-item
+                    {% if request.blueprint == 'cobrancas' %}
+                        active
+                    {% endif %}
+                "
+                href="{{ url_for('cobrancas.index') }}"
+            >
+
+                <span class="nav-icon">
+                    📅
+                </span>
+
+                <span>
+                    Cobranças
+                </span>
+
+            </a>
+
+
+            <a
+                class="
+                    nav-item
+                    {% if request.blueprint == 'historico' %}
+                        active
+                    {% endif %}
+                "
+                href="{{ url_for('historico.index') }}"
+            >
+
+                <span class="nav-icon">
+                    📜
+                </span>
+
+                <span>
+                    Histórico
+                </span>
+
+            </a>
+
+
+
+            <!-- INTELIGÊNCIA -->
+
+            <div class="nav-label nav-label-section">
+                Inteligência
+            </div>
+
+
+            <a
+                class="
+                    nav-item
+                    {% if request.endpoint == 'inteligencia_vendas.index' %}
+                        active
+                    {% endif %}
+                "
+                href="{{ url_for('inteligencia_vendas.index') }}"
+            >
+
+                <span class="nav-icon">
+                    📊
+                </span>
+
+                <span>
+                    Inteligência de Vendas
+                </span>
+
+            </a>
+
+
+            <a
+                class="
+                    nav-item
+                    {% if request.endpoint == 'inteligencia_vendas.oportunidades' %}
+                        active
+                    {% endif %}
+                "
+                href="{{ url_for('inteligencia_vendas.oportunidades') }}"
+            >
+
+                <span class="nav-icon">
+                    💡
+                </span>
+
+                <span>
+                    Oportunidades
+                </span>
+
+            </a>
+
 
         </nav>
 
 
-        <!-- RODAPÉ DA SIDEBAR -->
+
+        <!-- =====================================================
+             RODAPÉ
+        ====================================================== -->
+
         <div class="sidebar-footer">
-            Hydra Piscinas
+
+            <div class="sidebar-footer-brand">
+                Hydra Piscinas
+            </div>
+
+            <div class="sidebar-footer-system">
+                Sistema de Gestão
+            </div>
+
         </div>
+
 
     </aside>
 
 
-    <!-- CONTEÚDO PRINCIPAL -->
+
+    <!-- =========================================================
+         CONTEÚDO PRINCIPAL
+    ========================================================== -->
+
     <div id="main">
+
+
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
 
         <header id="header">
 
-            <div
-                style="
-                    display:flex;
-                    align-items:center;
-                    gap:14px;
-                "
-            >
+
+            <div class="header-left">
+
 
                 <button
                     class="btn-menu"
+                    type="button"
                     onclick="toggleSidebar()"
+                    aria-label="Abrir menu"
                 >
                     ☰
                 </button>
 
+
                 <div class="header-title">
 
                     {% block header_title %}
-                        <span>Hydra ERP</span>
+
+                        <span>
+                            Hydra ERP
+                        </span>
+
                     {% endblock %}
 
                 </div>
 
+
             </div>
+
 
 
             <div class="header-right">
 
                 <div class="header-greeting">
+
+                    Hydra ERP
+
+                    <span class="header-divider">
+                        •
+                    </span>
+
                     Sistema de Gestão
+
                 </div>
 
             </div>
 
+
         </header>
 
 
+
+        <!-- =====================================================
+             CONTEÚDO
+        ====================================================== -->
+
         <main id="content">
 
-            <!-- MENSAGENS FLASK -->
-            {% with mensagens = get_flashed_messages(with_categories=true) %}
+
+            <!-- =============================================
+                 MENSAGENS FLASK
+            ============================================== -->
+
+            {% with mensagens =
+                get_flashed_messages(
+                    with_categories=true
+                )
+            %}
+
 
                 {% if mensagens %}
 
-                    {% for categoria, mensagem in mensagens %}
 
-                        <div
-                            class="
-                                {% if categoria == 'success' %}
-                                    badge badge-paid
-                                {% else %}
-                                    badge badge-late
-                                {% endif %}
-                            "
-                            style="margin-bottom:15px;"
-                        >
+                    <div class="flash-container">
 
-                            {{ mensagem }}
 
-                        </div>
+                        {% for categoria, mensagem in mensagens %}
 
-                    {% endfor %}
+
+                            <div
+                                class="
+                                    flash-message
+
+                                    {% if categoria == 'success' %}
+                                        flash-success
+
+                                    {% elif categoria == 'warning' %}
+                                        flash-warning
+
+                                    {% else %}
+                                        flash-error
+                                    {% endif %}
+                                "
+                            >
+
+
+                                <span class="flash-icon">
+
+                                    {% if categoria == 'success' %}
+
+                                        ✓
+
+                                    {% elif categoria == 'warning' %}
+
+                                        !
+
+                                    {% else %}
+
+                                        ×
+
+                                    {% endif %}
+
+                                </span>
+
+
+                                <span>
+                                    {{ mensagem }}
+                                </span>
+
+
+                            </div>
+
+
+                        {% endfor %}
+
+
+                    </div>
+
 
                 {% endif %}
+
 
             {% endwith %}
 
 
-            <!-- CONTEÚDO ESPECÍFICO DE CADA PÁGINA -->
+
+            <!-- =============================================
+                 CONTEÚDO ESPECÍFICO DA PÁGINA
+            ============================================== -->
+
             {% block content %}
             {% endblock %}
 
+
         </main>
+
 
     </div>
 
 
+
+    <!-- =========================================================
+         JAVASCRIPT GLOBAL
+    ========================================================== -->
+
     <script
         src="{{ url_for('static', filename='js/main.js') }}"
     ></script>
+
+
+    {% block scripts %}
+    {% endblock %}
+
 
 </body>
 
