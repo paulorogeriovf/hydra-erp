@@ -7688,3 +7688,478 @@ td {
     }
 
 }
+
+/* =========================================================
+   INTELIGÊNCIA DE VENDAS
+========================================================= */
+
+.inteligencia-summary {
+    display: grid;
+
+    grid-template-columns:
+        minmax(280px, 1fr)
+        minmax(0, 1.7fr);
+
+    gap: 14px;
+
+    margin-bottom: 22px;
+}
+
+
+.inteligencia-main-card {
+    padding: 19px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--pool);
+
+    border-radius: 13px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.inteligencia-main-card > span {
+    display: block;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.35px;
+
+    color: var(--text-light);
+}
+
+
+.inteligencia-main-card > strong {
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 27px;
+
+    color: var(--text-dark);
+}
+
+
+.inteligencia-main-card > small {
+    display: block;
+
+    margin-top: 6px;
+
+    font-size: 9px;
+
+    color: var(--text-light);
+}
+
+
+.inteligencia-summary-grid {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 10px;
+}
+
+
+.inteligencia-summary-item {
+    padding: 15px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.inteligencia-summary-item span {
+    font-size: 8px;
+
+    text-transform: uppercase;
+
+    color: var(--text-light);
+}
+
+
+.inteligencia-summary-item strong {
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 15px;
+
+    color: var(--text-dark);
+}
+
+
+
+/* =========================================================
+   RANKING GRID
+========================================================= */
+
+.inteligencia-ranking-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 15px;
+
+    margin-bottom: 15px;
+}
+
+
+.inteligencia-panel {
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.inteligencia-panel-full {
+    margin-bottom: 20px;
+}
+
+
+.inteligencia-panel-head {
+    min-height: 62px;
+
+    padding: 13px 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    border-bottom: 1px solid var(--border);
+
+    background: #fbfdff;
+}
+
+
+.inteligencia-panel-head h2 {
+    margin: 0;
+
+    font-size: 12px;
+
+    color: var(--text-dark);
+}
+
+
+.inteligencia-panel-head span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 9px;
+
+    color: var(--text-light);
+}
+
+
+.inteligencia-ranking-row {
+    min-height: 64px;
+
+    padding: 10px 13px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.inteligencia-ranking-row:last-child {
+    border-bottom: none;
+}
+
+
+.inteligencia-rank-position {
+    width: 27px;
+
+    flex-shrink: 0;
+
+    text-align: center;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    color: var(--text-mid);
+}
+
+
+.inteligencia-rank-main {
+    min-width: 0;
+
+    flex: 1;
+}
+
+
+.inteligencia-rank-main strong {
+    display: block;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    font-size: 10px;
+
+    color: var(--text-dark);
+}
+
+
+.inteligencia-rank-main span {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 8px;
+
+    color: var(--text-light);
+}
+
+
+.inteligencia-rank-value {
+    flex-shrink: 0;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    color: var(--text-dark);
+}
+
+
+
+/* =========================================================
+   PISCINEIROS
+========================================================= */
+
+.inteligencia-piscineiro-row {
+    min-height: 65px;
+
+    padding: 10px 15px;
+
+    display: grid;
+
+    grid-template-columns:
+        30px
+        34px
+        minmax(160px, 1fr)
+        minmax(100px, auto)
+        auto;
+
+    align-items: center;
+
+    gap: 10px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.inteligencia-piscineiro-row:last-child {
+    border-bottom: none;
+}
+
+
+.inteligencia-piscineiro-avatar {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--pool-light);
+
+    border-radius: 8px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    color: var(--pool-dark);
+}
+
+
+
+/* =========================================================
+   OPORTUNIDADE
+========================================================= */
+
+.inteligencia-opportunity-card {
+    padding: 17px 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-left: 4px solid #f59e0b;
+
+    border-radius: 13px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.inteligencia-opportunity-card span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    color: #b45309;
+}
+
+
+.inteligencia-opportunity-card strong {
+    display: block;
+
+    font-size: 12px;
+
+    color: var(--text-dark);
+}
+
+
+.inteligencia-opportunity-card p {
+    max-width: 670px;
+
+    margin: 5px 0 0;
+
+    font-size: 9px;
+    line-height: 1.5;
+
+    color: var(--text-light);
+}
+
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.inteligencia-empty {
+    min-height: 100px;
+
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    text-align: center;
+
+    color: var(--text-light);
+}
+
+
+.inteligencia-empty strong {
+    font-size: 10px;
+}
+
+
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+@media (max-width: 950px) {
+
+    .inteligencia-summary {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .inteligencia-ranking-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .inteligencia-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .inteligencia-opportunity-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+    .inteligencia-opportunity-card .btn {
+        width: 100%;
+
+        text-align: center;
+    }
+
+
+    .inteligencia-piscineiro-row {
+        grid-template-columns:
+            27px
+            34px
+            minmax(0, 1fr)
+            auto;
+    }
+
+
+    .inteligencia-piscineiro-row
+    .inteligencia-rank-value {
+        display: none;
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .inteligencia-main-card > strong {
+        font-size: 23px;
+    }
+
+
+    .inteligencia-panel-head {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+    .inteligencia-ranking-row {
+        flex-wrap: wrap;
+    }
+
+}

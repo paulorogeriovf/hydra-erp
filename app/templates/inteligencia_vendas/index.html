@@ -1,6 +1,6 @@
 <!-- Hydra ERP
      Responsável por: exibir indicadores,
-     rankings e oportunidades comerciais. -->
+     rankings e atalhos da Inteligência de Vendas. -->
 
 {% extends "base.html" %}
 
@@ -29,28 +29,38 @@ Inteligência de Vendas - Hydra ERP
         Inteligência de Vendas
 
         <small>
-            Indicadores, rankings e oportunidades comerciais
+            Indicadores e rankings para acompanhar o desempenho comercial
         </small>
 
     </div>
+
+
+    <a
+        class="btn btn-primary"
+        href="{{ url_for(
+            'inteligencia_vendas.oportunidades'
+        ) }}"
+    >
+        💡 Ver Oportunidades
+    </a>
 
 </div>
 
 
 <!-- =========================================================
-     RESUMO
+     RESUMO PRINCIPAL
 ========================================================= -->
 
-<div class="cards-grid">
+<div class="inteligencia-summary">
 
 
-    <div class="stat-card blue">
+    <div class="inteligencia-main-card">
 
-        <div class="stat-label">
-            Vendas no Mês
-        </div>
+        <span>
+            Vendas no mês
+        </span>
 
-        <div class="stat-value">
+        <strong>
 
             R$ {{
                 "%.2f"
@@ -58,74 +68,68 @@ Inteligência de Vendas - Hydra ERP
                 |replace(".", ",")
             }}
 
-        </div>
+        </strong>
 
-        <div class="stat-icon">
-            💰
-        </div>
-
-    </div>
-
-
-    <div class="stat-card green">
-
-        <div class="stat-label">
-            Ticket Médio
-        </div>
-
-        <div class="stat-value">
-
-            R$ {{
-                "%.2f"
-                |format(resumo.ticket_medio)
-                |replace(".", ",")
-            }}
-
-        </div>
-
-        <div class="stat-icon">
-            🧾
-        </div>
+        <small>
+            Movimentação registrada no mês atual
+        </small>
 
     </div>
 
 
-    <div class="stat-card amber">
-
-        <div class="stat-label">
-            Clientes no Mês
-        </div>
-
-        <div class="stat-value sm">
-            {{ resumo.clientes_mes }}
-        </div>
-
-        <div class="stat-icon">
-            👥
-        </div>
-
-    </div>
+    <div class="inteligencia-summary-grid">
 
 
-    <div class="stat-card blue">
+        <div class="inteligencia-summary-item">
 
-        <div class="stat-label">
-            Últimos 3 Meses
-        </div>
+            <span>
+                Ticket médio
+            </span>
 
-        <div class="stat-value">
+            <strong>
 
-            R$ {{
-                "%.2f"
-                |format(resumo.total_3_meses)
-                |replace(".", ",")
-            }}
+                R$ {{
+                    "%.2f"
+                    |format(resumo.ticket_medio)
+                    |replace(".", ",")
+                }}
+
+            </strong>
 
         </div>
 
-        <div class="stat-icon">
-            📈
+
+        <div class="inteligencia-summary-item">
+
+            <span>
+                Clientes no mês
+            </span>
+
+            <strong>
+                {{ resumo.clientes_mes }}
+            </strong>
+
         </div>
+
+
+        <div class="inteligencia-summary-item">
+
+            <span>
+                Últimos 3 meses
+            </span>
+
+            <strong>
+
+                R$ {{
+                    "%.2f"
+                    |format(resumo.total_3_meses)
+                    |replace(".", ",")
+                }}
+
+            </strong>
+
+        </div>
+
 
     </div>
 
@@ -134,425 +138,443 @@ Inteligência de Vendas - Hydra ERP
 
 
 <!-- =========================================================
-     RANKING DE PRODUTOS
+     RANKINGS
 ========================================================= -->
 
-<div class="section-title">
-    🏆 Produtos Mais Vendidos
-</div>
+<div class="inteligencia-ranking-grid">
 
 
-<div class="table-wrap">
+    <!-- =====================================================
+         PRODUTOS
+    ====================================================== -->
 
-    <div class="table-head">
-
-        <span class="table-head-title">
-            📦 Ranking de Produtos
-        </span>
-
-    </div>
+    <div class="inteligencia-panel">
 
 
-    <div style="overflow-x:auto;">
+        <div class="inteligencia-panel-head">
 
-        <table>
+            <div>
 
-            <thead>
+                <h2>
+                    📦 Produtos mais vendidos
+                </h2>
 
-                <tr>
-                    <th>#</th>
-                    <th>Produto</th>
-                    <th>Quantidade</th>
-                    <th>Valor Movimentado</th>
-                </tr>
+                <span>
+                    Produtos com maior movimentação
+                </span>
 
-            </thead>
-
-
-            <tbody>
-
-                {% for item in produtos %}
-
-                    <tr>
-
-                        <td>
-                            {{ loop.index }}
-                        </td>
+            </div>
 
 
-                        <td>
+            <a
+                class="btn btn-ghost btn-sm"
+                href="{{ url_for(
+                    'inteligencia_vendas.ranking_produtos'
+                ) }}"
+            >
+                Ver ranking →
+            </a>
 
-                            <strong>
-                                {{ item.nome_produto }}
-                            </strong>
-
-                        </td>
+        </div>
 
 
-                        <td>
+        <div class="inteligencia-ranking-list">
+
+
+            {% for item in produtos %}
+
+
+                <div class="inteligencia-ranking-row">
+
+
+                    <div class="inteligencia-rank-position">
+
+                        {% if loop.index == 1 %}
+
+                            🥇
+
+                        {% elif loop.index == 2 %}
+
+                            🥈
+
+                        {% elif loop.index == 3 %}
+
+                            🥉
+
+                        {% else %}
+
+                            {{ loop.index }}º
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="inteligencia-rank-main">
+
+                        <strong>
+                            {{ item.nome_produto }}
+                        </strong>
+
+                        <span>
                             {{ item.quantidade_total }}
-                        </td>
+                            unidade(s)
+                        </span>
+
+                    </div>
 
 
-                        <td>
+                    <div class="inteligencia-rank-value">
 
-                            <strong>
+                        R$ {{
+                            "%.2f"
+                            |format(item.valor_total)
+                            |replace(".", ",")
+                        }}
 
-                                R$ {{
-                                    "%.2f"
-                                    |format(item.valor_total)
-                                    |replace(".", ",")
-                                }}
-
-                            </strong>
-
-                        </td>
-
-                    </tr>
+                    </div>
 
 
-                {% else %}
-
-                    <tr>
-
-                        <td
-                            colspan="4"
-                            style="
-                                text-align:center;
-                                padding:35px;
-                                color:var(--text-light);
-                            "
-                        >
-                            Nenhuma venda registrada ainda.
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-        <div
-    style="
-        margin-top:12px;
-        text-align:right;
-    "
->
-    <a
-        class="btn btn-ghost btn-sm"
-        href="{{ url_for(
-            'inteligencia_vendas.ranking_produtos'
-        ) }}"
-    >
-        📦 Ver ranking completo
-    </a>
-</div>
-
-    </div>
-
-</div>
+                </div>
 
 
-<!-- =========================================================
-     RANKING DE CLIENTES
-========================================================= -->
-
-<div
-    class="section-title"
-    style="margin-top:30px;"
->
-    👤 Clientes que Mais Compram
-</div>
+            {% else %}
 
 
-<div class="table-wrap">
+                <div class="inteligencia-empty">
 
-    <div class="table-head">
+                    📦
 
-        <span class="table-head-title">
-            🏆 Ranking de Clientes
-        </span>
+                    <strong>
+                        Nenhuma venda registrada
+                    </strong>
+
+                </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
 
     </div>
 
 
-    <div style="overflow-x:auto;">
+    <!-- =====================================================
+         CLIENTES
+    ====================================================== -->
 
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>#</th>
-                    <th>Cliente</th>
-                    <th>Notinhas</th>
-                    <th>Total Comprado</th>
-                    <th>Última Compra</th>
-                    <th>Ações</th>
-                </tr>
-
-            </thead>
+    <div class="inteligencia-panel">
 
 
-            <tbody>
+        <div class="inteligencia-panel-head">
 
-                {% for cliente, valor_total, quantidade_notinhas, ultima_compra in clientes %}
+            <div>
 
-                    <tr>
+                <h2>
+                    👤 Clientes que mais compram
+                </h2>
 
-                        <td>
-                            {{ loop.index }}
-                        </td>
+                <span>
+                    Maiores compradores da Hydra
+                </span>
 
-
-                        <td>
-
-                            <strong>
-                                {{ cliente.nome }}
-                            </strong>
-
-                        </td>
+            </div>
 
 
-                        <td>
+            <a
+                class="btn btn-ghost btn-sm"
+                href="{{ url_for(
+                    'inteligencia_vendas.ranking_clientes'
+                ) }}"
+            >
+                Ver ranking →
+            </a>
+
+        </div>
+
+
+        <div class="inteligencia-ranking-list">
+
+
+            {% for cliente, valor_total, quantidade_notinhas, ultima_compra in clientes %}
+
+
+                <div class="inteligencia-ranking-row">
+
+
+                    <div class="inteligencia-rank-position">
+
+                        {% if loop.index == 1 %}
+
+                            🥇
+
+                        {% elif loop.index == 2 %}
+
+                            🥈
+
+                        {% elif loop.index == 3 %}
+
+                            🥉
+
+                        {% else %}
+
+                            {{ loop.index }}º
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="inteligencia-rank-main">
+
+                        <strong>
+                            {{ cliente.nome }}
+                        </strong>
+
+                        <span>
+
                             {{ quantidade_notinhas }}
-                        </td>
-
-
-                        <td>
-
-                            <strong>
-
-                                R$ {{
-                                    "%.2f"
-                                    |format(valor_total)
-                                    |replace(".", ",")
-                                }}
-
-                            </strong>
-
-                        </td>
-
-
-                        <td>
+                            notinha(s)
 
                             {% if ultima_compra %}
 
+                                · última
                                 {{
                                     ultima_compra
                                     .strftime("%d/%m/%Y")
                                 }}
 
-                            {% else %}
-
-                                —
-
                             {% endif %}
 
-                        </td>
+                        </span>
+
+                    </div>
 
 
-                        <td>
+                    <div class="inteligencia-rank-value">
 
-                            <a
-                                class="btn btn-ghost btn-sm"
-                                href="{{ url_for(
-                                    'clientes.detalhes',
-                                    cliente_id=cliente.id
-                                ) }}"
-                            >
-                                👁 Ver
-                            </a>
+                        R$ {{
+                            "%.2f"
+                            |format(valor_total)
+                            |replace(".", ",")
+                        }}
 
-                        </td>
-
-                    </tr>
+                    </div>
 
 
-                {% else %}
+                    <a
+                        class="btn btn-ghost btn-sm"
+                        href="{{ url_for(
+                            'clientes.detalhes',
+                            cliente_id=cliente.id
+                        ) }}"
+                    >
+                        Ver
+                    </a>
 
-                    <tr>
 
-                        <td
-                            colspan="6"
-                            style="
-                                text-align:center;
-                                padding:35px;
-                                color:var(--text-light);
-                            "
-                        >
-                            Nenhum cliente com compras ainda.
-                        </td>
+                </div>
 
-                    </tr>
 
-                {% endfor %}
+            {% else %}
 
-            </tbody>
 
-        </table>
+                <div class="inteligencia-empty">
 
-        <div
-    style="
-        margin-top:12px;
-        text-align:right;
-    "
->
-    <a
-        class="btn btn-ghost btn-sm"
-        href="{{ url_for(
-            'inteligencia_vendas.ranking_clientes'
-        ) }}"
-    >
-        👤 Ver ranking completo
-    </a>
-</div>
+                    👤
+
+                    <strong>
+                        Nenhum cliente com compras
+                    </strong>
+
+                </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
 
     </div>
+
 
 </div>
 
 
 <!-- =========================================================
-     RANKING DE PISCINEIROS
+     PISCINEIROS
 ========================================================= -->
 
-<div
-    class="section-title"
-    style="margin-top:30px;"
->
-    🏊 Piscineiros que Mais Movimentam
+<div class="inteligencia-panel inteligencia-panel-full">
+
+
+    <div class="inteligencia-panel-head">
+
+        <div>
+
+            <h2>
+                🏊 Piscineiros que mais movimentam
+            </h2>
+
+            <span>
+                Ranking de movimentação por parceiro
+            </span>
+
+        </div>
+
+
+        <a
+            class="btn btn-ghost btn-sm"
+            href="{{ url_for(
+                'inteligencia_vendas.ranking_piscineiros'
+            ) }}"
+        >
+            Ver ranking completo →
+        </a>
+
+    </div>
+
+
+    <div class="inteligencia-piscineiros">
+
+
+        {% for piscineiro, valor_total, quantidade_notinhas in piscineiros %}
+
+
+            <div class="inteligencia-piscineiro-row">
+
+
+                <div class="inteligencia-rank-position">
+
+                    {% if loop.index == 1 %}
+
+                        🥇
+
+                    {% elif loop.index == 2 %}
+
+                        🥈
+
+                    {% elif loop.index == 3 %}
+
+                        🥉
+
+                    {% else %}
+
+                        {{ loop.index }}º
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="inteligencia-piscineiro-avatar">
+
+                    {{ piscineiro.nome[0]|upper }}
+
+                </div>
+
+
+                <div class="inteligencia-rank-main">
+
+                    <strong>
+                        {{ piscineiro.nome }}
+                    </strong>
+
+                    <span>
+                        {{ quantidade_notinhas }}
+                        notinha(s)
+                    </span>
+
+                </div>
+
+
+                <div class="inteligencia-rank-value">
+
+                    R$ {{
+                        "%.2f"
+                        |format(valor_total)
+                        |replace(".", ",")
+                    }}
+
+                </div>
+
+
+                <a
+                    class="btn btn-ghost btn-sm"
+                    href="{{ url_for(
+                        'piscineiros.detalhes',
+                        piscineiro_id=piscineiro.id
+                    ) }}"
+                >
+                    Ver
+                </a>
+
+
+            </div>
+
+
+        {% else %}
+
+
+            <div class="inteligencia-empty">
+
+                🏊
+
+                <strong>
+                    Nenhum piscineiro com movimentação
+                </strong>
+
+            </div>
+
+
+        {% endfor %}
+
+
+    </div>
+
+
 </div>
 
 
-<div class="table-wrap">
+<!-- =========================================================
+     OPORTUNIDADES
+========================================================= -->
 
-    <div class="table-head">
+<div class="inteligencia-opportunity-card">
 
-        <span class="table-head-title">
-            🏆 Ranking de Piscineiros
+
+    <div>
+
+        <span>
+            💡 Inteligência comercial
         </span>
 
+        <strong>
+            Confira possíveis oportunidades de novas vendas
+        </strong>
+
+        <p>
+            O sistema analisa o histórico de compras para identificar
+            produtos e clientes que podem estar fora do padrão habitual.
+        </p>
+
     </div>
 
 
-    <div style="overflow-x:auto;">
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>#</th>
-                    <th>Piscineiro</th>
-                    <th>Notinhas</th>
-                    <th>Valor Movimentado</th>
-                    <th>Ações</th>
-                </tr>
-
-            </thead>
-
-
-            <tbody>
-
-                {% for piscineiro, valor_total, quantidade_notinhas in piscineiros %}
-
-                    <tr>
-
-                        <td>
-                            {{ loop.index }}
-                        </td>
-
-
-                        <td>
-
-                            <strong>
-                                {{ piscineiro.nome }}
-                            </strong>
-
-                        </td>
-
-
-                        <td>
-                            {{ quantidade_notinhas }}
-                        </td>
-
-
-                        <td>
-
-                            <strong>
-
-                                R$ {{
-                                    "%.2f"
-                                    |format(valor_total)
-                                    |replace(".", ",")
-                                }}
-
-                            </strong>
-
-                        </td>
-
-
-                        <td>
-
-                            <a
-                                class="btn btn-ghost btn-sm"
-                                href="{{ url_for(
-                                    'piscineiros.detalhes',
-                                    piscineiro_id=piscineiro.id
-                                ) }}"
-                            >
-                                👁 Ver
-                            </a>
-
-                        </td>
-
-                    </tr>
-
-
-                {% else %}
-
-                    <tr>
-
-                        <td
-                            colspan="5"
-                            style="
-                                text-align:center;
-                                padding:35px;
-                                color:var(--text-light);
-                            "
-                        >
-                            Nenhum piscineiro com movimentação ainda.
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-        <div
-    style="
-        margin-top:12px;
-        text-align:right;
-    "
->
     <a
-        class="btn btn-ghost btn-sm"
+        class="btn btn-primary"
         href="{{ url_for(
-            'inteligencia_vendas.ranking_piscineiros'
+            'inteligencia_vendas.oportunidades'
         ) }}"
     >
-        🏊 Ver ranking completo
+        Ver Oportunidades
     </a>
-</div>
 
-    </div>
 
 </div>
+
 
 {% endblock %}
