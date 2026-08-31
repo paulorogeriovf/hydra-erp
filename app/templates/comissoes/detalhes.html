@@ -4,15 +4,23 @@
 
 {% extends "base.html" %}
 
+
 {% block title %}
 Comissão - {{ piscineiro.nome }} - Hydra ERP
 {% endblock %}
+
 
 {% block header_title %}
 💰 <span>Comissão - {{ piscineiro.nome }}</span>
 {% endblock %}
 
+
 {% block content %}
+
+
+<!-- =========================================================
+     CABEÇALHO
+========================================================= -->
 
 <div class="page-header">
 
@@ -37,315 +45,555 @@ Comissão - {{ piscineiro.nome }} - Hydra ERP
 </div>
 
 
-<div class="cards-grid">
 
-    <div class="stat-card blue">
+<!-- =========================================================
+     RESUMO FINANCEIRO
+========================================================= -->
 
-        <div class="stat-label">
-            Total Gerado
-        </div>
-
-        <div class="stat-value">
-            R$ {{ "%.2f"|format(gerado)|replace(".", ",") }}
-        </div>
-
-        <div class="stat-icon">
-            📈
-        </div>
-
-    </div>
+<div class="comissao-detail-summary">
 
 
-    <div class="stat-card amber">
+    <!-- DISPONÍVEL -->
 
-        <div class="stat-label">
-            Total Retirado
-        </div>
+    <div class="comissao-main-balance">
 
-        <div class="stat-value">
-            R$ {{ "%.2f"|format(retirado)|replace(".", ",") }}
-        </div>
-
-        <div class="stat-icon">
-            💸
-        </div>
-
-    </div>
-
-
-    <div class="stat-card green">
-
-        <div class="stat-label">
-            Disponível
-        </div>
-
-        <div class="stat-value">
-            R$ {{ "%.2f"|format(saldo)|replace(".", ",") }}
-        </div>
-
-        <div class="stat-icon">
+        <div class="comissao-main-icon">
             💰
         </div>
 
-    </div>
 
-</div>
+        <div>
+
+            <span>
+                Saldo disponível
+            </span>
+
+            <strong>
+
+                R$ {{
+                    "%.2f"
+                    |format(saldo)
+                    |replace(".", ",")
+                }}
+
+            </strong>
 
 
-{% if saldo > 0 %}
+            <small>
 
-<div class="section-title">
-    💵 Registrar Retirada
-</div>
+                {% if saldo > 0 %}
 
+                    Valor disponível para retirada
 
-<div class="form-card">
+                {% else %}
 
-    <form
-        method="POST"
-        action="{{ url_for(
-            'comissoes.registrar_retirada',
-            piscineiro_id=piscineiro.id
-        ) }}"
-    >
+                    Nenhuma comissão disponível no momento
 
-        <div class="form-group">
+                {% endif %}
 
-            <label>
-                Valor da retirada *
-            </label>
-
-            <input
-                type="number"
-                name="valor"
-                min="0.01"
-                max="{{ saldo }}"
-                step="0.01"
-                required
-            >
-
-            <small
-                style="
-                    display:block;
-                    margin-top:5px;
-                    color:var(--text-light);
-                "
-            >
-                Disponível:
-                R$ {{ "%.2f"|format(saldo)|replace(".", ",") }}
             </small>
 
         </div>
 
+    </div>
 
-        <div class="form-group">
 
-            <label>
-                Observação
-            </label>
 
-            <textarea
-                name="observacao"
-                placeholder="Ex.: Retirada em dinheiro."
-            ></textarea>
+    <!-- RESUMO SECUNDÁRIO -->
+
+    <div class="comissao-secondary-summary">
+
+
+        <div class="comissao-secondary-item">
+
+            <div class="comissao-secondary-icon blue">
+                📈
+            </div>
+
+            <div>
+
+                <span>
+                    Total gerado
+                </span>
+
+                <strong>
+
+                    R$ {{
+                        "%.2f"
+                        |format(gerado)
+                        |replace(".", ",")
+                    }}
+
+                </strong>
+
+            </div>
 
         </div>
 
 
-        <button
-            class="btn btn-success"
-            type="submit"
-        >
-            💰 Registrar Retirada
-        </button>
 
-    </form>
+        <div class="comissao-secondary-item">
+
+            <div class="comissao-secondary-icon amber">
+                💸
+            </div>
+
+            <div>
+
+                <span>
+                    Total retirado
+                </span>
+
+                <strong>
+
+                    R$ {{
+                        "%.2f"
+                        |format(retirado)
+                        |replace(".", ",")
+                    }}
+
+                </strong>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
 
 </div>
+
+
+
+<!-- =========================================================
+     REGISTRAR RETIRADA
+========================================================= -->
+
+{% if saldo > 0 %}
+
+
+<div class="comissao-section">
+
+
+    <div class="comissao-section-head">
+
+        <div>
+
+            <h2>
+                💵 Registrar retirada
+            </h2>
+
+            <span>
+                Informe o valor retirado pelo piscineiro
+            </span>
+
+        </div>
+
+
+        <div class="comissao-section-balance">
+
+            Disponível:
+
+            <strong>
+
+                R$ {{
+                    "%.2f"
+                    |format(saldo)
+                    |replace(".", ",")
+                }}
+
+            </strong>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="form-card comissao-withdraw-card">
+
+
+        <form
+            method="POST"
+            action="{{ url_for(
+                'comissoes.registrar_retirada',
+                piscineiro_id=piscineiro.id
+            ) }}"
+        >
+
+
+            <div class="comissao-withdraw-grid">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Valor da retirada *
+                    </label>
+
+                    <input
+                        type="number"
+                        name="valor"
+                        min="0.01"
+                        max="{{ saldo }}"
+                        step="0.01"
+                        required
+                        placeholder="0,00"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label>
+                        Observação
+                    </label>
+
+                    <input
+                        type="text"
+                        name="observacao"
+                        placeholder="Ex.: Retirada em dinheiro."
+                    >
+
+                </div>
+
+
+                <div class="comissao-withdraw-action">
+
+                    <button
+                        class="btn btn-success"
+                        type="submit"
+                    >
+                        💰 Registrar Retirada
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+
+</div>
+
 
 {% endif %}
 
-<div class="section-title">
-    📈 Origem das Comissões
-</div>
 
-<div class="table-wrap">
 
-    <div style="overflow-x:auto;">
+<!-- =========================================================
+     ORIGEM DAS COMISSÕES
+========================================================= -->
 
-        <table>
+<div class="comissao-section">
 
-            <thead>
-                <tr>
-                    <th>Notinha</th>
-                    <th>Data</th>
-                    <th>Cliente</th>
-                    <th>Produto</th>
-                    <th>Qtd.</th>
-                    <th>Subtotal</th>
-                    <th>%</th>
-                    <th>Comissão</th>
-                </tr>
-            </thead>
 
-            <tbody>
+    <div class="comissao-section-head">
 
-                {% for origem in origens %}
+        <div>
 
-                    <tr>
+            <h2>
+                📈 Origem das Comissões
+            </h2>
 
-                        <td>
-                            <a
-                                href="{{ url_for(
-                                    'notinhas.detalhes',
-                                    notinha_id=origem.notinha.id
-                                ) }}"
-                            >
-                                #{{ origem.notinha.id }}
-                            </a>
-                        </td>
+            <span>
+                Produtos vendidos que geraram comissão
+            </span>
 
-                        <td>
-                            {{ origem.notinha.data_retirada.strftime("%d/%m/%Y") }}
-                        </td>
-
-                        <td>
-                            {{ origem.cliente.nome }}
-                        </td>
-
-                        <td>
-                            {{ origem.item.nome_produto }}
-                        </td>
-
-                        <td>
-                            {{ origem.item.quantidade }}
-                        </td>
-
-                        <td>
-                            R$ {{ "%.2f"|format(origem.item.subtotal)|replace(".", ",") }}
-                        </td>
-
-                        <td>
-                            {{ origem.item.percentual_comissao }}%
-                        </td>
-
-                        <td>
-                            <strong>
-                                R$ {{ "%.2f"|format(origem.item.valor_comissao)|replace(".", ",") }}
-                            </strong>
-                        </td>
-
-                    </tr>
-
-                {% else %}
-
-                    <tr>
-
-                        <td
-                            colspan="8"
-                            style="
-                                text-align:center;
-                                padding:35px;
-                                color:var(--text-light);
-                            "
-                        >
-                            Nenhuma comissão gerada ainda.
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
+        </div>
 
     </div>
 
-</div>
 
 
-<div class="section-title">
-    📚 Histórico de Retiradas
-</div>
+    <div class="table-wrap">
 
 
-<div class="table-wrap">
-
-    <div style="overflow-x:auto;">
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>Data</th>
-                    <th>Valor</th>
-                    <th>Observação</th>
-                </tr>
-
-            </thead>
+        <div style="overflow-x:auto;">
 
 
-            <tbody>
+            <table>
 
-                {% for retirada in retiradas %}
+
+                <thead>
 
                     <tr>
 
-                        <td>
-
-                            {{ retirada.data_retirada.strftime("%d/%m/%Y às %H:%M") }}
-
-                        </td>
-
-
-                        <td>
-
-                            <strong>
-
-                                R$ {{ "%.2f"|format(retirada.valor)|replace(".", ",") }}
-
-                            </strong>
-
-                        </td>
-
-
-                        <td>
-
-                            {{ retirada.observacao or "-" }}
-
-                        </td>
+                        <th>Notinha</th>
+                        <th>Data</th>
+                        <th>Cliente</th>
+                        <th>Produto</th>
+                        <th>Qtd.</th>
+                        <th>Subtotal</th>
+                        <th>%</th>
+                        <th>Comissão</th>
 
                     </tr>
 
-                {% else %}
+                </thead>
 
-                    <tr>
 
-                        <td
-                            colspan="3"
-                            style="
-                                text-align:center;
-                                padding:35px;
-                                color:var(--text-light);
-                            "
-                        >
+                <tbody>
 
-                            Nenhuma retirada registrada.
 
-                        </td>
+                    {% for origem in origens %}
 
-                    </tr>
 
-                {% endfor %}
+                        <tr>
 
-            </tbody>
 
-        </table>
+                            <td>
+
+                                <a
+                                    class="comissao-notinha-link"
+                                    href="{{ url_for(
+                                        'notinhas.detalhes',
+                                        notinha_id=origem.notinha.id
+                                    ) }}"
+                                >
+                                    #{{ origem.notinha.id }}
+                                </a>
+
+                            </td>
+
+
+                            <td>
+
+                                {{
+                                    origem.notinha.data_retirada
+                                    .strftime("%d/%m/%Y")
+                                }}
+
+                            </td>
+
+
+                            <td>
+
+                                <strong>
+                                    {{ origem.cliente.nome }}
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+                                {{ origem.item.nome_produto }}
+                            </td>
+
+
+                            <td>
+                                {{ origem.item.quantidade }}
+                            </td>
+
+
+                            <td>
+
+                                R$ {{
+                                    "%.2f"
+                                    |format(origem.item.subtotal)
+                                    |replace(".", ",")
+                                }}
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="comissao-percentage">
+
+                                    {{ origem.item.percentual_comissao }}%
+
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <strong class="comissao-generated-value">
+
+                                    R$ {{
+                                        "%.2f"
+                                        |format(origem.item.valor_comissao)
+                                        |replace(".", ",")
+                                    }}
+
+                                </strong>
+
+                            </td>
+
+
+                        </tr>
+
+
+                    {% else %}
+
+
+                        <tr>
+
+                            <td colspan="8">
+
+                                <div class="comissao-table-empty">
+
+                                    📈
+
+                                    <strong>
+                                        Nenhuma comissão gerada ainda
+                                    </strong>
+
+                                    <span>
+                                        As vendas com comissão aparecerão nesta tabela.
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+
+                    {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
 
     </div>
 
+
 </div>
+
+
+
+<!-- =========================================================
+     HISTÓRICO DE RETIRADAS
+========================================================= -->
+
+<div class="comissao-section">
+
+
+    <div class="comissao-section-head">
+
+        <div>
+
+            <h2>
+                📚 Histórico de Retiradas
+            </h2>
+
+            <span>
+                Valores de comissão já retirados
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    {% if retiradas %}
+
+
+        <div class="comissao-withdraw-history">
+
+
+            {% for retirada in retiradas %}
+
+
+                <div class="comissao-withdraw-item">
+
+
+                    <div class="comissao-withdraw-marker">
+                        💸
+                    </div>
+
+
+                    <div class="comissao-withdraw-info">
+
+                        <strong>
+
+                            R$ {{
+                                "%.2f"
+                                |format(retirada.valor)
+                                |replace(".", ",")
+                            }}
+
+                        </strong>
+
+
+                        <span>
+
+                            {{
+                                retirada.data_retirada
+                                .strftime("%d/%m/%Y às %H:%M")
+                            }}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="comissao-withdraw-note">
+
+                        {% if retirada.observacao %}
+
+                            {{ retirada.observacao }}
+
+                        {% else %}
+
+                            Sem observação
+
+                        {% endif %}
+
+                    </div>
+
+
+                </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+    {% else %}
+
+
+        <div class="comissoes-empty compact">
+
+            <div>
+                💸
+            </div>
+
+            <strong>
+                Nenhuma retirada registrada
+            </strong>
+
+            <span>
+                O histórico de retiradas aparecerá nesta área.
+            </span>
+
+        </div>
+
+
+    {% endif %}
+
+
+</div>
+
 
 {% endblock %}

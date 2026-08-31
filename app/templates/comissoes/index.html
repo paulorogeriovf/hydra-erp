@@ -3,15 +3,19 @@
 
 {% extends "base.html" %}
 
+
 {% block title %}
 Comissões - Hydra ERP
 {% endblock %}
+
 
 {% block header_title %}
 💰 <span>Comissões</span>
 {% endblock %}
 
+
 {% block content %}
+
 
 <div class="page-header">
 
@@ -28,139 +32,218 @@ Comissões - Hydra ERP
 </div>
 
 
-<div class="table-wrap">
 
-    <div class="table-head">
+<!-- =========================================================
+     LISTAGEM
+========================================================= -->
 
-        <span class="table-head-title">
-            💰 Comissões por Piscineiro
-        </span>
+<div class="comissoes-panel">
+
+
+    <div class="comissoes-panel-head">
+
+        <div>
+
+            <h2>
+                💰 Comissões por Piscineiro
+            </h2>
+
+            <span>
+                Acompanhe o saldo de comissão de cada piscineiro
+            </span>
+
+        </div>
 
     </div>
 
 
-    <div style="overflow-x:auto;">
 
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>Piscineiro</th>
-                    <th>Gerado</th>
-                    <th>Retirado</th>
-                    <th>Disponível</th>
-                    <th>Status</th>
-                    <th>Ações</th>
-                </tr>
-
-            </thead>
+    {% if dados %}
 
 
-            <tbody>
+        <div class="comissoes-list">
 
-                {% for item in dados %}
 
-                    <tr>
+            {% for item in dados %}
 
-                        <td>
+
+                <div class="comissao-row">
+
+
+                    <!-- PISCINEIRO -->
+
+                    <div class="comissao-person">
+
+                        <div class="comissao-avatar">
+                            🏊
+                        </div>
+
+
+                        <div>
 
                             <strong>
                                 {{ item.piscineiro.nome }}
                             </strong>
 
-                        </td>
+
+                            <span>
+
+                                {% if item.saldo > 0 %}
+
+                                    Comissão disponível para retirada
+
+                                {% else %}
+
+                                    Nenhum saldo disponível
+
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+                    </div>
 
 
-                        <td>
 
-                            R$ {{ "%.2f"|format(item.gerado)|replace(".", ",") }}
+                    <!-- GERADO -->
 
-                        </td>
+                    <div class="comissao-value">
 
+                        <span>
+                            Gerado
+                        </span>
 
-                        <td>
+                        <strong>
 
-                            R$ {{ "%.2f"|format(item.retirado)|replace(".", ",") }}
+                            R$ {{
+                                "%.2f"
+                                |format(item.gerado)
+                                |replace(".", ",")
+                            }}
 
-                        </td>
+                        </strong>
 
-
-                        <td>
-
-                            <strong
-                                style="color:var(--success);"
-                            >
-
-                                R$ {{ "%.2f"|format(item.saldo)|replace(".", ",") }}
-
-                            </strong>
-
-                        </td>
+                    </div>
 
 
-                        <td>
 
-                            {% if item.saldo > 0 %}
+                    <!-- RETIRADO -->
 
-                                <span class="badge badge-open">
-                                    Disponível
-                                </span>
+                    <div class="comissao-value">
 
-                            {% else %}
+                        <span>
+                            Retirado
+                        </span>
 
-                                <span class="badge badge-paid">
-                                    Sem saldo
-                                </span>
+                        <strong>
 
-                            {% endif %}
+                            R$ {{
+                                "%.2f"
+                                |format(item.retirado)
+                                |replace(".", ",")
+                            }}
 
-                        </td>
+                        </strong>
+
+                    </div>
 
 
-                        <td>
 
-                            <a
-                                class="btn btn-ghost btn-sm"
-                                href="{{ url_for(
-                                    'comissoes.detalhes',
-                                    piscineiro_id=item.piscineiro.id
-                                ) }}"
-                            >
-                                👁 Ver
-                            </a>
+                    <!-- DISPONÍVEL -->
 
-                        </td>
+                    <div class="comissao-value available">
 
-                    </tr>
+                        <span>
+                            Disponível
+                        </span>
 
-                {% else %}
+                        <strong>
 
-                    <tr>
+                            R$ {{
+                                "%.2f"
+                                |format(item.saldo)
+                                |replace(".", ",")
+                            }}
 
-                        <td
-                            colspan="6"
-                            style="
-                                text-align:center;
-                                padding:40px;
-                                color:var(--text-light);
-                            "
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- STATUS -->
+
+                    <div class="comissao-status">
+
+                        {% if item.saldo > 0 %}
+
+                            <span class="badge badge-open">
+                                Disponível
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge badge-paid">
+                                Sem saldo
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+
+                    <!-- AÇÃO -->
+
+                    <div class="comissao-action">
+
+                        <a
+                            class="btn btn-ghost btn-sm"
+                            href="{{ url_for(
+                                'comissoes.detalhes',
+                                piscineiro_id=item.piscineiro.id
+                            ) }}"
                         >
+                            Ver extrato →
+                        </a>
 
-                            Nenhum piscineiro cadastrado.
+                    </div>
 
-                        </td>
 
-                    </tr>
+                </div>
 
-                {% endfor %}
 
-            </tbody>
+            {% endfor %}
 
-        </table>
 
-    </div>
+        </div>
+
+
+    {% else %}
+
+
+        <div class="comissoes-empty">
+
+            <div>
+                💰
+            </div>
+
+            <strong>
+                Nenhum piscineiro cadastrado
+            </strong>
+
+            <span>
+                As comissões aparecerão aqui quando houver piscineiros cadastrados.
+            </span>
+
+        </div>
+
+
+    {% endif %}
+
 
 </div>
+
 
 {% endblock %}

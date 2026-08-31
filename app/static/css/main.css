@@ -3827,3 +3827,788 @@ td {
     }
 
 }
+
+/* =========================================================
+   COMISSÕES - LISTAGEM
+========================================================= */
+
+.comissoes-panel {
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    box-shadow: var(--shadow);
+
+    overflow: hidden;
+}
+
+
+.comissoes-panel-head {
+    padding: 17px 19px;
+
+    border-bottom: 1px solid var(--border);
+
+    background: #fbfdff;
+}
+
+
+.comissoes-panel-head h2 {
+    margin: 0;
+
+    font-size: 15px;
+
+    color: var(--text-dark);
+}
+
+
+.comissoes-panel-head span {
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 10px;
+
+    color: var(--text-light);
+}
+
+
+.comissoes-list {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.comissao-row {
+    min-height: 82px;
+
+    padding: 13px 18px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(190px, 1.5fr)
+        minmax(100px, 0.7fr)
+        minmax(100px, 0.7fr)
+        minmax(110px, 0.8fr)
+        minmax(80px, auto)
+        auto;
+
+    gap: 15px;
+
+    align-items: center;
+
+    border-bottom: 1px solid var(--border);
+
+    transition: background 0.15s ease;
+}
+
+
+.comissao-row:last-child {
+    border-bottom: none;
+}
+
+
+.comissao-row:hover {
+    background: #fbfdff;
+}
+
+
+.comissao-person {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+}
+
+
+.comissao-avatar {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: var(--pool-light);
+
+    font-size: 17px;
+}
+
+
+.comissao-person strong {
+    display: block;
+
+    font-size: 13px;
+
+    color: var(--text-dark);
+}
+
+
+.comissao-person span {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 9px;
+
+    color: var(--text-light);
+}
+
+
+.comissao-value span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 9px;
+
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+
+    color: var(--text-light);
+}
+
+
+.comissao-value strong {
+    font-size: 12px;
+
+    color: var(--text-dark);
+}
+
+
+.comissao-value.available strong {
+    color: var(--success);
+}
+
+
+.comissao-status {
+    display: flex;
+    justify-content: flex-start;
+}
+
+
+.comissao-action {
+    display: flex;
+    justify-content: flex-end;
+
+    white-space: nowrap;
+}
+
+
+.comissoes-empty {
+    min-height: 170px;
+
+    padding: 30px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    color: var(--text-light);
+}
+
+
+.comissoes-empty.compact {
+    min-height: 125px;
+
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+}
+
+
+.comissoes-empty > div {
+    margin-bottom: 7px;
+
+    font-size: 24px;
+}
+
+
+.comissoes-empty strong {
+    font-size: 12px;
+
+    color: var(--text-mid);
+}
+
+
+.comissoes-empty span {
+    margin-top: 4px;
+
+    font-size: 10px;
+}
+
+
+
+/* =========================================================
+   COMISSÕES - DETALHES
+========================================================= */
+
+.comissao-detail-summary {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.5fr)
+        minmax(290px, 1fr);
+
+    gap: 17px;
+
+    margin-bottom: 28px;
+}
+
+
+.comissao-main-balance {
+    min-height: 145px;
+
+    padding: 21px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 17px;
+
+    border: 1px solid #bbf7d0;
+    border-left: 4px solid var(--success);
+
+    border-radius: 14px;
+
+    background: #ffffff;
+
+    box-shadow: var(--shadow);
+}
+
+
+.comissao-main-icon {
+    width: 53px;
+    height: 53px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background: #ecfdf5;
+
+    font-size: 25px;
+}
+
+
+.comissao-main-balance span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+
+    color: var(--text-light);
+}
+
+
+.comissao-main-balance strong {
+    display: block;
+
+    font-size: 29px;
+
+    color: var(--success);
+}
+
+
+.comissao-main-balance small {
+    display: block;
+
+    margin-top: 6px;
+
+    font-size: 10px;
+
+    color: var(--text-light);
+}
+
+
+
+/* =========================================================
+   RESUMO SECUNDÁRIO
+========================================================= */
+
+.comissao-secondary-summary {
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    gap: 10px;
+}
+
+
+.comissao-secondary-item {
+    padding: 14px 16px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    box-shadow: var(--shadow);
+}
+
+
+.comissao-secondary-icon {
+    width: 37px;
+    height: 37px;
+
+    flex-shrink: 0;
+
+    border-radius: 9px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 16px;
+}
+
+
+.comissao-secondary-icon.blue {
+    background: var(--pool-light);
+}
+
+
+.comissao-secondary-icon.amber {
+    background: #fffbeb;
+}
+
+
+.comissao-secondary-item span {
+    display: block;
+
+    margin-bottom: 2px;
+
+    font-size: 9px;
+
+    text-transform: uppercase;
+
+    color: var(--text-light);
+}
+
+
+.comissao-secondary-item strong {
+    font-size: 14px;
+
+    color: var(--text-dark);
+}
+
+
+
+/* =========================================================
+   SEÇÕES
+========================================================= */
+
+.comissao-section {
+    margin-top: 29px;
+}
+
+
+.comissao-section-head {
+    min-height: 59px;
+
+    margin-bottom: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+
+.comissao-section-head h2 {
+    margin: 0;
+
+    font-size: 15px;
+
+    color: var(--text-dark);
+}
+
+
+.comissao-section-head span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 10px;
+
+    color: var(--text-light);
+}
+
+
+.comissao-section-balance {
+    padding: 8px 11px;
+
+    border-radius: 8px;
+
+    background: #ecfdf5;
+
+    font-size: 10px;
+
+    color: var(--text-mid);
+}
+
+
+.comissao-section-balance strong {
+    margin-left: 4px;
+
+    color: var(--success);
+}
+
+
+
+/* =========================================================
+   RETIRADA
+========================================================= */
+
+.comissao-withdraw-card {
+    padding: 17px;
+}
+
+
+.comissao-withdraw-grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(160px, 0.7fr)
+        minmax(240px, 1.5fr)
+        auto;
+
+    align-items: end;
+
+    gap: 13px;
+}
+
+
+.comissao-withdraw-grid .form-group {
+    margin-bottom: 0;
+}
+
+
+.comissao-withdraw-action {
+    display: flex;
+}
+
+
+
+/* =========================================================
+   ORIGENS
+========================================================= */
+
+.comissao-notinha-link {
+    font-weight: 700;
+
+    color: var(--pool-dark);
+
+    text-decoration: none;
+}
+
+
+.comissao-notinha-link:hover {
+    text-decoration: underline;
+}
+
+
+.comissao-percentage {
+    display: inline-flex;
+
+    padding: 3px 7px;
+
+    border-radius: 6px;
+
+    background: var(--pool-light);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    color: var(--pool-dark);
+}
+
+
+.comissao-generated-value {
+    color: var(--success);
+}
+
+
+.comissao-table-empty {
+    min-height: 120px;
+
+    padding: 25px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    color: var(--text-light);
+}
+
+
+.comissao-table-empty > strong {
+    margin-top: 5px;
+
+    font-size: 11px;
+
+    color: var(--text-mid);
+}
+
+
+.comissao-table-empty span {
+    margin-top: 3px;
+
+    font-size: 9px;
+}
+
+
+
+/* =========================================================
+   HISTÓRICO DE RETIRADAS
+========================================================= */
+
+.comissao-withdraw-history {
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    box-shadow: var(--shadow);
+
+    overflow: hidden;
+}
+
+
+.comissao-withdraw-item {
+    min-height: 66px;
+
+    padding: 11px 16px;
+
+    display: grid;
+
+    grid-template-columns:
+        auto
+        minmax(150px, 0.5fr)
+        minmax(200px, 1fr);
+
+    gap: 12px;
+
+    align-items: center;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.comissao-withdraw-item:last-child {
+    border-bottom: none;
+}
+
+
+.comissao-withdraw-marker {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: #fffbeb;
+
+    font-size: 15px;
+}
+
+
+.comissao-withdraw-info strong {
+    display: block;
+
+    font-size: 12px;
+
+    color: var(--text-dark);
+}
+
+
+.comissao-withdraw-info span {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 9px;
+
+    color: var(--text-light);
+}
+
+
+.comissao-withdraw-note {
+    font-size: 10px;
+
+    color: var(--text-mid);
+}
+
+
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+@media (max-width: 1050px) {
+
+    .comissao-row {
+        grid-template-columns:
+            minmax(180px, 1.4fr)
+            repeat(3, minmax(90px, 0.7fr))
+            auto;
+    }
+
+
+    .comissao-status {
+        display: none;
+    }
+
+}
+
+
+@media (max-width: 850px) {
+
+    .comissao-detail-summary {
+        grid-template-columns: 1fr;
+    }
+
+
+    .comissao-secondary-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+
+    .comissao-withdraw-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+
+    .comissao-withdraw-action {
+        grid-column: 1 / -1;
+    }
+
+
+    .comissao-row {
+        grid-template-columns:
+            minmax(170px, 1fr)
+            repeat(2, minmax(90px, auto))
+            auto;
+    }
+
+
+    .comissao-value:nth-of-type(3) {
+        display: none;
+    }
+
+}
+
+
+@media (max-width: 620px) {
+
+    .comissao-row {
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            auto;
+
+        padding: 15px;
+    }
+
+
+    .comissao-person {
+        grid-column: 1 / -1;
+    }
+
+
+    .comissao-value {
+        margin-top: 4px;
+    }
+
+
+    .comissao-value:nth-of-type(2),
+    .comissao-value:nth-of-type(3) {
+        display: none;
+    }
+
+
+    .comissao-action {
+        align-self: end;
+    }
+
+
+    .comissao-secondary-summary {
+        grid-template-columns: 1fr;
+    }
+
+
+    .comissao-main-balance {
+        min-height: 125px;
+    }
+
+
+    .comissao-main-balance strong {
+        font-size: 24px;
+    }
+
+
+    .comissao-withdraw-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .comissao-withdraw-action {
+        grid-column: auto;
+    }
+
+
+    .comissao-withdraw-action .btn {
+        width: 100%;
+    }
+
+
+    .comissao-section-head {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .comissao-withdraw-item {
+        grid-template-columns:
+            auto
+            minmax(0, 1fr);
+    }
+
+
+    .comissao-withdraw-note {
+        grid-column: 2;
+    }
+
+}
