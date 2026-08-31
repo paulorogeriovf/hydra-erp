@@ -8174,7 +8174,7 @@ small,
 .page-title small,
 [class*="summary"] small,
 [class*="panel"] small {
-    font-size: 11px;
+    font-size: 13px;
 }
 
 
@@ -8191,7 +8191,7 @@ small,
 .produto-price span,
 .piscineiro-data span,
 .cliente-data span {
-    font-size: 10px;
+    font-size: 13px;
 }
 
 
@@ -8210,7 +8210,7 @@ small,
 .inteligencia-opportunity-card p,
 .produto-form-help,
 .piscineiro-observation p {
-    font-size: 11px;
+    font-size: 13px;
 }
 
 
@@ -8223,7 +8223,7 @@ small,
 .cliente-data strong,
 .inteligencia-rank-main strong,
 .inteligencia-rank-value {
-    font-size: 12px;
+    font-size: 13px;
 }
 
 
@@ -8294,7 +8294,7 @@ table td {
 
 /* Textos principais dos cards continuam destacados */
 .stat-label {
-    font-size: 11px;
+    font-size: 13px;
 }
 
 .stat-value {
