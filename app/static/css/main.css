@@ -4612,3 +4612,1316 @@ td {
     }
 
 }
+
+/* =========================================================
+   CLIENTES - RESUMO
+========================================================= */
+
+.clientes-summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: 13px;
+
+    margin-bottom: 20px;
+}
+
+
+.clientes-summary-item {
+    min-height: 85px;
+
+    padding: 14px 16px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.clientes-summary-icon {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: var(--pool-light);
+
+    font-size: 17px;
+}
+
+
+.clientes-summary-item.success
+.clientes-summary-icon {
+    background: #ecfdf5;
+}
+
+
+.clientes-summary-item.warning
+.clientes-summary-icon {
+    background: #fffbeb;
+}
+
+
+.clientes-summary-item span {
+    display: block;
+
+    font-size: 9px;
+
+    text-transform: uppercase;
+    letter-spacing: 0.35px;
+
+    color: var(--text-light);
+}
+
+
+.clientes-summary-item strong {
+    display: block;
+
+    margin-top: 1px;
+
+    font-size: 20px;
+
+    color: var(--text-dark);
+}
+
+
+.clientes-summary-item small {
+    display: block;
+
+    margin-top: 1px;
+
+    font-size: 9px;
+
+    color: var(--text-light);
+}
+
+
+
+/* =========================================================
+   CLIENTES - BUSCA
+========================================================= */
+
+.clientes-search {
+    margin-bottom: 18px;
+
+    padding: 12px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.clientes-search-inner {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+}
+
+
+.clientes-search-field {
+    flex: 1;
+
+    position: relative;
+}
+
+
+.clientes-search-icon {
+    position: absolute;
+
+    left: 12px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    font-size: 13px;
+
+    opacity: 0.6;
+}
+
+
+.clientes-search-field input {
+    width: 100%;
+
+    padding-left: 36px;
+}
+
+
+
+/* =========================================================
+   CLIENTES - LISTAGEM
+========================================================= */
+
+.clientes-panel {
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.clientes-panel-head {
+    padding: 15px 18px;
+
+    border-bottom: 1px solid var(--border);
+
+    background: #fbfdff;
+}
+
+
+.clientes-panel-head h2 {
+    margin: 0;
+
+    font-size: 14px;
+
+    color: var(--text-dark);
+}
+
+
+.clientes-panel-head span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 10px;
+
+    color: var(--text-light);
+}
+
+
+.cliente-row {
+    min-height: 76px;
+
+    padding: 12px 17px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(180px, 1.3fr)
+        minmax(135px, 0.8fr)
+        minmax(145px, 0.9fr)
+        auto
+        auto;
+
+    gap: 13px;
+
+    align-items: center;
+
+    border-bottom: 1px solid var(--border);
+
+    transition: background 0.15s ease;
+}
+
+
+.cliente-row:last-child {
+    border-bottom: none;
+}
+
+
+.cliente-row:hover {
+    background: #fbfdff;
+}
+
+
+.cliente-main {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+.cliente-avatar {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: linear-gradient(
+        135deg,
+        var(--pool-light),
+        #eef7ff
+    );
+
+    font-size: 14px;
+    font-weight: 800;
+
+    color: var(--pool-dark);
+}
+
+
+.cliente-main strong {
+    display: block;
+
+    font-size: 12px;
+
+    color: var(--text-dark);
+}
+
+
+.cliente-main span {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 9px;
+
+    color: var(--text-light);
+}
+
+
+.cliente-data span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+
+    color: var(--text-light);
+}
+
+
+.cliente-data strong {
+    display: block;
+
+    font-size: 10px;
+
+    color: var(--text-mid);
+}
+
+
+.cliente-muted {
+    color: var(--text-light) !important;
+}
+
+
+.cliente-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+
+    white-space: nowrap;
+}
+
+
+.cliente-actions form {
+    margin: 0;
+}
+
+
+.clientes-empty {
+    min-height: 160px;
+
+    padding: 25px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    color: var(--text-light);
+}
+
+
+.clientes-empty.compact {
+    min-height: 120px;
+
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+}
+
+
+.clientes-empty > div {
+    margin-bottom: 6px;
+
+    font-size: 23px;
+}
+
+
+.clientes-empty strong {
+    font-size: 11px;
+
+    color: var(--text-mid);
+}
+
+
+.clientes-empty span {
+    margin-top: 3px;
+
+    font-size: 9px;
+}
+
+
+
+/* =========================================================
+   CLIENTE - RESUMO FINANCEIRO
+========================================================= */
+
+.cliente-financial-summary {
+    display: grid;
+
+    grid-template-columns:
+        minmax(280px, 1.25fr)
+        minmax(0, 1.75fr);
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+
+.cliente-financial-main {
+    min-height: 125px;
+
+    padding: 19px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--pool);
+
+    border-radius: 13px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.cliente-financial-main span {
+    font-size: 9px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    color: var(--text-light);
+}
+
+
+.cliente-financial-main strong {
+    margin-top: 4px;
+
+    font-size: 26px;
+
+    color: var(--text-dark);
+}
+
+
+.cliente-financial-main small {
+    margin-top: 4px;
+
+    font-size: 9px;
+
+    color: var(--text-light);
+}
+
+
+.cliente-financial-secondary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 10px;
+}
+
+
+.cliente-financial-item {
+    padding: 15px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.cliente-financial-item span {
+    font-size: 9px;
+
+    text-transform: uppercase;
+
+    color: var(--text-light);
+}
+
+
+.cliente-financial-item strong {
+    margin-top: 4px;
+
+    font-size: 15px;
+
+    color: var(--text-dark);
+}
+
+
+.cliente-financial-item.success strong {
+    color: var(--success);
+}
+
+
+.cliente-financial-item.warning strong {
+    color: #b45309;
+}
+
+
+.cliente-financial-item.danger strong {
+    color: var(--danger);
+}
+
+
+
+/* =========================================================
+   PERFIL
+========================================================= */
+
+.cliente-profile-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+}
+
+
+.cliente-profile-card {
+    padding: 17px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.cliente-profile-head {
+    padding-bottom: 12px;
+
+    margin-bottom: 12px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.cliente-profile-head h2 {
+    margin: 0;
+
+    font-size: 13px;
+
+    color: var(--text-dark);
+}
+
+
+.cliente-profile-head span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 9px;
+
+    color: var(--text-light);
+}
+
+
+.cliente-profile-data {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 13px 18px;
+}
+
+
+.cliente-profile-data .full {
+    grid-column: 1 / -1;
+}
+
+
+.cliente-profile-data span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+
+    color: var(--text-light);
+}
+
+
+.cliente-profile-data strong {
+    font-size: 10px;
+
+    color: var(--text-mid);
+}
+
+
+.cliente-current-piscineiro {
+    min-height: 60px;
+
+    display: grid;
+
+    grid-template-columns: auto minmax(0, 1fr) auto;
+
+    gap: 10px;
+
+    align-items: center;
+}
+
+
+.cliente-current-piscineiro-icon {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: var(--pool-light);
+}
+
+
+.cliente-current-piscineiro strong {
+    display: block;
+
+    font-size: 11px;
+
+    color: var(--text-dark);
+}
+
+
+.cliente-current-piscineiro span {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 9px;
+
+    color: var(--text-light);
+}
+
+
+.cliente-no-piscineiro {
+    padding: 13px;
+
+    display: flex;
+    flex-direction: column;
+
+    border-radius: 10px;
+
+    background: #f8fafc;
+
+    color: var(--text-light);
+}
+
+
+.cliente-no-piscineiro strong {
+    margin-top: 5px;
+
+    font-size: 11px;
+
+    color: var(--text-dark);
+}
+
+
+.cliente-no-piscineiro span {
+    margin-top: 3px;
+
+    font-size: 9px;
+}
+
+
+.cliente-observation {
+    margin-top: 15px;
+    padding-top: 12px;
+
+    border-top: 1px solid var(--border);
+}
+
+
+.cliente-observation span {
+    font-size: 8px;
+
+    text-transform: uppercase;
+
+    color: var(--text-light);
+}
+
+
+.cliente-observation p {
+    margin: 5px 0 0;
+
+    font-size: 10px;
+    line-height: 1.55;
+
+    color: var(--text-mid);
+}
+
+
+
+/* =========================================================
+   CLIENTE - SEÇÕES
+========================================================= */
+
+.cliente-section {
+    margin-top: 25px;
+}
+
+
+.cliente-section-head {
+    min-height: 48px;
+
+    margin-bottom: 9px;
+
+    display: flex;
+    align-items: center;
+}
+
+
+.cliente-section-head h2 {
+    margin: 0;
+
+    font-size: 14px;
+
+    color: var(--text-dark);
+}
+
+
+.cliente-section-head span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 9px;
+
+    color: var(--text-light);
+}
+
+
+.cliente-table-empty {
+    min-height: 90px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    color: var(--text-light);
+}
+
+
+.cliente-table-empty strong {
+    margin-top: 5px;
+
+    font-size: 10px;
+}
+
+
+
+/* =========================================================
+   HISTÓRICO DE PISCINEIROS
+========================================================= */
+
+.cliente-history-list {
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    box-shadow: var(--shadow);
+}
+
+
+.cliente-history-item {
+    min-height: 67px;
+
+    padding: 11px 15px;
+
+    display: grid;
+
+    grid-template-columns:
+        90px
+        minmax(220px, 1fr)
+        minmax(180px, 1fr);
+
+    align-items: center;
+
+    gap: 15px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.cliente-history-item:last-child {
+    border-bottom: none;
+}
+
+
+.cliente-history-date strong {
+    display: block;
+
+    font-size: 10px;
+
+    color: var(--text-dark);
+}
+
+
+.cliente-history-date span {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 9px;
+
+    color: var(--text-light);
+}
+
+
+.cliente-history-change {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+}
+
+
+.cliente-history-change span {
+    display: block;
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+
+    color: var(--text-light);
+}
+
+
+.cliente-history-change strong {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 10px;
+
+    color: var(--text-mid);
+}
+
+
+.cliente-history-arrow {
+    color: var(--pool-dark);
+
+    font-weight: 700;
+}
+
+
+.cliente-history-note {
+    font-size: 9px;
+
+    color: var(--text-mid);
+}
+
+
+
+/* =========================================================
+   FORMULÁRIOS DE CLIENTES
+========================================================= */
+
+.cliente-form-layout {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        260px;
+
+    gap: 17px;
+
+    align-items: start;
+}
+
+
+.cliente-form-card {
+    padding: 20px;
+}
+
+
+.cliente-form-head {
+    margin-bottom: 20px;
+    padding-bottom: 13px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.cliente-form-head h2 {
+    margin: 0;
+
+    font-size: 14px;
+
+    color: var(--text-dark);
+}
+
+
+.cliente-form-head span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 9px;
+
+    color: var(--text-light);
+}
+
+
+.cliente-form-actions {
+    margin-top: 5px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+}
+
+
+.cliente-form-help {
+    padding: 17px;
+
+    background: #f8fbff;
+
+    border: 1px solid #dbeafe;
+    border-radius: 12px;
+}
+
+
+.cliente-form-help-icon {
+    margin-bottom: 8px;
+
+    font-size: 20px;
+}
+
+
+.cliente-form-help strong {
+    display: block;
+
+    font-size: 11px;
+
+    color: var(--text-dark);
+}
+
+
+.cliente-form-help p {
+    margin: 7px 0 0;
+
+    font-size: 9px;
+    line-height: 1.55;
+
+    color: var(--text-mid);
+}
+
+
+.cliente-current-link {
+    margin-bottom: 18px;
+    padding: 13px;
+
+    display: grid;
+
+    grid-template-columns: auto minmax(0, 1fr) auto;
+
+    align-items: center;
+
+    gap: 10px;
+
+    border-radius: 10px;
+
+    background: #f3f8fd;
+
+    border: 1px solid #e1edf8;
+}
+
+
+.cliente-current-link-icon {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+}
+
+
+.cliente-current-link span {
+    display: block;
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+
+    color: var(--text-light);
+}
+
+
+.cliente-current-link strong {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 11px;
+
+    color: var(--text-dark);
+}
+
+
+.cliente-current-link small {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 8px;
+
+    color: var(--text-light);
+}
+
+
+
+/* =========================================================
+   MUDAR PISCINEIRO
+========================================================= */
+
+.cliente-link-layout {
+    max-width: 760px;
+}
+
+
+.cliente-link-card {
+    padding: 20px;
+}
+
+
+.cliente-link-current {
+    margin-bottom: 20px;
+    padding: 15px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto
+        minmax(0, 1fr);
+
+    align-items: center;
+
+    gap: 16px;
+
+    background: #f6f9fc;
+
+    border-radius: 11px;
+
+    border: 1px solid var(--border);
+}
+
+
+.cliente-link-current span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+
+    color: var(--text-light);
+}
+
+
+.cliente-link-current strong {
+    font-size: 11px;
+
+    color: var(--text-dark);
+}
+
+
+.cliente-link-arrow {
+    color: var(--pool-dark);
+
+    font-size: 17px;
+}
+
+
+.cliente-link-warning {
+    margin-bottom: 18px;
+    padding: 12px 14px;
+
+    display: flex;
+
+    gap: 10px;
+
+    background: #fffbeb;
+
+    border: 1px solid #fde68a;
+    border-radius: 9px;
+
+    color: #92400e;
+}
+
+
+.cliente-link-warning p {
+    margin: 0;
+
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+
+.cliente-link-warning strong {
+    display: block;
+
+    margin-bottom: 2px;
+}
+
+
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+@media (max-width: 1050px) {
+
+    .clientes-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+
+    .cliente-row {
+        grid-template-columns:
+            minmax(180px, 1fr)
+            minmax(130px, 0.8fr)
+            minmax(130px, 0.8fr)
+            auto;
+    }
+
+
+    .cliente-status {
+        display: none;
+    }
+
+}
+
+
+@media (max-width: 850px) {
+
+    .cliente-financial-summary {
+        grid-template-columns: 1fr;
+    }
+
+
+    .cliente-profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .cliente-form-layout {
+        grid-template-columns: 1fr;
+    }
+
+
+    .cliente-form-help {
+        order: -1;
+    }
+
+
+    .cliente-history-item {
+        grid-template-columns:
+            80px
+            minmax(0, 1fr);
+    }
+
+
+    .cliente-history-note {
+        grid-column: 2;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .cliente-row {
+        grid-template-columns:
+            minmax(0, 1fr)
+            auto;
+
+        gap: 10px;
+
+        padding: 14px;
+    }
+
+
+    .cliente-main {
+        grid-column: 1 / -1;
+    }
+
+
+    .cliente-data:nth-of-type(3) {
+        display: none;
+    }
+
+
+    .cliente-actions {
+        justify-content: flex-end;
+    }
+
+
+    .cliente-financial-secondary {
+        grid-template-columns: 1fr;
+    }
+
+
+    .cliente-profile-data {
+        grid-template-columns: 1fr;
+    }
+
+
+    .cliente-profile-data .full {
+        grid-column: auto;
+    }
+
+}
+
+
+@media (max-width: 520px) {
+
+    .clientes-summary {
+        grid-template-columns: 1fr 1fr;
+
+        gap: 8px;
+    }
+
+
+    .clientes-summary-item {
+        min-height: 74px;
+
+        padding: 11px;
+    }
+
+
+    .clientes-summary-item small {
+        display: none;
+    }
+
+
+    .clientes-search-inner {
+        flex-wrap: wrap;
+    }
+
+
+    .clientes-search-field {
+        flex-basis: 100%;
+    }
+
+
+    .clientes-search-inner .btn {
+        flex: 1;
+    }
+
+
+    .cliente-current-piscineiro,
+    .cliente-current-link {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+
+    .cliente-current-piscineiro .btn,
+    .cliente-current-link .btn {
+        grid-column: 1 / -1;
+
+        width: 100%;
+    }
+
+
+    .cliente-link-current {
+        grid-template-columns: 1fr;
+    }
+
+
+    .cliente-link-arrow {
+        transform: rotate(90deg);
+
+        text-align: center;
+    }
+
+
+    .cliente-history-item {
+        display: flex;
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+
+    .cliente-history-change {
+        width: 100%;
+    }
+
+
+    .cliente-history-note {
+        width: 100%;
+    }
+
+}

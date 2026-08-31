@@ -4,162 +4,206 @@
 
 {% extends "base.html" %}
 
+
 {% block title %}
 Mudar Piscineiro - Hydra ERP
 {% endblock %}
+
 
 {% block header_title %}
 🔄 <span>Mudar Piscineiro</span>
 {% endblock %}
 
+
 {% block content %}
+
 
 <div class="page-header">
 
     <div class="page-title">
+
         Mudar Piscineiro
 
         <small>
             Alteração de vínculo do cliente
         </small>
+
     </div>
+
+
+    <a
+        class="btn btn-ghost"
+        href="{{ url_for(
+            'clientes.detalhes',
+            cliente_id=cliente.id
+        ) }}"
+    >
+        ← Voltar
+    </a>
 
 </div>
 
 
-<div class="form-card">
 
-    <div
-        style="
-            background:#f0f7ff;
-            border-radius:10px;
-            padding:16px;
-            margin-bottom:22px;
-        "
-    >
+<div class="cliente-link-layout">
 
-        <div
-            style="
-                font-size:12px;
-                color:var(--text-light);
-                margin-bottom:4px;
-            "
-        >
-            Cliente
+
+    <div class="form-card cliente-link-card">
+
+
+        <div class="cliente-link-current">
+
+
+            <div>
+
+                <span>
+                    Cliente
+                </span>
+
+                <strong>
+                    {{ cliente.nome }}
+                </strong>
+
+            </div>
+
+
+            <div class="cliente-link-arrow">
+                →
+            </div>
+
+
+            <div>
+
+                <span>
+                    Piscineiro atual
+                </span>
+
+                <strong>
+
+                    {% if cliente.piscineiro %}
+
+                        🏊 {{ cliente.piscineiro.nome }}
+
+                    {% else %}
+
+                        🏪 Hydra / Direto
+
+                    {% endif %}
+
+                </strong>
+
+            </div>
+
+
         </div>
 
-        <strong>
-            {{ cliente.nome }}
-        </strong>
-
-        <div
-            style="
-                font-size:12px;
-                color:var(--text-light);
-                margin-top:12px;
-                margin-bottom:4px;
-            "
-        >
-            Piscineiro atual
-        </div>
-
-        <strong>
-
-            {% if cliente.piscineiro %}
-                {{ cliente.piscineiro.nome }}
-            {% else %}
-                Sem piscineiro
-            {% endif %}
-
-        </strong>
-
-    </div>
 
 
-    <form method="POST">
+        <form method="POST">
 
-        <div class="form-group">
 
-            <label>
-                Novo Piscineiro
-            </label>
+            <div class="form-group">
 
-            <select name="piscineiro_id">
+                <label>
+                    Novo Piscineiro
+                </label>
 
-                <option value="">
-                    Sem piscineiro
-                </option>
 
-                {% for piscineiro in piscineiros %}
+                <select name="piscineiro_id">
 
-                    <option
-                        value="{{ piscineiro.id }}"
-
-                        {% if cliente.piscineiro_id == piscineiro.id %}
-                            selected
-                        {% endif %}
-                    >
-                        {{ piscineiro.nome }}
+                    <option value="">
+                        Hydra / Sem piscineiro
                     </option>
 
-                {% endfor %}
 
-            </select>
+                    {% for piscineiro in piscineiros %}
 
-        </div>
+                        <option
+                            value="{{ piscineiro.id }}"
+                            {% if cliente.piscineiro_id == piscineiro.id %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ piscineiro.nome }}
+                        </option>
 
-
-        <div class="form-group">
-
-            <label>
-                Motivo / Observação
-            </label>
-
-            <textarea
-                name="observacao"
-                placeholder="Ex.: Cliente passou a ser atendido por outro piscineiro."
-            ></textarea>
-
-        </div>
+                    {% endfor %}
 
 
-        <div
-            style="
-                background:#fef3c7;
-                border-radius:8px;
-                padding:12px 16px;
-                margin-bottom:20px;
-                font-size:13px;
-                color:#92400e;
-            "
-        >
-            ℹ️ A alteração não modifica os registros históricos.
-            Notinhas antigas continuarão vinculadas ao piscineiro
-            responsável naquela operação.
-        </div>
+                </select>
+
+            </div>
 
 
-        <div class="action-group">
 
-            <button
-                class="btn btn-primary"
-                type="submit"
-            >
-                🔄 Confirmar Alteração
-            </button>
+            <div class="form-group">
+
+                <label>
+                    Motivo / Observação
+                </label>
+
+                <textarea
+                    name="observacao"
+                    placeholder="Ex.: Cliente passou a ser atendido por outro piscineiro."
+                ></textarea>
+
+            </div>
 
 
-            <a
-                class="btn btn-ghost"
-                href="{{ url_for('clientes.listar') }}"
-            >
-                Cancelar
-            </a>
 
-        </div>
+            <div class="cliente-link-warning">
 
-    </form>
+                <div>
+                    ℹ️
+                </div>
+
+                <p>
+
+                    <strong>
+                        O histórico será preservado.
+                    </strong>
+
+                    Notinhas antigas continuarão vinculadas ao piscineiro
+                    responsável no momento em que a venda foi realizada.
+
+                </p>
+
+            </div>
+
+
+
+            <div class="cliente-form-actions">
+
+
+                <button
+                    class="btn btn-primary"
+                    type="submit"
+                >
+                    🔄 Confirmar Alteração
+                </button>
+
+
+                <a
+                    class="btn btn-ghost"
+                    href="{{ url_for(
+                        'clientes.detalhes',
+                        cliente_id=cliente.id
+                    ) }}"
+                >
+                    Cancelar
+                </a>
+
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
 
 </div>
+
 
 {% endblock %}

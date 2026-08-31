@@ -3,38 +3,70 @@
 
 {% extends "base.html" %}
 
+
 {% block title %}
 Novo Cliente - Hydra ERP
 {% endblock %}
+
 
 {% block header_title %}
 👤 <span>Novo Cliente</span>
 {% endblock %}
 
+
 {% block content %}
+
 
 <div class="page-header">
 
     <div class="page-title">
+
         Novo Cliente
 
         <small>
             Cadastre o cliente e, se necessário, vincule um piscineiro
         </small>
+
     </div>
+
+
+    <a
+        class="btn btn-ghost"
+        href="{{ url_for('clientes.listar') }}"
+    >
+        ← Voltar
+    </a>
 
 </div>
 
 
-<div class="form-card">
+<div class="form-card cliente-form-card">
+
+
+    <div class="cliente-form-head">
+
+        <h2>
+            👤 Dados do cliente
+        </h2>
+
+        <span>
+            Preencha as informações utilizadas no atendimento
+        </span>
+
+    </div>
+
 
     <form method="POST">
 
+
         <div class="form-row">
+
 
             <div class="form-group">
 
-                <label>Nome *</label>
+                <label>
+                    Nome *
+                </label>
 
                 <input
                     type="text"
@@ -47,7 +79,9 @@ Novo Cliente - Hydra ERP
 
             <div class="form-group">
 
-                <label>Piscineiro Atual</label>
+                <label>
+                    Piscineiro Atual
+                </label>
 
                 <select name="piscineiro_id">
 
@@ -55,10 +89,13 @@ Novo Cliente - Hydra ERP
                         Sem piscineiro
                     </option>
 
+
                     {% for piscineiro in piscineiros %}
 
                         <option value="{{ piscineiro.id }}">
+
                             {{ piscineiro.nome }}
+
                         </option>
 
                     {% endfor %}
@@ -67,14 +104,18 @@ Novo Cliente - Hydra ERP
 
             </div>
 
+
         </div>
 
 
         <div class="form-row">
 
+
             <div class="form-group">
 
-                <label>Telefone</label>
+                <label>
+                    Telefone
+                </label>
 
                 <input
                     type="text"
@@ -86,7 +127,9 @@ Novo Cliente - Hydra ERP
 
             <div class="form-group">
 
-                <label>WhatsApp</label>
+                <label>
+                    WhatsApp
+                </label>
 
                 <input
                     type="text"
@@ -95,14 +138,18 @@ Novo Cliente - Hydra ERP
 
             </div>
 
+
         </div>
 
 
         <div class="form-row">
 
+
             <div class="form-group">
 
-                <label>Cidade</label>
+                <label>
+                    Cidade
+                </label>
 
                 <input
                     type="text"
@@ -114,7 +161,9 @@ Novo Cliente - Hydra ERP
 
             <div class="form-group">
 
-                <label>Endereço</label>
+                <label>
+                    Endereço
+                </label>
 
                 <input
                     type="text"
@@ -123,21 +172,41 @@ Novo Cliente - Hydra ERP
 
             </div>
 
+
         </div>
 
 
         <div class="form-group">
 
-            <label>Observação</label>
+            <label>
+                Observação
+            </label>
 
             <textarea
                 name="observacao"
+                placeholder="Informações adicionais sobre o cliente."
             ></textarea>
 
         </div>
 
 
-        <div class="action-group">
+        <div class="cliente-link-warning">
+
+            <div>
+                ℹ️
+            </div>
+
+            <p>
+
+                O cliente pode ser cadastrado sem piscineiro.
+                Nesse caso, ele ficará como atendimento direto da Hydra.
+
+            </p>
+
+        </div>
+
+
+        <div class="cliente-form-actions">
 
             <button
                 class="btn btn-primary"
@@ -156,8 +225,11 @@ Novo Cliente - Hydra ERP
 
         </div>
 
+
     </form>
 
+
 </div>
+
 
 {% endblock %}

@@ -3,181 +3,281 @@
 
 {% extends "base.html" %}
 
+
 {% block title %}
 Editar Cliente - Hydra ERP
 {% endblock %}
+
 
 {% block header_title %}
 ✏️ <span>Editar Cliente</span>
 {% endblock %}
 
+
 {% block content %}
+
 
 <div class="page-header">
 
     <div class="page-title">
+
         Editar Cliente
 
         <small>
-            Atualize os dados cadastrais
+            Atualize os dados cadastrais de {{ cliente.nome }}
         </small>
+
     </div>
+
+
+    <a
+        class="btn btn-ghost"
+        href="{{ url_for(
+            'clientes.detalhes',
+            cliente_id=cliente.id
+        ) }}"
+    >
+        ← Voltar
+    </a>
 
 </div>
 
 
-<div class="form-card">
 
-    <div
-        style="
-            background:#f0f7ff;
-            border-radius:8px;
-            padding:12px 16px;
-            margin-bottom:20px;
-            font-size:13px;
-            color:var(--text-mid);
-        "
-    >
-
-        Piscineiro atual:
-
-        <strong>
-            {% if cliente.piscineiro %}
-                {{ cliente.piscineiro.nome }}
-            {% else %}
-                Sem piscineiro
-            {% endif %}
-        </strong>
-
-        <br>
-
-        <span style="font-size:12px;color:var(--text-light);">
-            Para alterar esse vínculo, utilize a opção
-            "Mudar Piscineiro".
-        </span>
-
-    </div>
+<div class="cliente-form-layout">
 
 
-    <form method="POST">
-
-        <div class="form-row">
-
-            <div class="form-group">
-
-                <label>Nome *</label>
-
-                <input
-                    type="text"
-                    name="nome"
-                    value="{{ cliente.nome }}"
-                    required
-                >
-
-            </div>
+    <div class="form-card cliente-form-card">
 
 
-            <div class="form-group">
+        <div class="cliente-form-head">
 
-                <label>Telefone</label>
+            <h2>
+                ✏️ Dados cadastrais
+            </h2>
 
-                <input
-                    type="text"
-                    name="telefone"
-                    value="{{ cliente.telefone or '' }}"
-                >
-
-            </div>
+            <span>
+                Altere as informações necessárias
+            </span>
 
         </div>
 
 
-        <div class="form-row">
 
-            <div class="form-group">
+        <div class="cliente-current-link">
 
-                <label>WhatsApp</label>
-
-                <input
-                    type="text"
-                    name="whatsapp"
-                    value="{{ cliente.whatsapp or '' }}"
-                >
-
+            <div class="cliente-current-link-icon">
+                🏊
             </div>
 
 
-            <div class="form-group">
+            <div>
 
-                <label>Cidade</label>
+                <span>
+                    Piscineiro atual
+                </span>
 
-                <input
-                    type="text"
-                    name="cidade"
-                    value="{{ cliente.cidade or '' }}"
-                >
+                <strong>
+
+                    {% if cliente.piscineiro %}
+
+                        {{ cliente.piscineiro.nome }}
+
+                    {% else %}
+
+                        Hydra / Sem piscineiro
+
+                    {% endif %}
+
+                </strong>
+
+                <small>
+                    O vínculo é alterado separadamente para preservar o histórico.
+                </small>
 
             </div>
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>Endereço</label>
-
-            <input
-                type="text"
-                name="endereco"
-                value="{{ cliente.endereco or '' }}"
-            >
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>Observação</label>
-
-            <textarea
-                name="observacao"
-            >{{ cliente.observacao or '' }}</textarea>
-
-        </div>
-
-
-        <div class="action-group">
-
-            <button
-                class="btn btn-primary"
-                type="submit"
-            >
-                💾 Salvar Alterações
-            </button>
 
 
             <a
-                class="btn btn-outline"
+                class="btn btn-outline btn-sm"
                 href="{{ url_for(
                     'clientes.mudar_piscineiro',
                     cliente_id=cliente.id
                 ) }}"
             >
-                🔄 Mudar Piscineiro
-            </a>
-
-
-            <a
-                class="btn btn-ghost"
-                href="{{ url_for('clientes.listar') }}"
-            >
-                Cancelar
+                🔄 Alterar
             </a>
 
         </div>
 
-    </form>
+
+
+        <form method="POST">
+
+
+            <div class="form-row">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Nome *
+                    </label>
+
+                    <input
+                        type="text"
+                        name="nome"
+                        value="{{ cliente.nome }}"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label>
+                        Telefone
+                    </label>
+
+                    <input
+                        type="text"
+                        name="telefone"
+                        value="{{ cliente.telefone or '' }}"
+                    >
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="form-row">
+
+
+                <div class="form-group">
+
+                    <label>
+                        WhatsApp
+                    </label>
+
+                    <input
+                        type="text"
+                        name="whatsapp"
+                        value="{{ cliente.whatsapp or '' }}"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label>
+                        Cidade
+                    </label>
+
+                    <input
+                        type="text"
+                        name="cidade"
+                        value="{{ cliente.cidade or '' }}"
+                    >
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>
+                    Endereço
+                </label>
+
+                <input
+                    type="text"
+                    name="endereco"
+                    value="{{ cliente.endereco or '' }}"
+                >
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>
+                    Observação
+                </label>
+
+                <textarea
+                    name="observacao"
+                >{{ cliente.observacao or '' }}</textarea>
+
+            </div>
+
+
+
+            <div class="cliente-form-actions">
+
+
+                <button
+                    class="btn btn-primary"
+                    type="submit"
+                >
+                    💾 Salvar Alterações
+                </button>
+
+
+                <a
+                    class="btn btn-ghost"
+                    href="{{ url_for(
+                        'clientes.detalhes',
+                        cliente_id=cliente.id
+                    ) }}"
+                >
+                    Cancelar
+                </a>
+
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+
+
+    <aside class="cliente-form-help">
+
+        <div class="cliente-form-help-icon">
+            ℹ️
+        </div>
+
+        <strong>
+            Sobre o vínculo
+        </strong>
+
+        <p>
+            Alterações de nome, telefone, endereço e demais dados não
+            modificam o histórico financeiro do cliente.
+        </p>
+
+        <p>
+            Para trocar o piscineiro, utilize a opção específica
+            “Mudar Piscineiro”.
+        </p>
+
+    </aside>
+
 
 </div>
+
 
 {% endblock %}

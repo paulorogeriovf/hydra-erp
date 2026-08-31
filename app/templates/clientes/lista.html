@@ -18,10 +18,6 @@ Clientes - Hydra ERP
 {% block content %}
 
 
-<!-- =========================================================
-     CABEÇALHO
-========================================================= -->
-
 <div class="page-header">
 
     <div class="page-title">
@@ -45,161 +41,175 @@ Clientes - Hydra ERP
 </div>
 
 
+
 <!-- =========================================================
      INDICADORES
 ========================================================= -->
 
-<div class="cards-grid">
+<div class="clientes-summary">
 
 
-    <div class="stat-card blue">
+    <div class="clientes-summary-item">
 
-        <div class="stat-label">
-            Total Clientes
-        </div>
-
-        <div class="stat-value sm">
-            {{ todos_clientes|length }}
-        </div>
-
-        <div class="stat-icon">
+        <div class="clientes-summary-icon">
             👥
         </div>
 
-    </div>
+        <div>
 
+            <span>
+                Total
+            </span>
 
-    <div class="stat-card green">
+            <strong>
+                {{ todos_clientes|length }}
+            </strong>
 
-        <div class="stat-label">
-            Ativos
-        </div>
+            <small>
+                clientes cadastrados
+            </small>
 
-        <div class="stat-value sm">
-
-            {{
-                todos_clientes
-                |selectattr("ativo")
-                |list
-                |length
-            }}
-
-        </div>
-
-        <div class="stat-icon">
-            ✅
         </div>
 
     </div>
 
 
-    <div class="stat-card teal">
 
-        <div class="stat-label">
-            Com Piscineiro
+    <div class="clientes-summary-item success">
+
+        <div class="clientes-summary-icon">
+            ✓
         </div>
 
-        <div class="stat-value sm">
+        <div>
 
-            {{
-                todos_clientes
-                |selectattr("piscineiro_id")
-                |list
-                |length
-            }}
+            <span>
+                Ativos
+            </span>
+
+            <strong>
+
+                {{
+                    todos_clientes
+                    |selectattr("ativo")
+                    |list
+                    |length
+                }}
+
+            </strong>
+
+            <small>
+                em atividade
+            </small>
 
         </div>
 
-        <div class="stat-icon">
+    </div>
+
+
+
+    <div class="clientes-summary-item">
+
+        <div class="clientes-summary-icon">
             🏊
         </div>
 
+        <div>
+
+            <span>
+                Com piscineiro
+            </span>
+
+            <strong>
+
+                {{
+                    todos_clientes
+                    |selectattr("piscineiro_id")
+                    |list
+                    |length
+                }}
+
+            </strong>
+
+            <small>
+                clientes vinculados
+            </small>
+
+        </div>
+
     </div>
 
 
-    <div class="stat-card amber">
 
-        <div class="stat-label">
-            Sem Piscineiro
-        </div>
+    <div class="clientes-summary-item warning">
 
+        {% set sem_piscineiro = namespace(valor=0) %}
 
-        <div class="stat-value sm">
+        {% for cliente in todos_clientes %}
 
-            {% set sem_piscineiro =
-                namespace(valor=0)
-            %}
+            {% if not cliente.piscineiro_id %}
 
+                {% set sem_piscineiro.valor =
+                    sem_piscineiro.valor + 1
+                %}
 
-            {% for cliente in todos_clientes %}
+            {% endif %}
 
-                {% if not cliente.piscineiro_id %}
-
-                    {% set sem_piscineiro.valor =
-                        sem_piscineiro.valor + 1
-                    %}
-
-                {% endif %}
-
-            {% endfor %}
+        {% endfor %}
 
 
-            {{ sem_piscineiro.valor }}
-
-        </div>
-
-
-        <div class="stat-icon">
+        <div class="clientes-summary-icon">
             🏪
         </div>
 
+        <div>
+
+            <span>
+                Sem piscineiro
+            </span>
+
+            <strong>
+                {{ sem_piscineiro.valor }}
+            </strong>
+
+            <small>
+                atendimento direto
+            </small>
+
+        </div>
+
     </div>
 
+
 </div>
+
 
 
 <!-- =========================================================
      BUSCA
 ========================================================= -->
 
-<div
-    class="form-card"
-    style="margin-bottom:24px;"
->
+<div class="clientes-search">
 
     <form
         method="GET"
         action="{{ url_for('clientes.listar') }}"
     >
 
-        <div
-            style="
-                display:flex;
-                gap:10px;
-                align-items:end;
-                flex-wrap:wrap;
-            "
-        >
+        <div class="clientes-search-inner">
 
-            <div
-                class="form-group"
-                style="
-                    flex:1;
-                    min-width:250px;
-                    margin-bottom:0;
-                "
-            >
 
-                <label>
-                    🔎 Buscar Cliente
-                </label>
+            <div class="clientes-search-field">
 
+                <span class="clientes-search-icon">
+                    🔎
+                </span>
 
                 <input
                     type="text"
                     name="busca"
                     value="{{ busca }}"
-                    placeholder="Nome do cliente ou piscineiro..."
+                    placeholder="Digite o nome do cliente..."
                     autocomplete="off"
                 >
 
@@ -210,7 +220,7 @@ Clientes - Hydra ERP
                 class="btn btn-primary"
                 type="submit"
             >
-                🔍 Buscar
+                Buscar
             </button>
 
 
@@ -225,6 +235,7 @@ Clientes - Hydra ERP
 
             {% endif %}
 
+
         </div>
 
     </form>
@@ -232,333 +243,301 @@ Clientes - Hydra ERP
 </div>
 
 
+
 <!-- =========================================================
-     TABELA
+     CLIENTES
 ========================================================= -->
 
-<div class="table-wrap">
+<div class="clientes-panel">
 
 
-    <div class="table-head">
+    <div class="clientes-panel-head">
 
-        <span class="table-head-title">
+        <div>
 
-            {% if busca %}
+            <h2>
 
-                🔎 Resultado da busca
+                {% if busca %}
 
-            {% else %}
+                    🔎 Resultado da busca
 
-                👥 Clientes cadastrados
+                {% else %}
 
-            {% endif %}
+                    👥 Clientes cadastrados
 
-        </span>
+                {% endif %}
+
+            </h2>
 
 
-        {% if busca %}
+            <span>
 
-            <span
-                style="
-                    font-size:13px;
-                    color:var(--text-light);
-                "
-            >
-                {{ clientes|length }}
-                resultado(s)
+                {% if busca %}
+
+                    {{ clientes|length }}
+                    resultado(s) para "{{ busca }}"
+
+                {% else %}
+
+                    Consulte e gerencie os clientes da Hydra
+
+                {% endif %}
+
             </span>
 
-        {% endif %}
+        </div>
 
     </div>
 
 
-    <div style="overflow-x:auto;">
+
+    {% if clientes %}
 
 
-        <table>
+        <div class="clientes-list">
 
 
-            <thead>
-
-                <tr>
-
-                    <th>ID</th>
-
-                    <th>
-                        Cliente
-                    </th>
-
-                    <th>
-                        Telefone
-                    </th>
-
-                    <th>
-                        WhatsApp
-                    </th>
-
-                    <th>
-                        Cidade
-                    </th>
-
-                    <th>
-                        Piscineiro Atual
-                    </th>
-
-                    <th>
-                        Status
-                    </th>
-
-                    <th>
-                        Ações
-                    </th>
-
-                </tr>
-
-            </thead>
+            {% for cliente in clientes %}
 
 
-            <tbody>
+                <div class="cliente-row">
 
 
-                {% for cliente in clientes %}
+                    <!-- CLIENTE -->
+
+                    <div class="cliente-main">
+
+                        <div class="cliente-avatar">
+
+                            {{ cliente.nome[0]|upper }}
+
+                        </div>
 
 
-                    <tr>
-
-
-                        <td>
-                            {{ cliente.id }}
-                        </td>
-
-
-                        <td>
+                        <div>
 
                             <strong>
                                 {{ cliente.nome }}
                             </strong>
 
-                        </td>
+                            <span>
+
+                                {% if cliente.cidade %}
+
+                                    {{ cliente.cidade }}
+
+                                {% else %}
+
+                                    Cidade não informada
+
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+                    </div>
 
 
-                        <td>
 
-                            {{
-                                cliente.telefone
-                                or "-"
-                            }}
+                    <!-- CONTATO -->
 
-                        </td>
+                    <div class="cliente-data">
 
+                        <span>
+                            Contato
+                        </span>
 
-                        <td>
+                        <strong>
 
-                            {{
-                                cliente.whatsapp
-                                or "-"
-                            }}
+                            {% if cliente.whatsapp %}
 
-                        </td>
+                                {{ cliente.whatsapp }}
 
+                            {% elif cliente.telefone %}
 
-                        <td>
-
-                            {{
-                                cliente.cidade
-                                or "-"
-                            }}
-
-                        </td>
-
-
-                        <td>
-
-
-                            {% if cliente.piscineiro %}
-
-
-                                <span class="badge badge-open">
-
-                                    🏊
-                                    {{
-                                        cliente
-                                        .piscineiro
-                                        .nome
-                                    }}
-
-                                </span>
-
+                                {{ cliente.telefone }}
 
                             {% else %}
 
-
-                                <span class="badge badge-inactive">
-
-                                    Sem piscineiro
-
-                                </span>
-
+                                Não informado
 
                             {% endif %}
 
+                        </strong>
 
-                        </td>
+                    </div>
 
 
-                        <td>
 
+                    <!-- PISCINEIRO -->
+
+                    <div class="cliente-data">
+
+                        <span>
+                            Piscineiro
+                        </span>
+
+
+                        {% if cliente.piscineiro %}
+
+                            <strong>
+                                🏊 {{ cliente.piscineiro.nome }}
+                            </strong>
+
+                        {% else %}
+
+                            <strong class="cliente-muted">
+                                Hydra / Direto
+                            </strong>
+
+                        {% endif %}
+
+                    </div>
+
+
+
+                    <!-- STATUS -->
+
+                    <div class="cliente-status">
+
+                        {% if cliente.ativo %}
+
+                            <span class="badge badge-active">
+                                Ativo
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge badge-inactive">
+                                Inativo
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+
+                    <!-- AÇÕES -->
+
+                    <div class="cliente-actions">
+
+
+                        <a
+                            class="btn btn-primary btn-sm"
+                            href="{{ url_for(
+                                'clientes.detalhes',
+                                cliente_id=cliente.id
+                            ) }}"
+                        >
+                            Ver
+                        </a>
+
+
+                        <a
+                            class="btn btn-ghost btn-sm"
+                            href="{{ url_for(
+                                'clientes.editar',
+                                cliente_id=cliente.id
+                            ) }}"
+                        >
+                            ✏️
+                        </a>
+
+
+                        <a
+                            class="btn btn-ghost btn-sm"
+                            href="{{ url_for(
+                                'clientes.mudar_piscineiro',
+                                cliente_id=cliente.id
+                            ) }}"
+                            title="Mudar piscineiro"
+                        >
+                            🔄
+                        </a>
+
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'clientes.alterar_status',
+                                cliente_id=cliente.id
+                            ) }}"
+                        >
 
                             {% if cliente.ativo %}
 
-
-                                <span class="badge badge-active">
-
-                                    Ativo
-
-                                </span>
-
-
-                            {% else %}
-
-
-                                <span class="badge badge-inactive">
-
-                                    Inativo
-
-                                </span>
-
-
-                            {% endif %}
-
-
-                        </td>
-
-
-                        <td>
-
-
-                            <div class="action-group">
-
-
-                                <a
-                                    class="btn btn-primary btn-sm"
-                                    href="{{ url_for(
-                                        'clientes.detalhes',
-                                        cliente_id=cliente.id
-                                    ) }}"
-                                >
-                                    👁 Ver
-                                </a>
-
-
-                                <a
+                                <button
                                     class="btn btn-ghost btn-sm"
-                                    href="{{ url_for(
-                                        'clientes.editar',
-                                        cliente_id=cliente.id
-                                    ) }}"
+                                    type="submit"
+                                    title="Inativar cliente"
                                 >
-                                    ✏️ Editar
-                                </a>
-
-
-                                <a
-                                    class="btn btn-outline btn-sm"
-                                    href="{{ url_for(
-                                        'clientes.mudar_piscineiro',
-                                        cliente_id=cliente.id
-                                    ) }}"
-                                >
-                                    🔄 Piscineiro
-                                </a>
-
-
-                                <form
-                                    method="POST"
-                                    action="{{ url_for(
-                                        'clientes.alterar_status',
-                                        cliente_id=cliente.id
-                                    ) }}"
-                                >
-
-
-                                    {% if cliente.ativo %}
-
-
-                                        <button
-                                            class="btn btn-warning btn-sm"
-                                            type="submit"
-                                        >
-                                            ⏸ Inativar
-                                        </button>
-
-
-                                    {% else %}
-
-
-                                        <button
-                                            class="btn btn-success btn-sm"
-                                            type="submit"
-                                        >
-                                            ▶ Ativar
-                                        </button>
-
-
-                                    {% endif %}
-
-
-                                </form>
-
-
-                            </div>
-
-
-                        </td>
-
-
-                    </tr>
-
-
-                {% else %}
-
-
-                    <tr>
-
-                        <td
-                            colspan="8"
-                            style="
-                                text-align:center;
-                                padding:40px;
-                                color:var(--text-light);
-                            "
-                        >
-
-                            {% if busca %}
-
-                                Nenhum cliente encontrado
-                                para "{{ busca }}".
+                                    ⏸
+                                </button>
 
                             {% else %}
 
-                                Nenhum cliente cadastrado.
+                                <button
+                                    class="btn btn-success btn-sm"
+                                    type="submit"
+                                >
+                                    Ativar
+                                </button>
 
                             {% endif %}
 
-                        </td>
-
-                    </tr>
+                        </form>
 
 
-                {% endfor %}
+                    </div>
 
 
-            </tbody>
+                </div>
 
 
-        </table>
+            {% endfor %}
 
 
-    </div>
+        </div>
+
+
+    {% else %}
+
+
+        <div class="clientes-empty">
+
+            <div>
+                👥
+            </div>
+
+
+            {% if busca %}
+
+                <strong>
+                    Nenhum cliente encontrado
+                </strong>
+
+                <span>
+                    Não encontramos resultados para "{{ busca }}".
+                </span>
+
+            {% else %}
+
+                <strong>
+                    Nenhum cliente cadastrado
+                </strong>
+
+                <span>
+                    Cadastre o primeiro cliente para começar.
+                </span>
+
+            {% endif %}
+
+        </div>
+
+
+    {% endif %}
 
 
 </div>
