@@ -26,3 +26,7 @@ class Config:
     )
 
     MAX_CONTENT_LENGTH = 10 * 1024 * 1024
+
+    MYSQLDUMP_PATH = (
+        r"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqldump.exe"
+    )

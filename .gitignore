@@ -11,7 +11,7 @@ __pycache__/
 
 # Arquivos operacionais
 data/uploads/
-data/backups/
+backups/
 
 # IDE
 .vscode/
@@ -23,6 +23,3 @@ Thumbs.db
 
 # Logs
 *.log
-
-# Arquivos enviados para o Hydra ERP
-data/uploads/

@@ -523,6 +523,129 @@ Configurações - Hydra ERP
 
 </div>
 
+<!-- =========================================================
+     BACKUP
+========================================================= -->
+
+<div class="config-section">
+
+    <div class="config-section-head">
+
+        <div>
+            <h2>💾 Backup do Sistema</h2>
+
+            <span>
+                Gere uma cópia do banco de dados e dos arquivos do ERP
+            </span>
+        </div>
+
+    </div>
+
+
+    <div class="backup-content">
+
+        <div class="backup-info">
+
+            <div class="backup-icon">
+                🛡️
+            </div>
+
+            <div>
+                <strong>
+                    Backup completo do Hydra ERP
+                </strong>
+
+                <p>
+                    O arquivo inclui o banco MySQL e os uploads,
+                    como fotos das notinhas, comprovantes e anexos.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="backup-items">
+
+            <div class="backup-item">
+                <span>🗄️</span>
+
+                <div>
+                    <strong>Banco de dados</strong>
+
+                    <small>
+                        Clientes, produtos, notinhas,
+                        pagamentos, comissões e histórico.
+                    </small>
+                </div>
+            </div>
+
+
+            <div class="backup-item">
+                <span>📁</span>
+
+                <div>
+                    <strong>Arquivos</strong>
+
+                    <small>
+                        Fotos, comprovantes e demais
+                        anexos enviados ao ERP.
+                    </small>
+                </div>
+            </div>
+
+
+            <div class="backup-item">
+                <span>📦</span>
+
+                <div>
+                    <strong>Arquivo ZIP</strong>
+
+                    <small>
+                        Banco e arquivos reunidos
+                        em um único backup.
+                    </small>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="backup-warning">
+
+            <span>⚠️</span>
+
+            <div>
+                <strong>
+                    Recomendação
+                </strong>
+
+                <p>
+                    Guarde periodicamente uma cópia fora do
+                    computador onde o ERP está instalado.
+                </p>
+            </div>
+
+        </div>
+
+
+        <form
+            method="POST"
+            action="{{ url_for('configuracoes.gerar_backup') }}"
+        >
+
+            <button
+                class="btn btn-primary"
+                type="submit"
+            >
+                💾 Gerar Backup Agora
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
 {% endif %}
 
 

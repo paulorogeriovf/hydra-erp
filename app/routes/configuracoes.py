@@ -2,17 +2,21 @@
 # Responsável por: exibir e editar
 # as configurações gerais da empresa.
 
+import os
+
 from flask import (
     Blueprint,
     render_template,
     request,
     redirect,
     url_for,
-    flash
+    flash,
+    send_file
 )
 
 from app.extensions import db
 from app.models.configuracao_empresa import ConfiguracaoEmpresa
+from app.services.backup_service import BackupService
 
 
 configuracoes_bp = Blueprint(
@@ -162,3 +166,39 @@ def editar():
         "configuracoes/editar.html",
         empresa=empresa
     )
+
+@configuracoes_bp.route(
+    "/backup",
+    methods=["POST"]
+)
+def gerar_backup():
+
+    try:
+
+        arquivo = BackupService.gerar_backup()
+
+        flash(
+            "Backup gerado com sucesso.",
+            "success"
+        )
+
+        return send_file(
+            arquivo,
+            as_attachment=True,
+            download_name=os.path.basename(
+                arquivo
+            )
+        )
+
+    except Exception as erro:
+
+        flash(
+            f"Não foi possível gerar o backup: {erro}",
+            "error"
+        )
+
+        return redirect(
+            url_for(
+                "configuracoes.index"
+            )
+        )
