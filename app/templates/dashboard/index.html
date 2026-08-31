@@ -41,28 +41,36 @@ Dashboard - Hydra ERP
      INDICADORES PRINCIPAIS
 ========================================================= -->
 
-<div class="cards-grid">
+<div class="dashboard-main-cards">
 
 
     <!-- VENDAS DO MÊS -->
 
-    <div class="stat-card blue">
+    <div class="dashboard-main-card blue">
 
-        <div class="stat-label">
-            Vendas no Mês
+        <div>
+
+            <div class="dashboard-main-label">
+                Vendas no Mês
+            </div>
+
+            <div class="dashboard-main-value">
+
+                R$ {{
+                    "%.2f"
+                    |format(resumo.vendas_mes)
+                    |replace(".", ",")
+                }}
+
+            </div>
+
+            <div class="dashboard-main-meta">
+                Movimentação registrada no mês atual
+            </div>
+
         </div>
 
-        <div class="stat-value">
-
-            R$ {{
-                "%.2f"
-                |format(resumo.vendas_mes)
-                |replace(".", ",")
-            }}
-
-        </div>
-
-        <div class="stat-icon">
+        <div class="dashboard-main-icon">
             📈
         </div>
 
@@ -71,23 +79,39 @@ Dashboard - Hydra ERP
 
     <!-- TOTAL A RECEBER -->
 
-    <div class="stat-card amber">
+    <div class="dashboard-main-card amber">
 
-        <div class="stat-label">
-            Total a Receber
+        <div>
+
+            <div class="dashboard-main-label">
+                Total a Receber
+            </div>
+
+            <div class="dashboard-main-value">
+
+                R$ {{
+                    "%.2f"
+                    |format(resumo.total_receber)
+                    |replace(".", ",")
+                }}
+
+            </div>
+
+            <div class="dashboard-main-meta">
+
+                {{ resumo.quantidade_pendentes }}
+
+                {% if resumo.quantidade_pendentes == 1 %}
+                    notinha pendente
+                {% else %}
+                    notinhas pendentes
+                {% endif %}
+
+            </div>
+
         </div>
 
-        <div class="stat-value">
-
-            R$ {{
-                "%.2f"
-                |format(resumo.total_receber)
-                |replace(".", ",")
-            }}
-
-        </div>
-
-        <div class="stat-icon">
+        <div class="dashboard-main-icon">
             💰
         </div>
 
@@ -96,168 +120,231 @@ Dashboard - Hydra ERP
 
     <!-- TOTAL VENCIDO -->
 
-    <div class="stat-card red">
+    <div class="dashboard-main-card red">
 
-        <div class="stat-label">
-            Total Vencido
+        <div>
+
+            <div class="dashboard-main-label">
+                Total Vencido
+            </div>
+
+            <div class="dashboard-main-value">
+
+                R$ {{
+                    "%.2f"
+                    |format(resumo.total_vencido)
+                    |replace(".", ",")
+                }}
+
+            </div>
+
+            <div class="dashboard-main-meta">
+
+                {{ resumo.quantidade_vencidas }}
+
+                {% if resumo.quantidade_vencidas == 1 %}
+                    notinha vencida
+                {% else %}
+                    notinhas vencidas
+                {% endif %}
+
+            </div>
+
         </div>
 
-        <div class="stat-value">
-
-            R$ {{
-                "%.2f"
-                |format(resumo.total_vencido)
-                |replace(".", ",")
-            }}
-
-        </div>
-
-        <div class="stat-icon">
+        <div class="dashboard-main-icon">
             🚨
         </div>
 
     </div>
 
 
-    <!-- COMISSÕES -->
-
-    <div class="stat-card green">
-
-        <div class="stat-label">
-            Comissões Disponíveis
-        </div>
-
-        <div class="stat-value">
-
-            R$ {{
-                "%.2f"
-                |format(resumo.comissoes_disponiveis)
-                |replace(".", ",")
-            }}
-
-        </div>
-
-        <div class="stat-icon">
-            💵
-        </div>
-
-    </div>
-
 </div>
+
 
 
 <!-- =========================================================
-     INDICADORES SECUNDÁRIOS
+     GRÁFICO + RESUMO RÁPIDO
 ========================================================= -->
 
-<div class="cards-grid">
+<div class="dashboard-overview-grid">
 
 
-    <div class="stat-card blue">
+    <!-- GRÁFICO -->
 
-        <div class="stat-label">
-            Últimos 3 Meses
-        </div>
+    <div class="dashboard-panel">
 
-        <div class="stat-value">
+        <div class="dashboard-panel-head">
 
-            R$ {{
-                "%.2f"
-                |format(resumo.vendas_3_meses)
-                |replace(".", ",")
-            }}
+            <div>
 
-        </div>
+                <div class="dashboard-panel-title">
+                    📈 Evolução das Vendas
+                </div>
 
-        <div class="stat-icon">
-            📊
-        </div>
+                <div class="dashboard-panel-subtitle">
+                    Desempenho dos últimos meses
+                </div>
 
-    </div>
-
-
-    <div class="stat-card blue">
-
-        <div class="stat-label">
-            Ticket Médio
-        </div>
-
-        <div class="stat-value">
-
-            R$ {{
-                "%.2f"
-                |format(resumo.ticket_medio)
-                |replace(".", ",")
-            }}
+            </div>
 
         </div>
 
-        <div class="stat-icon">
-            🧾
+
+        <div class="dashboard-chart-area">
+
+            <canvas id="graficoVendas"></canvas>
+
         </div>
 
     </div>
 
 
-    <div class="stat-card red">
 
-        <div class="stat-label">
-            Notinhas Vencidas
+    <!-- RESUMO RÁPIDO -->
+
+    <div class="dashboard-panel dashboard-quick-panel">
+
+        <div class="dashboard-panel-head">
+
+            <div>
+
+                <div class="dashboard-panel-title">
+                    Resumo rápido
+                </div>
+
+                <div class="dashboard-panel-subtitle">
+                    Outros indicadores importantes
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="stat-value sm">
-            {{ resumo.quantidade_vencidas }}
-        </div>
 
-        <div class="stat-icon">
-            ⚠️
+        <div class="dashboard-quick-list">
+
+
+            <div class="dashboard-quick-row">
+
+                <div>
+
+                    <span class="dashboard-quick-icon">
+                        📊
+                    </span>
+
+                    Vendas últimos 3 meses
+
+                </div>
+
+                <strong>
+
+                    R$ {{
+                        "%.2f"
+                        |format(resumo.vendas_3_meses)
+                        |replace(".", ",")
+                    }}
+
+                </strong>
+
+            </div>
+
+
+            <div class="dashboard-quick-row">
+
+                <div>
+
+                    <span class="dashboard-quick-icon">
+                        🧾
+                    </span>
+
+                    Ticket médio
+
+                </div>
+
+                <strong>
+
+                    R$ {{
+                        "%.2f"
+                        |format(resumo.ticket_medio)
+                        |replace(".", ",")
+                    }}
+
+                </strong>
+
+            </div>
+
+
+            <div class="dashboard-quick-row">
+
+                <div>
+
+                    <span class="dashboard-quick-icon">
+                        💵
+                    </span>
+
+                    Comissões disponíveis
+
+                </div>
+
+                <strong>
+
+                    R$ {{
+                        "%.2f"
+                        |format(resumo.comissoes_disponiveis)
+                        |replace(".", ",")
+                    }}
+
+                </strong>
+
+            </div>
+
+
+            <div class="dashboard-quick-row">
+
+                <div>
+
+                    <span class="dashboard-quick-icon">
+                        ⚠️
+                    </span>
+
+                    Notinhas vencidas
+
+                </div>
+
+                <strong class="dashboard-text-danger">
+                    {{ resumo.quantidade_vencidas }}
+                </strong>
+
+            </div>
+
+
+            <div class="dashboard-quick-row">
+
+                <div>
+
+                    <span class="dashboard-quick-icon">
+                        ⏳
+                    </span>
+
+                    Próximas do vencimento
+
+                </div>
+
+                <strong class="dashboard-text-warning">
+                    {{ resumo.quantidade_proximas }}
+                </strong>
+
+            </div>
+
+
         </div>
 
     </div>
 
-
-    <div class="stat-card amber">
-
-        <div class="stat-label">
-            Próximas do Vencimento
-        </div>
-
-        <div class="stat-value sm">
-            {{ resumo.quantidade_proximas }}
-        </div>
-
-        <div class="stat-icon">
-            ⏳
-        </div>
-
-    </div>
 
 </div>
 
-
-<!-- =========================================================
-     GRÁFICO DE VENDAS
-========================================================= -->
-
-<div class="section-title">
-    📈 Evolução das Vendas
-</div>
-
-
-<div class="form-card">
-
-    <div
-        style="
-            height:320px;
-            position:relative;
-        "
-    >
-
-        <canvas id="graficoVendas"></canvas>
-
-    </div>
-
-</div>
 
 
 <!-- =========================================================
@@ -271,598 +358,469 @@ Dashboard - Hydra ERP
 ></div>
 
 
-<!-- =========================================================
-     TOP PRODUTOS
-========================================================= -->
-
-<div
-    class="section-title"
-    style="margin-top:32px;"
->
-    🏆 Top Produtos — Últimos 90 Dias
-</div>
-
-
-<div class="table-wrap">
-
-    <div class="table-head">
-
-        <span class="table-head-title">
-            📦 Produtos Mais Vendidos
-        </span>
-
-
-        <a
-            class="btn btn-ghost btn-sm"
-            href="{{ url_for(
-                'inteligencia_vendas.ranking_produtos'
-            ) }}"
-        >
-            Ver ranking completo →
-        </a>
-
-    </div>
-
-
-    <div style="overflow-x:auto;">
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>#</th>
-                    <th>Produto</th>
-                    <th>Quantidade</th>
-                    <th>Valor</th>
-                </tr>
-
-            </thead>
-
-
-            <tbody>
-
-                {% for item in top_produtos %}
-
-                    <tr>
-
-                        <td>
-                            {{ loop.index }}
-                        </td>
-
-
-                        <td>
-
-                            <strong>
-                                {{ item.nome_produto }}
-                            </strong>
-
-                        </td>
-
-
-                        <td>
-                            {{ item.quantidade_total }}
-                        </td>
-
-
-                        <td>
-
-                            <strong>
-
-                                R$ {{
-                                    "%.2f"
-                                    |format(item.valor_total)
-                                    |replace(".", ",")
-                                }}
-
-                            </strong>
-
-                        </td>
-
-                    </tr>
-
-
-                {% else %}
-
-                    <tr>
-
-                        <td
-                            colspan="4"
-                            style="
-                                text-align:center;
-                                padding:30px;
-                                color:var(--text-light);
-                            "
-                        >
-                            Nenhuma venda registrada.
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</div>
-
 
 <!-- =========================================================
-     TOP PISCINEIROS
+     ALERTAS / OPORTUNIDADES
 ========================================================= -->
 
-<div
-    class="section-title"
-    style="margin-top:30px;"
->
-    🏊 Top Piscineiros — Últimos 90 Dias
-</div>
+<div class="dashboard-two-col">
 
 
-<div class="table-wrap">
+    <!-- COBRANÇAS -->
 
-    <div class="table-head">
+    <div class="dashboard-panel">
 
-        <span class="table-head-title">
-            🏆 Piscineiros que Mais Movimentam
-        </span>
+        <div class="dashboard-panel-head">
 
+            <div>
 
-        <a
-            class="btn btn-ghost btn-sm"
-            href="{{ url_for(
-                'inteligencia_vendas.ranking_piscineiros'
-            ) }}"
-        >
-            Ver ranking completo →
-        </a>
+                <div class="dashboard-panel-title">
+                    🚨 Cobranças vencidas
+                </div>
 
-    </div>
+                <div class="dashboard-panel-subtitle">
+                    Pendências que precisam de atenção
+                </div>
+
+            </div>
 
 
-    <div style="overflow-x:auto;">
+            <a
+                class="btn btn-ghost btn-sm"
+                href="{{ url_for('cobrancas.index') }}"
+            >
+                Ver cobranças →
+            </a>
 
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>#</th>
-                    <th>Piscineiro</th>
-                    <th>Valor Movimentado</th>
-                    <th>Ações</th>
-                </tr>
-
-            </thead>
+        </div>
 
 
-            <tbody>
-
-                {% for item in top_piscineiros %}
-
-                    <tr>
-
-                        <td>
-                            {{ loop.index }}
-                        </td>
+        <div class="dashboard-list">
 
 
-                        <td>
+            {% for dados in pendencias_vencidas %}
 
-                            <strong>
-                                {{ item.nome }}
-                            </strong>
-
-                        </td>
+                {% set notinha = dados.notinha %}
 
 
-                        <td>
+                <a
+                    class="dashboard-list-item"
+                    href="{{ url_for(
+                        'notinhas.detalhes',
+                        notinha_id=notinha.id
+                    ) }}"
+                >
 
-                            <strong>
+                    <div class="dashboard-list-main">
 
-                                R$ {{
-                                    "%.2f"
-                                    |format(item.valor_total)
-                                    |replace(".", ",")
-                                }}
+                        <strong>
+                            {{ notinha.cliente.nome }}
+                        </strong>
 
-                            </strong>
+                        <span>
+                            Notinha #{{ notinha.id }}
+                            •
+                            {{ dados.dias_atraso }}
 
-                        </td>
+                            {% if dados.dias_atraso == 1 %}
+                                dia de atraso
+                            {% else %}
+                                dias de atraso
+                            {% endif %}
+                        </span>
 
-
-                        <td>
-
-                            <a
-                                class="btn btn-ghost btn-sm"
-                                href="{{ url_for(
-                                    'piscineiros.detalhes',
-                                    piscineiro_id=item.id
-                                ) }}"
-                            >
-                                👁 Ver
-                            </a>
-
-                        </td>
-
-                    </tr>
+                    </div>
 
 
-                {% else %}
+                    <div class="dashboard-list-value danger">
 
-                    <tr>
+                        R$ {{
+                            "%.2f"
+                            |format(dados.saldo)
+                            |replace(".", ",")
+                        }}
 
-                        <td
-                            colspan="4"
-                            style="
-                                text-align:center;
-                                padding:30px;
-                                color:var(--text-light);
-                            "
-                        >
-                            Nenhum piscineiro com movimentação.
-                        </td>
+                    </div>
 
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</div>
+                </a>
 
 
-<!-- =========================================================
-     COBRANÇAS VENCIDAS
-========================================================= -->
-
-<div
-    class="section-title"
-    style="margin-top:32px;"
->
-    🚨 Cobranças que Precisam de Atenção
-</div>
+            {% else %}
 
 
-<div class="table-wrap">
+                <div class="dashboard-empty">
 
-    <div class="table-head">
+                    <div class="dashboard-empty-icon">
+                        ✅
+                    </div>
 
-        <span class="table-head-title">
-            ⚠️ Vencidas
-        </span>
+                    <strong>
+                        Nenhuma cobrança vencida
+                    </strong>
+
+                    <span>
+                        Não há pendências vencidas no momento.
+                    </span>
+
+                </div>
 
 
-        <a
-            class="btn btn-ghost btn-sm"
-            href="{{ url_for(
-                'cobrancas.index'
-            ) }}"
-        >
-            Ver cobranças →
-        </a>
+            {% endfor %}
+
+
+        </div>
 
     </div>
 
 
-    <div style="overflow-x:auto;">
 
-        <table>
+    <!-- OPORTUNIDADES -->
 
-            <thead>
+    <div class="dashboard-panel">
 
-                <tr>
-                    <th>Notinha</th>
-                    <th>Cliente</th>
-                    <th>Vencimento</th>
-                    <th>Saldo</th>
-                    <th>Atraso</th>
-                    <th>Ações</th>
-                </tr>
+        <div class="dashboard-panel-head">
 
-            </thead>
+            <div>
 
+                <div class="dashboard-panel-title">
+                    💡 Oportunidades
+                </div>
 
-            <tbody>
+                <div class="dashboard-panel-subtitle">
+                    Possíveis vendas detectadas pelo sistema
+                </div>
 
-                {% for dados in pendencias_vencidas %}
-
-                    {% set notinha = dados.notinha %}
-
-                    <tr>
-
-                        <td>
-                            #{{ notinha.id }}
-                        </td>
+            </div>
 
 
-                        <td>
+            <a
+                class="btn btn-ghost btn-sm"
+                href="{{ url_for(
+                    'inteligencia_vendas.oportunidades'
+                ) }}"
+            >
+                Ver todas →
+            </a>
 
-                            <strong>
-                                {{ notinha.cliente.nome }}
-                            </strong>
-
-                        </td>
-
-
-                        <td>
-
-                            {{
-                                notinha.data_vencimento
-                                .strftime("%d/%m/%Y")
-                            }}
-
-                        </td>
+        </div>
 
 
-                        <td>
-
-                            <strong>
-
-                                R$ {{
-                                    "%.2f"
-                                    |format(dados.saldo)
-                                    |replace(".", ",")
-                                }}
-
-                            </strong>
-
-                        </td>
+        <div class="dashboard-list">
 
 
-                        <td>
+            {% for dados in oportunidades %}
+
+
+                <a
+                    class="dashboard-list-item"
+                    href="{{ url_for(
+                        'clientes.detalhes',
+                        cliente_id=dados.cliente.id
+                    ) }}"
+                >
+
+                    <div class="dashboard-list-main">
+
+                        <strong>
+                            {{ dados.cliente.nome }}
+                        </strong>
+
+                        <span>
+
+                            {{ dados.produto_nome }}
+                            •
+                            {{ dados.dias_sem_comprar }}
+                            dias sem comprar
+
+                        </span>
+
+                    </div>
+
+
+                    <div>
+
+                        {% if dados.nivel == "ALTA" %}
 
                             <span class="badge badge-late">
-
-                                ⚠️
-                                {{ dados.dias_atraso }}
-
-                                {% if dados.dias_atraso == 1 %}
-                                    dia
-                                {% else %}
-                                    dias
-                                {% endif %}
-
+                                Alta
                             </span>
 
-                        </td>
+                        {% else %}
+
+                            <span class="badge badge-open">
+                                Atenção
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </a>
 
 
-                        <td>
-
-                            <a
-                                class="btn btn-ghost btn-sm"
-                                href="{{ url_for(
-                                    'notinhas.detalhes',
-                                    notinha_id=notinha.id
-                                ) }}"
-                            >
-                                👁 Ver
-                            </a>
-
-                        </td>
-
-                    </tr>
+            {% else %}
 
 
-                {% else %}
+                <div class="dashboard-empty">
 
-                    <tr>
+                    <div class="dashboard-empty-icon">
+                        💡
+                    </div>
 
-                        <td
-                            colspan="6"
-                            style="
-                                text-align:center;
-                                padding:30px;
-                                color:var(--text-light);
-                            "
-                        >
+                    <strong>
+                        Nenhuma oportunidade detectada
+                    </strong>
 
-                            ✅ Nenhuma cobrança vencida.
+                    <span>
+                        O sistema ainda não encontrou padrões suficientes.
+                    </span>
 
-                        </td>
+                </div>
 
-                    </tr>
 
-                {% endfor %}
+            {% endfor %}
 
-            </tbody>
 
-        </table>
+        </div>
 
     </div>
 
+
 </div>
+
 
 
 <!-- =========================================================
-     OPORTUNIDADES
+     RANKINGS
 ========================================================= -->
 
-<div
-    class="section-title"
-    style="margin-top:32px;"
->
-    💡 Oportunidades de Vendas
-</div>
+<div class="dashboard-two-col">
 
 
-<div class="table-wrap">
+    <!-- PRODUTOS -->
 
-    <div class="table-head">
+    <div class="dashboard-panel">
 
-        <span class="table-head-title">
-            🧠 Oportunidades Detectadas
-        </span>
+        <div class="dashboard-panel-head">
+
+            <div>
+
+                <div class="dashboard-panel-title">
+                    📦 Produtos mais vendidos
+                </div>
+
+                <div class="dashboard-panel-subtitle">
+                    Últimos 90 dias
+                </div>
+
+            </div>
 
 
-        <a
-            class="btn btn-ghost btn-sm"
-            href="{{ url_for(
-                'inteligencia_vendas.oportunidades'
-            ) }}"
-        >
-            Ver todas →
-        </a>
+            <a
+                class="btn btn-ghost btn-sm"
+                href="{{ url_for(
+                    'inteligencia_vendas.ranking_produtos'
+                ) }}"
+            >
+                Ver ranking →
+            </a>
+
+        </div>
+
+
+        <div class="dashboard-ranking">
+
+
+            {% for item in top_produtos %}
+
+
+                <div class="dashboard-ranking-item">
+
+                    <div class="dashboard-ranking-position">
+                        {{ loop.index }}
+                    </div>
+
+
+                    <div class="dashboard-ranking-info">
+
+                        <strong>
+                            {{ item.nome_produto }}
+                        </strong>
+
+                        <span>
+                            {{ item.quantidade_total }}
+                            unidades vendidas
+                        </span>
+
+                    </div>
+
+
+                    <div class="dashboard-ranking-value">
+
+                        R$ {{
+                            "%.2f"
+                            |format(item.valor_total)
+                            |replace(".", ",")
+                        }}
+
+                    </div>
+
+                </div>
+
+
+            {% else %}
+
+
+                <div class="dashboard-empty">
+
+                    <div class="dashboard-empty-icon">
+                        📦
+                    </div>
+
+                    <strong>
+                        Nenhuma venda registrada
+                    </strong>
+
+                </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- PISCINEIROS -->
+
+    <div class="dashboard-panel">
+
+        <div class="dashboard-panel-head">
+
+            <div>
+
+                <div class="dashboard-panel-title">
+                    🏊 Top piscineiros
+                </div>
+
+                <div class="dashboard-panel-subtitle">
+                    Maior movimentação nos últimos 90 dias
+                </div>
+
+            </div>
+
+
+            <a
+                class="btn btn-ghost btn-sm"
+                href="{{ url_for(
+                    'inteligencia_vendas.ranking_piscineiros'
+                ) }}"
+            >
+                Ver ranking →
+            </a>
+
+        </div>
+
+
+        <div class="dashboard-ranking">
+
+
+            {% for item in top_piscineiros %}
+
+
+                <a
+                    class="dashboard-ranking-item dashboard-ranking-link"
+                    href="{{ url_for(
+                        'piscineiros.detalhes',
+                        piscineiro_id=item.id
+                    ) }}"
+                >
+
+                    <div class="dashboard-ranking-position">
+                        {{ loop.index }}
+                    </div>
+
+
+                    <div class="dashboard-ranking-info">
+
+                        <strong>
+                            {{ item.nome }}
+                        </strong>
+
+                        <span>
+                            Movimentação registrada
+                        </span>
+
+                    </div>
+
+
+                    <div class="dashboard-ranking-value">
+
+                        R$ {{
+                            "%.2f"
+                            |format(item.valor_total)
+                            |replace(".", ",")
+                        }}
+
+                    </div>
+
+                </a>
+
+
+            {% else %}
+
+
+                <div class="dashboard-empty">
+
+                    <div class="dashboard-empty-icon">
+                        🏊
+                    </div>
+
+                    <strong>
+                        Nenhum piscineiro com movimentação
+                    </strong>
+
+                </div>
+
+
+            {% endfor %}
+
+
+        </div>
 
     </div>
 
 
-    <div style="overflow-x:auto;">
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>Cliente</th>
-                    <th>Produto</th>
-                    <th>Média</th>
-                    <th>Sem Comprar</th>
-                    <th>Situação</th>
-                    <th>Ações</th>
-                </tr>
-
-            </thead>
-
-
-            <tbody>
-
-                {% for dados in oportunidades %}
-
-                    <tr>
-
-                        <td>
-
-                            <strong>
-                                {{ dados.cliente.nome }}
-                            </strong>
-
-                        </td>
-
-
-                        <td>
-                            {{ dados.produto_nome }}
-                        </td>
-
-
-                        <td>
-
-                            {{ dados.media_dias }}
-                            dias
-
-                        </td>
-
-
-                        <td>
-
-                            <strong>
-                                {{ dados.dias_sem_comprar }}
-                                dias
-                            </strong>
-
-                        </td>
-
-
-                        <td>
-
-                            {% if dados.nivel == "ALTA" %}
-
-                                <span class="badge badge-late">
-                                    🚨 Alta atenção
-                                </span>
-
-                            {% else %}
-
-                                <span class="badge badge-open">
-                                    ⚠️ Atenção
-                                </span>
-
-                            {% endif %}
-
-                        </td>
-
-
-                        <td>
-
-                            <a
-                                class="btn btn-ghost btn-sm"
-                                href="{{ url_for(
-                                    'clientes.detalhes',
-                                    cliente_id=dados.cliente.id
-                                ) }}"
-                            >
-                                👁 Ver
-                            </a>
-
-                        </td>
-
-                    </tr>
-
-
-                {% else %}
-
-                    <tr>
-
-                        <td
-                            colspan="6"
-                            style="
-                                text-align:center;
-                                padding:30px;
-                                color:var(--text-light);
-                            "
-                        >
-
-                            Nenhuma oportunidade detectada ainda.
-
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
 </div>
+
 
 
 <!-- =========================================================
      MOVIMENTAÇÕES RECENTES
 ========================================================= -->
 
-<div
-    class="section-title"
-    style="margin-top:32px;"
->
-    📜 Movimentações Recentes
-</div>
+<div class="dashboard-panel dashboard-movements">
 
+    <div class="dashboard-panel-head">
 
-<div class="table-wrap">
+        <div>
 
-    <div class="table-head">
+            <div class="dashboard-panel-title">
+                📜 Movimentações recentes
+            </div>
 
-        <span class="table-head-title">
-            🕒 Últimas Ações
-        </span>
+            <div class="dashboard-panel-subtitle">
+                Últimas alterações registradas no sistema
+            </div>
+
+        </div>
 
 
         <a
             class="btn btn-ghost btn-sm"
-            href="{{ url_for(
-                'historico.index'
-            ) }}"
+            href="{{ url_for('historico.index') }}"
         >
             Ver histórico →
         </a>
@@ -870,229 +828,233 @@ Dashboard - Hydra ERP
     </div>
 
 
-    <div style="overflow-x:auto;">
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>Data</th>
-                    <th>Tipo</th>
-                    <th>Ação</th>
-                    <th>Descrição</th>
-                </tr>
-
-            </thead>
+    <div class="dashboard-list">
 
 
-            <tbody>
-
-                {% for movimentacao in movimentacoes %}
-
-                    <tr>
-
-                        <td style="white-space:nowrap;">
-
-                            {{
-                                movimentacao.data_criacao
-                                .strftime("%d/%m/%Y %H:%M")
-                            }}
-
-                        </td>
+        {% for movimentacao in movimentacoes %}
 
 
-                        <td>
-
-                            {% if movimentacao.tipo == "NOTINHA" %}
-                                📄 Notinha
-
-                            {% elif movimentacao.tipo == "PAGAMENTO" %}
-                                💰 Pagamento
-
-                            {% elif movimentacao.tipo == "COMISSAO" %}
-                                💵 Comissão
-
-                            {% elif movimentacao.tipo == "CLIENTE" %}
-                                👤 Cliente
-
-                            {% elif movimentacao.tipo == "PISCINEIRO" %}
-                                🏊 Piscineiro
-
-                            {% elif movimentacao.tipo == "PRODUTO" %}
-                                📦 Produto
-
-                            {% else %}
-                                {{ movimentacao.tipo }}
-
-                            {% endif %}
-
-                        </td>
+            <div class="dashboard-movement-item">
 
 
-                        <td>
-                            {{ movimentacao.acao }}
-                        </td>
+                <div class="dashboard-movement-icon">
+
+                    {% if movimentacao.tipo == "NOTINHA" %}
+                        📄
+
+                    {% elif movimentacao.tipo == "PAGAMENTO" %}
+                        💰
+
+                    {% elif movimentacao.tipo == "COMISSAO" %}
+                        💵
+
+                    {% elif movimentacao.tipo == "CLIENTE" %}
+                        👤
+
+                    {% elif movimentacao.tipo == "PISCINEIRO" %}
+                        🏊
+
+                    {% elif movimentacao.tipo == "PRODUTO" %}
+                        📦
+
+                    {% else %}
+                        📝
+
+                    {% endif %}
+
+                </div>
 
 
-                        <td>
+                <div class="dashboard-movement-main">
 
-                            {{ movimentacao.descricao }}
+                    <strong>
+                        {{ movimentacao.acao }}
+                    </strong>
 
-                        </td>
+                    <span>
+                        {{ movimentacao.descricao }}
+                    </span>
 
-                    </tr>
+                </div>
 
 
-                {% else %}
+                <div class="dashboard-movement-date">
 
-                    <tr>
+                    {{
+                        movimentacao.data_criacao
+                        .strftime("%d/%m/%Y")
+                    }}
 
-                        <td
-                            colspan="4"
-                            style="
-                                text-align:center;
-                                padding:30px;
-                                color:var(--text-light);
-                            "
-                        >
+                    <small>
+                        {{
+                            movimentacao.data_criacao
+                            .strftime("%H:%M")
+                        }}
+                    </small>
 
-                            Nenhuma movimentação registrada.
+                </div>
 
-                        </td>
 
-                    </tr>
+            </div>
 
-                {% endfor %}
 
-            </tbody>
+        {% else %}
 
-        </table>
+
+            <div class="dashboard-empty">
+
+                <div class="dashboard-empty-icon">
+                    📜
+                </div>
+
+                <strong>
+                    Nenhuma movimentação registrada
+                </strong>
+
+            </div>
+
+
+        {% endfor %}
+
 
     </div>
 
 </div>
+
 
 
 <!-- =========================================================
      CADASTROS
 ========================================================= -->
 
-<div
-    class="section-title"
-    style="margin-top:32px;"
->
-    📋 Cadastros
-</div>
+<div class="dashboard-registers">
 
 
-<div class="cards-grid">
+    <a
+        class="dashboard-register-item"
+        href="{{ url_for('clientes.listar') }}"
+    >
 
+        <span class="dashboard-register-icon">
+            👥
+        </span>
 
-    <div class="stat-card blue">
+        <div>
 
-        <div class="stat-label">
-            Clientes
+            <strong>
+                {{ clientes_ativos }}
+            </strong>
+
+            <span>
+                Clientes ativos
+            </span>
+
         </div>
 
-        <div class="stat-value sm">
-            {{ clientes_ativos }}
-        </div>
-
-        <div
-            style="
-                margin-top:5px;
-                font-size:12px;
-                color:var(--text-light);
-            "
-        >
+        <small>
             {{ total_clientes }} cadastrados
-        </div>
+        </small>
 
-        <div class="stat-icon">
-            👤
-        </div>
-
-    </div>
+    </a>
 
 
-    <div class="stat-card blue">
+    <a
+        class="dashboard-register-item"
+        href="{{ url_for('piscineiros.listar') }}"
+    >
 
-        <div class="stat-label">
-            Piscineiros
-        </div>
-
-        <div class="stat-value sm">
-            {{ piscineiros_ativos }}
-        </div>
-
-        <div
-            style="
-                margin-top:5px;
-                font-size:12px;
-                color:var(--text-light);
-            "
-        >
-            {{ total_piscineiros }} cadastrados
-        </div>
-
-        <div class="stat-icon">
+        <span class="dashboard-register-icon">
             🏊
+        </span>
+
+        <div>
+
+            <strong>
+                {{ piscineiros_ativos }}
+            </strong>
+
+            <span>
+                Piscineiros ativos
+            </span>
+
         </div>
 
-    </div>
+        <small>
+            {{ total_piscineiros }} cadastrados
+        </small>
+
+    </a>
 
 
-    <div class="stat-card blue">
+    <a
+        class="dashboard-register-item"
+        href="{{ url_for('produtos.listar') }}"
+    >
 
-        <div class="stat-label">
-            Produtos
-        </div>
-
-        <div class="stat-value sm">
-            {{ produtos_ativos }}
-        </div>
-
-        <div
-            style="
-                margin-top:5px;
-                font-size:12px;
-                color:var(--text-light);
-            "
-        >
-            {{ total_produtos }} cadastrados
-        </div>
-
-        <div class="stat-icon">
+        <span class="dashboard-register-icon">
             📦
+        </span>
+
+        <div>
+
+            <strong>
+                {{ produtos_ativos }}
+            </strong>
+
+            <span>
+                Produtos ativos
+            </span>
+
         </div>
 
-    </div>
+        <small>
+            {{ total_produtos }} cadastrados
+        </small>
+
+    </a>
 
 
-    <div class="stat-card amber">
+    <a
+        class="dashboard-register-item"
+        href="{{ url_for('clientes.listar') }}"
+    >
 
-        <div class="stat-label">
-            Clientes sem Piscineiro
-        </div>
-
-        <div class="stat-value sm">
-            {{ clientes_sem_piscineiro }}
-        </div>
-
-        <div class="stat-icon">
+        <span class="dashboard-register-icon">
             🏪
+        </span>
+
+        <div>
+
+            <strong>
+                {{ clientes_sem_piscineiro }}
+            </strong>
+
+            <span>
+                Sem piscineiro
+            </span>
+
         </div>
 
-    </div>
+        <small>
+            Clientes diretos Hydra
+        </small>
+
+    </a>
 
 
 </div>
+
 
 
 <!-- =========================================================
      CHART.JS
 ========================================================= -->
+
+{% endblock %}
+
+
+
+{% block scripts %}
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -1152,10 +1114,13 @@ document.addEventListener(
                                 valores,
 
                             borderWidth:
-                                1,
+                                0,
 
                             borderRadius:
-                                6
+                                7,
+
+                            maxBarThickness:
+                                54
                         }
                     ]
 
@@ -1169,20 +1134,73 @@ document.addEventListener(
                     maintainAspectRatio:
                         false,
 
+                    interaction: {
+                        intersect: false,
+                        mode: "index"
+                    },
+
                     plugins: {
 
                         legend: {
                             display: false
+                        },
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label:
+                                    function (context) {
+
+                                        return (
+                                            " R$ "
+                                            + Number(
+                                                context.raw
+                                            )
+                                            .toLocaleString(
+                                                "pt-BR",
+                                                {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2
+                                                }
+                                            )
+                                        );
+
+                                    }
+
+                            }
+
                         }
 
                     },
 
                     scales: {
 
+                        x: {
+
+                            grid: {
+                                display: false
+                            },
+
+                            border: {
+                                display: false
+                            }
+
+                        },
+
                         y: {
 
                             beginAtZero:
                                 true,
+
+                            border: {
+                                display: false
+                            },
+
+                            grid: {
+                                color:
+                                    "rgba(100, 116, 139, 0.10)"
+                            },
 
                             ticks: {
 
@@ -1215,5 +1233,4 @@ document.addEventListener(
 
 </script>
 
-
-{% endblock %}
+{% endblock %}  
