@@ -5,13 +5,20 @@ venv/
 # Python
 __pycache__/
 *.py[cod]
+*$py.class
 
 # Configurações privadas
 .env
+.env.local
 
 # Arquivos operacionais
 data/uploads/
 backups/
+
+# Pytest / testes
+.pytest_cache/
+.coverage
+htmlcov/
 
 # IDE
 .vscode/
