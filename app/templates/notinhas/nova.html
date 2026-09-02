@@ -19,10 +19,6 @@ Nova Notinha - Hydra ERP
 {% block content %}
 
 
-<!-- =========================================================
-     CABEÇALHO
-========================================================= -->
-
 <div class="page-header">
 
     <div class="page-title">
@@ -37,10 +33,6 @@ Nova Notinha - Hydra ERP
 
 </div>
 
-
-<!-- =========================================================
-     FORMULÁRIO
-========================================================= -->
 
 <form
     method="POST"
@@ -208,7 +200,6 @@ Nova Notinha - Hydra ERP
 
                 <table>
 
-
                     <thead>
 
                         <tr>
@@ -238,8 +229,6 @@ Nova Notinha - Hydra ERP
 
                     <tbody id="itensNotinha">
 
-
-                        <!-- PRIMEIRO PRODUTO -->
 
                         <tr class="item-notinha">
 
@@ -313,9 +302,7 @@ Nova Notinha - Hydra ERP
 
                             <td>
 
-                                <strong
-                                    class="subtotal"
-                                >
+                                <strong class="subtotal">
                                     R$ 0,00
                                 </strong>
 
@@ -325,12 +312,7 @@ Nova Notinha - Hydra ERP
                             <td>
 
                                 <button
-                                    class="
-                                        btn
-                                        btn-danger
-                                        btn-sm
-                                        remover-item
-                                    "
+                                    class="btn btn-danger btn-sm remover-item"
                                     type="button"
                                 >
                                     ✕
@@ -343,7 +325,6 @@ Nova Notinha - Hydra ERP
 
 
                     </tbody>
-
 
                 </table>
 
@@ -417,7 +398,7 @@ Nova Notinha - Hydra ERP
 
 
         <!-- =================================================
-             FOTO DA NOTINHA
+             FOTO
         ================================================== -->
 
         <div class="section-title">
@@ -482,6 +463,77 @@ Nova Notinha - Hydra ERP
 
 
 <!-- =========================================================
+     SELECT2
+========================================================= -->
+
+<link
+    href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+    rel="stylesheet"
+/>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+<style>
+
+.select2-container {
+    width: 100% !important;
+}
+
+.select2-container .select2-selection--single {
+    min-height: 42px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    background: var(--card);
+}
+
+.select2-container
+.select2-selection--single
+.select2-selection__rendered {
+    width: 100%;
+    padding-left: 12px;
+    padding-right: 35px;
+    line-height: normal;
+    color: var(--text);
+}
+
+.select2-container
+.select2-selection--single
+.select2-selection__arrow {
+    height: 40px;
+}
+
+.select2-dropdown {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.select2-search--dropdown {
+    padding: 8px;
+}
+
+.select2-search--dropdown
+.select2-search__field {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    outline: none;
+}
+
+.select2-results__option {
+    padding: 9px 12px;
+}
+
+</style>
+
+
+<!-- =========================================================
      JAVASCRIPT
 ========================================================= -->
 
@@ -493,8 +545,15 @@ document.addEventListener(
 
 
         // =====================================================
-        // CLIENTE / PISCINEIRO
+        // CLIENTE PESQUISÁVEL
         // =====================================================
+
+        $("#clienteSelect").select2({
+            placeholder: "Digite para pesquisar o cliente...",
+            allowClear: true,
+            width: "100%"
+        });
+
 
         const clienteSelect =
             document.getElementById(
@@ -508,7 +567,12 @@ document.addEventListener(
             );
 
 
-        clienteSelect.addEventListener(
+        /*
+         * Usamos o evento do jQuery porque o cliente
+         * está sendo controlado pelo Select2.
+         */
+
+        $("#clienteSelect").on(
             "change",
             function () {
 
@@ -518,8 +582,23 @@ document.addEventListener(
                     ];
 
 
+                if (
+                    !opcao ||
+                    !this.value
+                ) {
+
+                    piscineiroExibicao.value =
+                        "Selecione um cliente";
+
+                    return;
+
+                }
+
+
                 piscineiroExibicao.value =
-                    opcao.dataset.piscineiro
+                    opcao.getAttribute(
+                        "data-piscineiro"
+                    )
                     || "Sem piscineiro";
 
             }
@@ -527,7 +606,41 @@ document.addEventListener(
 
 
         // =====================================================
-        // FORMATAÇÃO DE MOEDA
+        // PRODUTO PESQUISÁVEL
+        // =====================================================
+
+        function ativarPesquisaProduto(
+            elemento
+        ) {
+
+            /*
+             * Evita inicializar Select2 duas vezes
+             * no mesmo elemento.
+             */
+
+            if (
+                $(elemento).hasClass(
+                    "select2-hidden-accessible"
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            $(elemento).select2({
+                placeholder:
+                    "Digite para pesquisar o produto...",
+                allowClear: true,
+                width: "100%"
+            });
+
+        }
+
+
+        // =====================================================
+        // MOEDA
         // =====================================================
 
         function formatarMoeda(valor) {
@@ -544,52 +657,7 @@ document.addEventListener(
 
 
         // =====================================================
-        // ATUALIZAR LINHA
-        // =====================================================
-
-        function atualizarLinha(linha) {
-
-            const quantidade =
-                Number(
-                    linha
-                        .querySelector(
-                            ".quantidade"
-                        )
-                        .value
-                ) || 0;
-
-
-            const preco =
-                Number(
-                    linha
-                        .querySelector(
-                            ".preco-unitario"
-                        )
-                        .value
-                ) || 0;
-
-
-            const subtotal =
-                quantidade * preco;
-
-
-            linha
-                .querySelector(
-                    ".subtotal"
-                )
-                .textContent =
-                    formatarMoeda(
-                        subtotal
-                    );
-
-
-            atualizarTotal();
-
-        }
-
-
-        // =====================================================
-        // ATUALIZAR TOTAL
+        // TOTAL
         // =====================================================
 
         function atualizarTotal() {
@@ -645,7 +713,52 @@ document.addEventListener(
 
 
         // =====================================================
-        // CONFIGURAR LINHA DE PRODUTO
+        // ATUALIZAR LINHA
+        // =====================================================
+
+        function atualizarLinha(linha) {
+
+            const quantidade =
+                Number(
+                    linha
+                        .querySelector(
+                            ".quantidade"
+                        )
+                        .value
+                ) || 0;
+
+
+            const preco =
+                Number(
+                    linha
+                        .querySelector(
+                            ".preco-unitario"
+                        )
+                        .value
+                ) || 0;
+
+
+            const subtotal =
+                quantidade * preco;
+
+
+            linha
+                .querySelector(
+                    ".subtotal"
+                )
+                .textContent =
+                    formatarMoeda(
+                        subtotal
+                    );
+
+
+            atualizarTotal();
+
+        }
+
+
+        // =====================================================
+        // CONFIGURAR PRODUTO
         // =====================================================
 
         function configurarLinha(linha) {
@@ -674,9 +787,11 @@ document.addEventListener(
                 );
 
 
-            // PRODUTO
+            // -------------------------------------------------
+            // PRODUTO -> PREÇO
+            // -------------------------------------------------
 
-            produto.addEventListener(
+            $(produto).on(
                 "change",
                 function () {
 
@@ -686,8 +801,26 @@ document.addEventListener(
                         ];
 
 
+                    if (
+                        !opcao ||
+                        !this.value
+                    ) {
+
+                        preco.value = "";
+
+                        atualizarLinha(
+                            linha
+                        );
+
+                        return;
+
+                    }
+
+
                     const precoProduto =
-                        opcao.dataset.preco;
+                        opcao.getAttribute(
+                            "data-preco"
+                        );
 
 
                     if (precoProduto) {
@@ -710,7 +843,9 @@ document.addEventListener(
             );
 
 
+            // -------------------------------------------------
             // QUANTIDADE
+            // -------------------------------------------------
 
             quantidade.addEventListener(
                 "input",
@@ -724,7 +859,9 @@ document.addEventListener(
             );
 
 
-            // PREÇO
+            // -------------------------------------------------
+            // PREÇO MANUAL
+            // -------------------------------------------------
 
             preco.addEventListener(
                 "input",
@@ -738,7 +875,9 @@ document.addEventListener(
             );
 
 
+            // -------------------------------------------------
             // REMOVER
+            // -------------------------------------------------
 
             remover.addEventListener(
                 "click",
@@ -763,6 +902,19 @@ document.addEventListener(
                     }
 
 
+                    if (
+                        $(produto).hasClass(
+                            "select2-hidden-accessible"
+                        )
+                    ) {
+
+                        $(produto).select2(
+                            "destroy"
+                        );
+
+                    }
+
+
                     linha.remove();
 
 
@@ -771,11 +923,16 @@ document.addEventListener(
                 }
             );
 
+
+            ativarPesquisaProduto(
+                produto
+            );
+
         }
 
 
         // =====================================================
-        // CONFIGURAR PRIMEIRA LINHA
+        // PRIMEIRA LINHA
         // =====================================================
 
         document
@@ -788,7 +945,7 @@ document.addEventListener(
 
 
         // =====================================================
-        // ADICIONAR NOVO PRODUTO
+        // ADICIONAR PRODUTO
         // =====================================================
 
         document
@@ -811,17 +968,53 @@ document.addEventListener(
                         );
 
 
+                    const selectOriginal =
+                        original.querySelector(
+                            ".produto-select"
+                        );
+
+
+                    /*
+                     * Select2 cria HTML adicional.
+                     * Removemos temporariamente antes
+                     * de clonar a linha.
+                     */
+
+                    if (
+                        $(selectOriginal).hasClass(
+                            "select2-hidden-accessible"
+                        )
+                    ) {
+
+                        $(selectOriginal).select2(
+                            "destroy"
+                        );
+
+                    }
+
+
                     const nova =
                         original.cloneNode(
                             true
                         );
 
 
-                    nova
-                        .querySelector(
+                    /*
+                     * Reativa o Select2 da linha original.
+                     */
+
+                    ativarPesquisaProduto(
+                        selectOriginal
+                    );
+
+
+                    const novoProduto =
+                        nova.querySelector(
                             ".produto-select"
-                        )
-                        .value = "";
+                        );
+
+
+                    novoProduto.value = "";
 
 
                     nova
@@ -851,9 +1044,17 @@ document.addEventListener(
                     );
 
 
+                    /*
+                     * Configura eventos e pesquisa
+                     * da nova linha.
+                     */
+
                     configurarLinha(
                         nova
                     );
+
+
+                    atualizarTotal();
 
                 }
             );
