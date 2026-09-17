@@ -9,4 +9,7 @@ feedbacks pessoais para uma proxima versão
 -melhora na mudança de caminhos ao realizar uma ação 
 -backup automatico na nuvem 
 -comissao gerada apenas apos o recebimento do valor 
--opção de cancelar algumas operações com senha de adm  
+-opção de cancelar algumas operações com senha de adm 
+-adicionar cobranças em massa 
+-limitar tamanho do historico exibido 
+-implementar para uso em dispositivos moveis na loja 
