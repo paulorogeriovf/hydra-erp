@@ -1,14 +1,14 @@
-# 🌊 Hydra ERP
+# Hydra ERP
 
 Sistema de gestão desenvolvido para centralizar e organizar processos operacionais, financeiros e comerciais da **Hydra Piscinas e Lazer**.
 
 O projeto foi desenvolvido em **Python com Flask e MySQL**, com foco inicialmente em utilização local na empresa, permitindo reunir em um único sistema informações que antes estavam distribuídas entre diferentes controles e ferramentas.
 
-> 🚧 Projeto em desenvolvimento e aprimoramento contínuo.
+> Projeto em desenvolvimento e aprimoramento contínuo , imagens apresentadas com testes reais do ERP funcionando nos primeiros dias da empresa.
 
 ---
 
-## 🎯 Objetivo
+## Objetivo
 
 O Hydra ERP tem como objetivo facilitar a gestão das principais operações da empresa, principalmente o relacionamento entre:
 
@@ -26,9 +26,9 @@ O sistema também utiliza os dados registrados para gerar indicadores comerciais
 
 ---
 
-## ⚙️ Principais funcionalidades
+## Principais funcionalidades
 
-### 📊 Dashboard
+### Dashboard
 
 Visão geral da operação com indicadores como:
 
@@ -44,10 +44,12 @@ Visão geral da operação com indicadores como:
 * piscineiros com maior volume de vendas;
 * oportunidades comerciais;
 * movimentações recentes.
-
+<p align="center">
+  <img src="app/static/img/dashboard.jpeg" width="120">
+</p>
 ---
 
-### 🏊 Piscineiros
+### Piscineiros
 
 Cadastro e gerenciamento dos piscineiros parceiros.
 
@@ -63,7 +65,7 @@ Cada piscineiro possui uma página própria contendo informações como:
 
 ---
 
-### 👥 Clientes
+### Clientes
 
 Gerenciamento dos clientes da empresa.
 
@@ -81,7 +83,7 @@ O histórico da relação entre cliente e piscineiro é preservado.
 
 ---
 
-### 📦 Produtos
+### Produtos
 
 Catálogo central de produtos utilizado pelos demais módulos do ERP.
 
@@ -99,7 +101,7 @@ Informações disponíveis:
 
 ---
 
-### 📄 Notinhas
+### Notinhas
 
 Controle de vendas realizadas por meio de notinhas.
 
@@ -127,7 +129,7 @@ O sistema calcula automaticamente valores pagos e pendentes e identifica notinha
 
 ---
 
-### 💰 Comissões
+### Comissões
 
 Controle das comissões destinadas aos piscineiros.
 
@@ -143,7 +145,7 @@ A comissão é calculada somente para produtos configurados para gerar comissão
 
 ---
 
-### 📅 Cobranças
+### Cobranças
 
 Área destinada ao acompanhamento financeiro das notinhas.
 
@@ -156,9 +158,11 @@ O sistema também auxilia na preparação de mensagens de cobrança ou lembrete 
 
 ---
 
-### 🧾 Gerador de Orçamentos
+### Gerador de Orçamentos
 
 Gerador integrado ao catálogo de produtos do ERP.
+
+Codigo reutilizado do meu projeto pessoal antigo que gerava somente orçamentos e integrado ao ERP
 
 Permite:
 
@@ -172,7 +176,7 @@ Permite:
 
 ---
 
-### 📈 Inteligência de Vendas
+### Inteligência de Vendas
 
 Utiliza o histórico cadastrado no ERP para apresentar rankings e indicadores comerciais.
 
@@ -187,7 +191,7 @@ Inclui:
 
 ---
 
-### 💡 Oportunidades de Vendas
+### Oportunidades de Vendas
 
 Análise do histórico de compras para identificar possíveis oportunidades.
 
@@ -200,7 +204,7 @@ Essa análise ganha precisão conforme o ERP acumula histórico real de utiliza�
 
 ---
 
-### 📜 Histórico
+### Histórico
 
 Registro das principais movimentações realizadas no sistema.
 
@@ -216,7 +220,7 @@ Entre elas:
 
 ---
 
-### ⚙️ Configurações
+### Configurações
 
 Área destinada aos dados cadastrais da empresa.
 
@@ -237,7 +241,7 @@ Permite armazenar e copiar rapidamente informações como:
 
 ---
 
-### 💾 Backup
+### Backup
 
 O Hydra ERP possui geração de backup pelo próprio sistema.
 
@@ -265,7 +269,7 @@ Os arquivos de backup não são versionados no Git.
 
 ---
 
-## 🛠️ Tecnologias
+## Tecnologias
 
 ### Backend
 
@@ -297,7 +301,7 @@ Os arquivos de backup não são versionados no Git.
 
 ---
 
-## 📁 Estrutura do projeto
+## Estrutura do projeto
 
 ```text
 hydra-erp/
@@ -330,7 +334,7 @@ Arquivos operacionais, uploads, backups e credenciais não são enviados ao repo
 
 ---
 
-## 🚀 Instalação para desenvolvimento
+## Instalação para desenvolvimento
 
 ### 1. Clone o repositório
 
@@ -397,7 +401,7 @@ A aplicação estará disponível localmente pelo endereço informado pelo Flask
 
 ---
 
-## 🔐 Segurança dos dados
+## Segurança dos dados
 
 O repositório não deve conter:
 
@@ -412,7 +416,7 @@ Esses arquivos estão separados do código-fonte e protegidos pelo `.gitignore`.
 
 ---
 
-## 🗺️ Estado atual
+## Estado atual
 
 O Hydra ERP já possui os principais módulos funcionais e atualmente está em fase de:
 
@@ -426,7 +430,7 @@ Funcionalidades de usuários, login e permissões poderão ser adicionadas futur
 
 ---
 
-## 📚 Contexto do projeto
+## Contexto do projeto
 
 Além de atender uma necessidade real de gestão da Hydra Piscinas e Lazer, o Hydra ERP é utilizado como projeto de aprendizado e aplicação prática de conceitos de:
 
@@ -440,7 +444,7 @@ Além de atender uma necessidade real de gestão da Hydra Piscinas e Lazer, o Hy
 
 ---
 
-## 👨‍💻 Autor
+## Autor
 
 **Paulo Rogério**
 
@@ -450,6 +454,6 @@ Projeto Hydra ERP.
 
 ## 📌 Status
 
-**Em desenvolvimento.**
+**Atualmente sendo ultilizado por uma Loja real .**
 
-O sistema ainda está sendo validado antes de sua utilização definitiva em ambiente operacional.
+
