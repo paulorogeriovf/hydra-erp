@@ -4,7 +4,7 @@ Sistema de gestão desenvolvido para centralizar e organizar processos operacion
 
 O projeto foi desenvolvido em **Python com Flask e MySQL**, com foco inicialmente em utilização local na empresa, permitindo reunir em um único sistema informações que antes estavam distribuídas entre diferentes controles e ferramentas.
 
-> Projeto em desenvolvimento e aprimoramento contínuo , imagens apresentadas com testes reais do ERP funcionando nos primeiros dias da empresa.
+> Projeto em desenvolvimento e aprimoramento contínuo , imagens apresentadas com testes reais do ERP funcionando nos primeiros dias da empresa mantendo a privacidade da empresa.
 
 ---
 
@@ -45,7 +45,7 @@ Visão geral da operação com indicadores como:
 * oportunidades comerciais;
 * movimentações recentes.
 <p align="center">
-  <img src="app/static/img/dashboard.jpeg" width="120">
+  <img src="app/static/img/dashboard.jpeg"">
 </p>
 ---
 
@@ -454,6 +454,6 @@ Projeto Hydra ERP.
 
 ## 📌 Status
 
-**Atualmente sendo ultilizado por uma Loja real .**
+**Atualmente sendo ultilizado por uma Empresa real .**
 
 
