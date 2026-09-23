@@ -47,7 +47,6 @@ Visão geral da operação com indicadores como:
 <p align="center">
   <img src="app/static/img/dashboard.jpeg"">
 </p>
----
 
 ### Piscineiros
 
@@ -62,8 +61,9 @@ Cada piscineiro possui uma página própria contendo informações como:
 * produtos mais vendidos;
 * indicadores financeiros;
 * evolução mensal.
-
----
+<p align="center">
+  <img src="app/static/img/piscineiros.jpeg"">
+</p>
 
 ### Clientes
 
@@ -80,8 +80,9 @@ O sistema permite:
 * visualizar movimentações financeiras e compras.
 
 O histórico da relação entre cliente e piscineiro é preservado.
-
----
+<p align="center">
+  <img src="app/static/img/clientes.jpeg"">
+</p>
 
 ### Produtos
 
@@ -126,8 +127,9 @@ Cada registro pode possuir:
 * anexos.
 
 O sistema calcula automaticamente valores pagos e pendentes e identifica notinhas vencidas.
-
----
+<p align="center">
+  <img src="app/static/img/notas.jpeg"">
+</p>
 
 ### Comissões
 
@@ -155,8 +157,9 @@ Apresenta separadamente:
 * cobranças próximas do vencimento.
 
 O sistema também auxilia na preparação de mensagens de cobrança ou lembrete para envio aos responsáveis.
-
----
+<p align="center">
+  <img src="app/static/img/cobranca.jpeg"">
+</p>
 
 ### Gerador de Orçamentos
 
@@ -173,8 +176,9 @@ Permite:
 * gerar orçamento;
 * copiar texto;
 * gerar PDF.
-
----
+<p align="center">
+  <img src="app/static/img/orcamentos.jpeg"">
+</p>
 
 ### Inteligência de Vendas
 
@@ -188,8 +192,9 @@ Inclui:
 * ticket médio;
 * vendas mensais;
 * clientes atendidos.
-
----
+<p align="center">
+  <img src="app/static/img/inteligencia.jpeg"">
+</p>
 
 ### Oportunidades de Vendas
 
@@ -201,8 +206,9 @@ O sistema considera o comportamento de compra dos clientes para localizar:
 * clientes que estão há mais tempo sem comprar do que seu comportamento histórico indica.
 
 Essa análise ganha precisão conforme o ERP acumula histórico real de utilização.
-
----
+<p align="center">
+  <img src="app/static/img/oportunidade.jpeg"">
+</p>
 
 ### Histórico
 
