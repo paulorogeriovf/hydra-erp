@@ -13,3 +13,5 @@ feedbacks pessoais para uma proxima versão
 -adicionar cobranças em massa 
 -limitar tamanho do historico exibido 
 -implementar para uso em dispositivos moveis na loja 
+-implementar um novo layout mais bonito e moderno 
+-opção de modificar notinha 
