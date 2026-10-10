@@ -165,7 +165,7 @@ O sistema também auxilia na preparação de mensagens de cobrança ou lembrete 
 
 Gerador integrado ao catálogo de produtos do ERP.
 
-Codigo reutilizado do meu projeto pessoal antigo que gerava somente orçamentos e integrado ao ERP
+Módulo reaproveitado de um projeto pessoal anterior de geração de orçamentos 
 
 Permite:
 
