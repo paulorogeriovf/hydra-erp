@@ -460,6 +460,6 @@ Projeto Hydra ERP.
 
 ## 📌 Status
 
-**Atualmente sendo utilizado por uma Empresa real .**
+**Atualmente sendo utilizado por uma empresa real .**
 
 
