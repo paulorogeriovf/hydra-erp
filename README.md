@@ -1,4 +1,7 @@
-# Hydra ERP
+<h1>
+  Hydra ERP
+  <img src="app/static/img/logo.jpg" align="right" height="44" alt="Hydra Piscinas">
+</h1>
 
 Sistema de gestão desenvolvido para centralizar e organizar processos operacionais, financeiros e comerciais da **Hydra Piscinas e Lazer**.
 
