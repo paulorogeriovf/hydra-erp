@@ -15,5 +15,5 @@ feedbacks pessoais para uma proxima versão
 -implementar para uso em dispositivos moveis na loja 
 -implementar um novo layout mais bonito e moderno 
 -opção de modificar notinha 
--implementar função de escanear informaçoes da nota por meio da foto tirada via mobile , facilitando o uso no dia a dia da loja
+-implementar função de escanear informaçoes da nota por meio da foto tirada via mobile , facilitando o uso no dia a dia da loja com https://github.com/tesseract-ocr/tesseract ou https://github.com/PaddlePaddle/PaddleOCR
 -api com o futuro app hydra
