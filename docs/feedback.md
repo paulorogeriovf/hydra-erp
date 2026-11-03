@@ -18,3 +18,4 @@ feedbacks pessoais para uma proxima versão
 -implementar função de escanear informaçoes da nota por meio da foto tirada via mobile , facilitando o uso no dia a dia da loja com https://github.com/tesseract-ocr/tesseract ou https://github.com/PaddlePaddle/PaddleOCR
 -api com o futuro app hydra
 -produtos no orçamento devem ir na ordem selecionada pois facilita a conferencia 
+-ajustar caminhos , sempre ao voltar .. voltar para o mesmo lugar onde estava , por exemplo nas notinhas / cobranças para facilitar e agilizar no dia a dia 
