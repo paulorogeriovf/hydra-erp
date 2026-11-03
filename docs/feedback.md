@@ -6,7 +6,6 @@ feedbacks pessoais para uma proxima versão
 
 -pensar melhor em nomes e sobrenomes iguais para encontrar quando cadastrar notas
 -tirar o ERP de local host e tratar sua segurança 
--melhora na mudança de caminhos ao realizar uma ação 
 -backup automatico na nuvem 
 -comissao gerada apenas apos o recebimento do valor 
 -opção de cancelar algumas operações com senha de adm 
