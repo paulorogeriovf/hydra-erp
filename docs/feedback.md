@@ -18,3 +18,4 @@ feedbacks pessoais para uma proxima versão
 -api com o futuro app hydra
 -produtos no orçamento devem ir na ordem selecionada pois facilita a conferencia 
 -ajustar caminhos , sempre ao voltar .. voltar para o mesmo lugar onde estava , por exemplo nas notinhas / cobranças para facilitar e agilizar no dia a dia 
+-adicionar area para soma de produtos por meio de leltor de codigo de barras , add codigo de barras aos produtos no bd 
