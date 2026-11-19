@@ -2,7 +2,7 @@ ERP se encontra em uso e na fase de testes em ambiente real da empresa supervisi
 
 primeira versão atendeu todas espectativas e atende 100% ao pedido feito pelo cliente 
 
-feedbacks pessoais para uma proxima versão
+feedbacks para versão 2.0 completa do ERP
 
 -pensar melhor em nomes e sobrenomes iguais para encontrar quando cadastrar notas
 -tirar o ERP de local host e tratar sua segurança 
@@ -20,4 +20,6 @@ feedbacks pessoais para uma proxima versão
 -ajustar caminhos , sempre ao voltar .. voltar para o mesmo lugar onde estava , por exemplo nas notinhas / cobranças para facilitar e agilizar no dia a dia 
 -adicionar area para soma de produtos por meio de leltor de codigo de barras fisico disponivel na loja via cabo usb , add codigo de barras aos produtos no banco de dados integrando essa nova funcionalidade ao ERP em funcionamento 
 
+feedbacks pessoais para uma proxima versão
 
+-
