@@ -4,6 +4,8 @@ primeira versão atendeu todas espectativas e atende 100% ao pedido feito pelo c
 
 feedbacks para versão 2.0 completa do ERP
 
+prazo fev/2027
+
 -pensar melhor em nomes e sobrenomes iguais para encontrar quando cadastrar notas
 -tirar o ERP de local host e tratar sua segurança 
 -backup automatico na nuvem 
