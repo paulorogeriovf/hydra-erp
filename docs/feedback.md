@@ -1,4 +1,4 @@
-ERP se encontra em uso e na fase de testes em ambiente real da empresa supervisionado por mim dia a dia , desde o dia 02/09/26 
+ERP se encontra em uso e na fase de testes em ambiente real da empresa supervisionado por mim dia a dia colhendo feedbacks dos profissionais que utilizam o ERP , desde o dia 02/09/26 
 
 primeira versão atendeu todas espectativas e atende 100% ao pedido feito pelo cliente 
 
