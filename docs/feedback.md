@@ -17,8 +17,11 @@ prazo definido para conclusão fev/2027
 -produtos no orçamento devem ir na ordem selecionada pois facilita a conferencia 
 -ajustar caminhos , sempre ao voltar .. voltar para o mesmo lugar onde estava , por exemplo nas notinhas / cobranças para facilitar e agilizar no dia a dia 
 -adicionar area para soma de produtos por meio de leltor de codigo de barras fisico disponivel na loja via cabo usb , add codigo de barras aos produtos no banco de dados integrando essa nova funcionalidade ao ERP em funcionamento 
-- adicionar perfil para cada funcionario e definir privilegios
-- corrigir aba de informações cadastrais da empresa em configurações 
+-adicionar perfil para cada funcionario e definir privilegios
+-corrigir aba de informações cadastrais da empresa em configurações 
+-deixar o sistema com mais formas de personalização nas configurações
+-add modo claro / modo escuro 
+-adicionar a possibilidade de foto de perfil para melhor visualização 
 
 feedbacks pessoais para uma proxima versão
 
@@ -26,3 +29,5 @@ feedbacks pessoais para uma proxima versão
 -api com o futuro app hydra
 -implementar para uso em dispositivos moveis na loja 
 -tirar o ERP de local host e tratar sua segurança 
+-adicionar uma IA local , na qual faz tarefa basicas e auxilia tambem nas tarefas como um copiloto
+
