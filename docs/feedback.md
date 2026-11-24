@@ -31,3 +31,5 @@ feedbacks pessoais para uma proxima versão
 -tirar o ERP de local host e tratar sua segurança 
 -adicionar uma IA local , na qual faz tarefa basicas e auxilia tambem nas tarefas como um copiloto
 
+-Hydra AI
+-APP Hydra
